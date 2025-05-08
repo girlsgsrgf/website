@@ -1,7 +1,7 @@
 anyio==4.9.0
 asgiref==3.8.1
 certifi==2025.4.26
-Django @ file:///storage/emulated/0/Download/django-5.2.1-py3-none-any.whl#sha256=a9b680e84f9a0e71da83e399f1e922e1ab37b2173ced046b541c72e1589a5961
+Django==5.2.1
 gunicorn==23.0.0
 h11==0.16.0
 httpcore==1.0.9
