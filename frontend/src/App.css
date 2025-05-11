@@ -1,0 +1,50 @@
+body, html, #root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: black;
+  color: white;
+  font-family: sans-serif;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 92.5vh;
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.page {
+  text-align: center;
+  padding-top: -250px;
+}
+
+.bottom-menu {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: #111;
+  padding: 10px 0;
+  border-top: 1px solid #333;
+}
+
+.menu-item {
+  flex: 1;
+  text-align: center;
+  padding: 5px;
+}
+
+.icon {
+  width: 28px;
+  height: 28px;
+  transition: transform 0.2s ease;
+}
+
+.menu-item.active .icon {
+  transform: scale(1.1);
+}

@@ -1,0 +1,247 @@
+.main-page {
+  color: white;
+  padding: 6px;
+  background: black;
+  font-family: sans-serif;
+}
+
+.app-title {
+  font-weight: bold;
+  font-size: 18px;
+  margin-bottom: 20px;
+  margin-top: -0.2em;
+}
+
+.balance-section {
+  margin-left: -1em;
+  background: radial-gradient(circle at center, #0a0a0a 0%, #000 100%);
+  border-radius: 10px;
+  padding: 10px 0;
+  margin-bottom: 20px;
+}
+
+.balance-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 12px;
+}
+
+.balance-label {
+  font-weight: bold;
+  font-size: 25px;
+}
+
+.balance-amount {
+  font-size: 32px;
+  font-weight: bold;
+  margin: 4px 0;
+  margin-top: 0.3em;
+}
+
+.wallet-link {
+  font-size: 13px;
+  color: #999;
+  margin-top: 0.5em;
+}
+
+.logo-circle {
+  width: 48px;
+  height: 48px;
+  background: white;
+  color: black;
+  font-weight: bold;
+  font-size: 20px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.get-flyp-button {
+  margin: 16px auto 4px;
+  margin-top: 1.6em;
+  margin-right: -0.2em;
+  display: block;
+  background: linear-gradient(to right, #cce8ff, #a3d4ff);
+  color: black;
+  font-weight: bold;
+  border: none;
+  padding: 12px 110px;
+  border-radius: 15px;
+  font-size: 22px;
+}
+
+.get-now {
+  text-align: center;
+  color: #999;
+  font-size: 15px;
+  margin-bottom: 16px;
+  margin-top: 0.2em;
+}
+
+.level-card {
+  height: 125px;
+  background: #111;
+  border: 2px solid #333;
+  border-radius: 15px;
+  padding: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.level-title {
+  font-weight: bold;
+  font-size: 22px;
+  margin-left: 0.3em;
+  margin-top: -2em;
+}
+
+.level-subtitle {
+  margin-left: 0.3em;
+  margin-top: 0.2em;
+  font-size: 18px;
+  color: #ccc;
+}
+
+.upgrade-price {
+  font-size: 13px;
+  text-align: right;
+  font-weight: bold;
+  color: #ccc;
+  margin-bottom: 4px;
+  margin-right: 2.65em;
+  margin-top: 5em;
+}
+
+.upgrade-button {
+  padding: 8px 20px;
+  border-radius: 20px;
+  background: white;
+  color: black;
+  font-weight: 500;
+  border: none;
+  font-size: 20px;
+  margin-right: 0.3em;
+}
+
+.features-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.feature-box {
+  height: 65px;
+  width: 30%;
+  background: #111;
+  border: 2px solid #333;
+  border-radius: 15px;
+  padding: 12px 0;
+  text-align: center;
+  font-size: 14px;
+}
+
+.feature-text {
+}
+
+.red-dot {
+  width: 16px;
+  height: 16px;
+  background: red;
+  border-radius: 50%;
+  margin: 0 auto 6px;
+}
+
+.logo-image {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+
+.get-img {
+  width: 25px;
+  height: 25px;
+  position: relative;
+  top: 3.5px; /* move it down */
+}
+
+
+.dot-img {
+  width: 50px;
+  height: 50px;
+  display: block;
+  margin: 0 auto 6px;
+}
+
+.level-img {
+  width: 48px;
+  height: 48px;
+  margin-bottom: -2em;
+  margin-top: 1em;
+  margin-left: 0.3em;
+}
+
+.dot-small-img {
+  width: 10px;
+  height: 10px;
+  margin-left: 4px;
+}
+
+/* remove .logo-circle and .red-dot if unused anymore */
+
+
+.news-box {
+  height: 125px;
+  background: #111;
+  border: 2px solid #333;
+  border-radius: 15px;
+  padding: 12px;
+}
+
+.news-header {
+  font-weight: bold;
+  margin-bottom: 6px;
+  font-size: 20px;
+  margin-left: 6.5em;
+  margin-top: 0.2em;
+}
+
+.news-text {
+  font-size: 20px;
+  margin-bottom: 10px;
+  margin-top: 0.65em;
+  margin-left: 0.3em;
+}
+
+.news-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 15px;
+  color: #aaa;
+  margin-left: 0.3em;
+}
+
+.tweet-handle {
+  color: #aaa;
+}
+
+.news-price {
+  color: white;
+  font-weight: bold;
+  font-size: 13px;
+  margin-left: 8em;
+}
+
+.tweet-date {
+  margin-left: 1em;
+}
+
+.red-dot.small {
+  width: 10px;
+  height: 10px;
+  margin-left: 4px;
+}
