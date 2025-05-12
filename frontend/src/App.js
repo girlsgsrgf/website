@@ -1,29 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import HomePage from './HomePage';
 import GetFlypPage from './GetFlypPage';
 import TasksPage from './TasksPage';
 import RewardsPage from './RewardsPage';
 import AirdropPage from './AirdropPage';
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import './App.css';
 
-const { telegram_id } = useParams(); // должен быть доступен в маршруте
-const [balance, setBalance] = useState(null);
-
-useEffect(() => {
-  if (telegram_id) {
-    fetch(`/api/user/${telegram_id}/`)
-      .then(res => res.json())
-      .then(data => setBalance(data.balance))
-      .catch(() => setBalance(0));
-  }
-}, [telegram_id]);
-
-
-function App() {
+const App = () => {
+  const [balance, setBalance] = useState(0);
   const [activeTab, setActiveTab] = useState('home');
   const [subPage, setSubPage] = useState(null);
+
+  useEffect(() => {
+    if (window.USER_DATA && window.USER_DATA.balance !== undefined) {
+      setBalance(window.USER_DATA.balance);
+    }
+  }, []);
 
   const tabs = [
     { key: 'home', icon: 'home.png', activeIcon: 'blue_home.png' },
@@ -33,16 +25,15 @@ function App() {
   ];
 
   const handleTabClick = (tabKey) => {
-  if (tabKey === activeTab && tabKey === 'home') {
-    setSubPage(null); // если уже на home и снова кликнули — вернуться на главную
-  } else {
-    setActiveTab(tabKey);
-    if (tabKey !== 'home') {
-      setSubPage(null); // при переходе в другой tab — сбросить
+    if (tabKey === activeTab && tabKey === 'home') {
+      setSubPage(null);
+    } else {
+      setActiveTab(tabKey);
+      if (tabKey !== 'home') {
+        setSubPage(null);
+      }
     }
-  }
-};
-
+  };
 
   const renderContent = () => {
     if (activeTab === 'home') {
@@ -57,7 +48,6 @@ function App() {
           return <AirdropPage />;
         default:
           return <HomePage onNavigate={setSubPage} balance={balance} />;
-
       }
     } else if (activeTab === 'wallet') {
       return <div className="page"><h1>💰 Wallet Page</h1></div>;
@@ -93,6 +83,6 @@ function App() {
       </div>
     </div>
   );
-}
+};
 
 export default App;

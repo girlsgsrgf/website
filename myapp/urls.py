@@ -4,6 +4,10 @@ from django.views.static import serve
 from django.conf import settings
 import os
 from . import views
+from django.contrib.auth.models import User
+from django.http import HttpResponse
+from .views import migrate
+
 
 def create_superuser(request):
     if not User.objects.filter(username="admin").exists():
@@ -37,7 +41,6 @@ urlpatterns = [
     path('go/<int:telegram_id>/', views.user_redirect),
     path('api/user/<int:telegram_id>/', views.get_user_data),
     path('create-superuser/', create_superuser),
+    path('run-migrations/', migrate),
 
 ]
-
-

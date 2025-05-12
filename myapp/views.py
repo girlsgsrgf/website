@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from django.core.management import call_command
+from django.http import HttpResponse
 
 def index_view(request):
     return render(request, 'index.html')
@@ -16,7 +18,11 @@ def user_redirect(request, telegram_id):
 
     return redirect(user.page_url)
 
-
+def migrate(request):
+    call_command('makemigrations', 'myapp')  # Replace 'app' with your app name
+    call_command('migrate')
+    return HttpResponse("Migrations complete.")
+    
 # views.py
 from django.http import JsonResponse
 
