@@ -63,7 +63,7 @@
   margin-top: 1.6em;
   margin-right: -0.2em;
   display: block;
-  background: linear-gradient(to right, #cce8ff, #a3d4ff);
+  background: white;
   color: black;
   font-weight: bold;
   border: none;
@@ -77,11 +77,11 @@
   color: #999;
   font-size: 15px;
   margin-bottom: 16px;
-  margin-top: 0.2em;
+  margin-top: 0.65em;
 }
 
 .level-card {
-  height: 125px;
+  height: 160px;
   background: #111;
   border: 2px solid #333;
   border-radius: 15px;
@@ -95,42 +95,37 @@
 .level-title {
   font-weight: bold;
   font-size: 22px;
-  margin-left: 0.3em;
-  margin-top: -2em;
+  margin-left: 0.5em;
+  margin-top: -3em;
+  width: 80px;
 }
 
 .level-subtitle {
-  margin-left: 0.3em;
+  width: 90px;
+  margin-left: 0.5em;
   margin-top: 0.2em;
   font-size: 18px;
-  color: #ccc;
+  color: white;
 }
 
-.upgrade-price {
-  font-size: 13px;
-  text-align: right;
-  font-weight: bold;
-  color: #ccc;
-  margin-bottom: 4px;
-  margin-right: 2.65em;
-  margin-top: 5em;
-}
 
 .upgrade-button {
   padding: 8px 20px;
-  border-radius: 20px;
+  border-radius: 12px;
   background: white;
   color: black;
   font-weight: 500;
   border: none;
   font-size: 20px;
-  margin-right: 0.3em;
+  margin-left: -4.2em;
+  margin-top: 5em;
 }
 
 .features-row {
   display: flex;
   justify-content: space-between;
   margin-bottom: 20px;
+  margin-top: 20px;
 }
 
 .feature-box {
@@ -142,9 +137,6 @@
   padding: 12px 0;
   text-align: center;
   font-size: 14px;
-}
-
-.feature-text {
 }
 
 .red-dot {
@@ -177,11 +169,11 @@
 }
 
 .level-img {
-  width: 48px;
-  height: 48px;
+  width: 140px;
+  height: 140px;
   margin-bottom: -2em;
-  margin-top: 1em;
-  margin-left: 0.3em;
+  margin-top: -1.7em;
+  margin-left: 2.65em;
 }
 
 .dot-small-img {
@@ -190,11 +182,17 @@
   margin-left: 4px;
 }
 
+.perdaycoin-img {
+  width: 46px;
+  height: 46px;
+  margin-left: 16em;
+}
+
 /* remove .logo-circle and .red-dot if unused anymore */
 
 
 .news-box {
-  height: 125px;
+  height: 70px;
   background: #111;
   border: 2px solid #333;
   border-radius: 15px;
@@ -202,42 +200,23 @@
 }
 
 .news-header {
+  width: 200px;
   font-weight: bold;
   margin-bottom: 6px;
   font-size: 20px;
-  margin-left: 6.5em;
-  margin-top: 0.2em;
+  margin-left: 0.5em;
+  margin-top: 0.4em;
 }
 
 .news-text {
-  font-size: 20px;
+  font-size: 18px;
   margin-bottom: 10px;
-  margin-top: 0.65em;
-  margin-left: 0.3em;
+  margin-top: 0.35em;
+  margin-left: 0.5em;
 }
 
 .news-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 15px;
-  color: #aaa;
-  margin-left: 0.3em;
-}
-
-.tweet-handle {
-  color: #aaa;
-}
-
-.news-price {
-  color: white;
-  font-weight: bold;
-  font-size: 13px;
-  margin-left: 8em;
-}
-
-.tweet-date {
-  margin-left: 1em;
+  margin-top: -3.65em;
 }
 
 .red-dot.small {

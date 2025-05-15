@@ -38,8 +38,6 @@ urlpatterns = [
     re_path(r'^icons/(?P<path>.*)$', serve, {
         'document_root': os.path.join(settings.BASE_DIR, 'frontend/build/icons'),
     }),
-    path('go/<int:telegram_id>/', views.user_redirect),
-    path('api/user/<int:telegram_id>/', views.get_user_data),
     path('create-superuser/', create_superuser),
     path('run-migrations/', migrate),
 
