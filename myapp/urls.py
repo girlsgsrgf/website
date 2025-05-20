@@ -6,7 +6,7 @@ import os
 from . import views
 from django.contrib.auth.models import User
 from django.http import HttpResponse
-from .views import migrate
+from .views import get_user_balance
 
 
 def create_superuser(request):
@@ -39,6 +39,10 @@ urlpatterns = [
         'document_root': os.path.join(settings.BASE_DIR, 'frontend/build/icons'),
     }),
     path('create-superuser/', create_superuser),
-    path('run-migrations/', migrate),
+    path('signup/', views.signup_view, name='signup'),
+    path('signin/', views.signin_view, name='signin'),
+    path('verify/', views.verify_email, name='verify_email'),
+    path('api/check-auth/', views.check_auth, name='check_auth'),
+    path('api/get-balance/', get_user_balance, name='get_user_balance'),
 
 ]

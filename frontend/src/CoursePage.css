@@ -1,0 +1,110 @@
+.main-page {
+  color: white;
+  padding: 6px;
+  background: transparent;
+  font-family: sans-serif;
+}
+
+.app-title {
+  font-weight: bold;
+  font-size: 18px;
+  margin-bottom: 20px;
+  margin-top: -0.2em;
+}
+
+.course-section {
+  margin-left: -1em;
+  background: transparent;
+  border-radius: 10px;
+  padding: 10px 0;
+  margin-bottom: 20px;
+}
+
+.course-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 12px;
+}
+
+.course-label {
+  font-weight: bold;
+  font-size: 25px;
+}
+
+.course-link {
+  font-size: 14px;
+  font-weight: bold;
+  color: #9A9A9A;
+  margin-top: 22px;
+}
+
+
+
+.course-button {
+  margin: 16px auto 4px;
+  margin-top: 1.6em;
+  margin-left: 0.65em;
+  display: block;
+  background: linear-gradient(145deg, #ffffff, #f0f8ff);
+  color: black;
+  font-weight: bold;
+  border: none;
+  padding: 12px 50px;
+  width: 350px;
+  border-radius: 15px;
+  font-size: 22px;
+}
+
+
+.course-card {
+  height: 180px;
+  background: rgba(17, 17, 17, 0.2);
+  border: 2px solid #333;
+  border-radius: 15px;
+  padding: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 50px;
+}
+
+.course-title {
+  width: 100%;
+  font-weight: bold;
+  font-size: 22px;
+  margin-left: -9em;
+  margin-top: -3.5em;
+}
+
+.course-subtitle {
+  width: 41em;
+  margin-left: -6.5em;
+  margin-top: 7em;
+  font-size: 14px;
+  color: white;
+}
+
+
+.logo-image-course {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+
+.get-img {
+  width: 25px;
+  height: 25px;
+  position: relative;
+  margin-left: -10px;
+  top: 3.5px; /* move it down */
+}
+
+
+.course-img {
+  width: 95px;
+  height: 95px;
+  margin-bottom: -2em;
+  margin-top: -7.5em;
+}
+

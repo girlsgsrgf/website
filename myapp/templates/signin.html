@@ -1,0 +1,176 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sign In</title>
+<style>
+  body {
+    background-color: black;
+  }
+  .register-container {
+    background: black;
+    color: white;
+    min-height: 100vh;
+    padding: 2rem 1rem;
+    font-family: Arial, sans-serif;
+  }
+
+  .register-title {
+    font-weight: bold;
+    font-size: 18px;
+    text-align: left;
+  }
+
+  .register-logo-title {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 1rem;
+  }
+
+  .register-wings-img {
+    height: 180px;
+    margin-bottom: 0.5rem;
+  }
+
+  .register-form-box {
+    background: rgba(255, 255, 255, 0.05);
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 16px;
+    border-color: #3A3A3A;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    box-shadow: 0 0 5px #222;
+  }
+
+  .form-title {
+    text-align: center;
+    font-size: 22px;
+    margin-bottom: 1.5rem;
+  }
+
+  .register-input {
+    width: 90%;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+    border-radius: 10px;
+    border: none;
+    font-size: 16px;
+    background: #111;
+    color: white;
+  }
+
+  .password-wrapper {
+    position: relative;
+  }
+
+  .eye-button {
+    position: absolute;
+    right: 1rem;
+    top: 0.75rem;
+    background: transparent;
+    border: none;
+    font-size: 18px;
+    color: #888;
+    cursor: pointer;
+  }
+
+  .register-terms {
+    font-size: 12px;
+    color: #aaa;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+  .register-button {
+    background-color: white;
+    color: black;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 9999px;
+    font-weight: bold;
+    width: 100%;
+    font-size: 16px;
+    cursor: pointer;
+    margin-bottom: 20px;
+  }
+
+  .register-button:hover {
+    background-color: #ddd;
+  }
+
+  .login-redirect {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 14px;
+    color: #aaa;
+  }
+
+  .errorlist {
+    margin: 0 0 10px 0;
+    padding-left: 15px;
+    color: #ff6b6b;
+    font-size: 13px;
+  }
+
+  .wings-img {
+    height: 180px;
+    margin-bottom: 0.5rem;
+  }
+
+  .signin {
+    text-decoration: none;
+    color: white;
+  }
+
+</style>
+</head>
+<body>
+
+<div class="register-container">
+  <div class="register-logo-title">
+    <img src="{% static 'images/wings.png' %}" alt="Fly Up" class="wings-img" />
+  </div>
+
+  <div class="register-form-box">
+    <h2 class="form-title">Sign In to your account</h2>
+
+    <form method="post" novalidate>
+      {% csrf_token %}
+
+      {% if form.non_field_errors %}
+        <ul class="errorlist">
+          {% for error in form.non_field_errors %}
+            <li>{{ error }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+
+      {% for field in form %}
+        <p>
+          {{ field }}
+          {% if field.errors %}
+            <ul class="errorlist">
+              {% for error in field.errors %}
+                <li>{{ error }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        </p>
+      {% endfor %}
+
+      <button type="submit" class="register-button">Sign In</button>
+    </form>
+  </div>
+
+  <div class="login-redirect">
+    Don't have an account? <a class="signin" href="/signup">Sign Up</a>
+  </div>
+</div>
+
+</body>
+</html>

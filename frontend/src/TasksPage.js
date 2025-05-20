@@ -2,7 +2,7 @@ import React from 'react';
 
 const GetFlypPage = () => (
   <div className="page">
-    <h1>Get $FLYP Page</h1>
+    <h1>Hey my nigga</h1>
     <p>Here users can earn or buy FLYP tokens.</p>
   </div>
 );

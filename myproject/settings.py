@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-m+!tm%3*igyjzta(pw9n845)33q$lhnd7=njxa&c@de%-t5%3a
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.245.202', 'flyup.help', 'www.flyup.help', 'website-af5s.onrender.com']
+ALLOWED_HOSTS = ['192.168.244.161', 'flyup.help', 'www.flyup.help', 'website-af5s.onrender.com']
 
 
 # Application definition
@@ -115,6 +115,18 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
+
+AUTH_USER_MODEL = 'myapp.CustomUser'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'flyuphelp@gmail.com'
+EMAIL_HOST_PASSWORD = 'siqx nqmw bhtc twsm'
+DEFAULT_FROM_EMAIL = 'flyuphelp@gmail.com'
+
+
+CORS_ALLOW_CREDENTIALS = True
 
 
 # Static files (CSS, JavaScript, Images)

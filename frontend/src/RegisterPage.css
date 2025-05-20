@@ -1,0 +1,106 @@
+.register-container {
+  background: black;
+  color: white;
+  min-height: 100vh;
+  padding: 2rem 1rem;
+  font-family: Arial, sans-serif;
+}
+
+.register-title {
+  font-weight: bold;
+  font-size: 18px;
+  text-align: left;
+}
+
+.register-logo-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.register-wings-img {
+  height: 180px;
+  margin-bottom: 0.5rem;
+}
+
+.register-brand {
+  font-size: 26px;
+  margin: 0;
+}
+
+.register-ecosystem {
+  font-size: 14px;
+  color: #888;
+  margin-top: -0.3em;
+}
+
+.register-form-box {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-top: 2rem;
+  box-shadow: 0 0 5px #222;
+}
+
+.form-title {
+  text-align: center;
+  font-size: 22px;
+  margin-bottom: 1.5rem;
+}
+
+.register-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  border-radius: 10px;
+  border: none;
+  font-size: 16px;
+  background: #111;
+  color: white;
+}
+
+.password-wrapper {
+  position: relative;
+}
+
+.eye-button {
+  position: absolute;
+  right: 1rem;
+  top: 0.75rem;
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  color: #888;
+  cursor: pointer;
+}
+
+.register-terms {
+  font-size: 12px;
+  color: #aaa;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.register-button {
+  background-color: white;
+  color: black;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
+  font-weight: bold;
+  width: 100%;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.register-button:hover {
+  background-color: #ddd;
+}
+
+.login-redirect {
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 14px;
+  color: #aaa;
+}

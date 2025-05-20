@@ -1,0 +1,94 @@
+.main-page {
+  color: white;
+  padding: 6px;
+  background: transparent;
+  font-family: sans-serif;
+}
+
+.app-title {
+  font-weight: bold;
+  font-size: 18px;
+  margin-bottom: 20px;
+  margin-top: -0.2em;
+}
+
+.roadmap-section {
+  margin-left: -1em;
+  background: transparent;
+  border-radius: 10px;
+  padding: 10px 0;
+  margin-bottom: 20px;
+}
+
+.roadmap-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 12px;
+}
+
+.roadmap-label {
+  font-weight: bold;
+  font-size: 25px;
+}
+
+.roadmap-link {
+  font-size: 14px;
+  font-weight: bold;
+  color: #9A9A9A;
+  margin-top: 22px;
+}
+
+
+.roadmap-card {
+  height: 150px;
+  background: rgba(17, 17, 17, 0.2);
+  border: 2px solid #333;
+  border-radius: 15px;
+  padding: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 50px;
+}
+
+.roadmap-title {
+  width: 28em;
+  font-weight: bold;
+  font-size: 22px;
+  margin-top: -4em;
+  margin-left: 2.25em;
+}
+
+.roadmap-subtitle {
+  width: 30em;
+  font-weight: normal;
+  margin-left: -12em;
+  margin-top: 4em;
+  font-size: 22px;
+  color: white;
+}
+
+
+.logo-image-roadmap {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+
+.get-img {
+  width: 25px;
+  height: 25px;
+  position: relative;
+  margin-left: -10px;
+  top: 3.5px; /* move it down */
+}
+
+
+.roadmap-img {
+  width: 60px;
+  height: 60px;
+  margin-right: 0.5em;
+  margin-bottom: -4em;
+}
+

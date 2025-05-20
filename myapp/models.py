@@ -1,11 +1,11 @@
-# models.py
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
-class TelegramUser(models.Model):
-    telegram_id = models.BigIntegerField(unique=True)
-    username = models.CharField(max_length=150, blank=True)
-    page_url = models.CharField(max_length=255, blank=True)  # /user/12345
-    balance = models.IntegerField(default=0)
+class CustomUser(AbstractUser):
+    email = models.EmailField(unique=True)
+    balance = models.DecimalField(max_digits=12, decimal_places=2, default=5.00)
+    is_verified = models.BooleanField(default=False)
+    verification_code = models.CharField(max_length=6, blank=True, null=True)
 
-    def __str__(self):
-        return f"{self.telegram_id} - {self.balance}"
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username']

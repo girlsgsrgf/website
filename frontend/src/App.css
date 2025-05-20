@@ -2,9 +2,9 @@ body, html, #root {
   margin: 0;
   padding: 0;
   height: 100%;
-  background: radial-gradient(circle at 20% 30%, rgba(255,255,255,0.05), transparent 25%),
-              radial-gradient(circle at 80% 60%, rgba(255,255,255,0.04), transparent 25%),
-              linear-gradient(145deg, #0d0d0d, #1a1a1a, #0f0f1f);
+  background: radial-gradient(circle at 20% 30%, rgba(255,255,255,0.04), transparent 30%),
+              radial-gradient(circle at 80% 60%, rgba(255,255,255,0.04), transparent 30%),
+              linear-gradient(145deg, #050505, black, #0f0f1f);
   color: white;
   font-family: sans-serif;
 }

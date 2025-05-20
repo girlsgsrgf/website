@@ -9,20 +9,20 @@ const HomePage = ({ onNavigate, balance }) => {
       <div className="balance-section">
         <div className="balance-header">
           <div>
-            <div className="balance-label">Your Balance</div>
-            <div className="balance-amount">$76.00 FLYP</div>
-            <div className="wallet-link">FlyupWallet</div>
+            <div className="balance-label">Total Balance</div>
+            <div className="balance-amount">${balance.toFixed(2)} FLYP</div>
+            <div className="wallet-link"> ≈ ${balance.toFixed(2)} USD</div>
           </div>
           <img src="/icons/logo.png" alt="logo" className="logo-image" />
         </div>
 
         <button className="get-flyp-button" onClick={() => onNavigate('getflyp')}><img src="/icons/getflyp.png" alt="dot" className="get-img" /> Get $FLYP</button>
-        <div className="get-now">Get now!</div>
+        <div className="get-now">Claim now!</div>
       </div>
 
       <div className="level-card">
         <div>
-          <div className="level-title">Level 1</div>
+          <div className="level-title">Level 2</div>
           <div className="level-subtitle">$10 FLYP</div>
         </div>
         <div>
@@ -32,7 +32,7 @@ const HomePage = ({ onNavigate, balance }) => {
       </div> 
 
       <div className="news-box">
-        <div className="news-header">Income per 24 hours</div>
+        <div className="news-header">24h Income</div>
         <div className="news-text">+ 0.00 FLYP</div>
         <div className="news-footer"><img src="/icons/perdaycoin.png" alt="dot" className="perdaycoin-img" /></div> 
       </div>
