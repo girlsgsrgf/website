@@ -93,14 +93,8 @@ const App = () => {
   const renderContent = () => {
     if (activeTab === 'home') {
       if (subPage === 'getflyp') {
-        // Если пользователь не авторизован — редирект на Django-шаблон
-        if (!isAuthenticated) {
-          window.location.href = '/signup/';
-          return null;
-        }
         return <GetFlypPage />;
       }
-
       return <HomePage onNavigate={setSubPage} balance={balance} />;
     } else if (activeTab === 'wallet') {
       if (subPage === 'readCourse') return <ReadCoursePage onNavigate={setSubPage} />;
