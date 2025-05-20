@@ -106,10 +106,6 @@ const App = () => {
       if (subPage === 'readCourse') return <ReadCoursePage onNavigate={setSubPage} />;
       return <CoursePage onNavigate={setSubPage} />;
     } else if (activeTab === 'news') {
-      if (!isAuthenticated) {
-          window.location.href = '/signup/';
-          return null;
-      }
       return <GetFlypPage />;
     } else if (activeTab === 'settings') {
       return <RoadMapPage />;
