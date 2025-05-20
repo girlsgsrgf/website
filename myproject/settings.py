@@ -128,6 +128,9 @@ DEFAULT_FROM_EMAIL = 'flyuphelp@gmail.com'
 
 CORS_ALLOW_CREDENTIALS = True
 
+SESSION_COOKIE_SECURE = True  # Должно быть False в разработке, True на HTTPS
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # Иначе сессия исчезает при закрытии браузера
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
