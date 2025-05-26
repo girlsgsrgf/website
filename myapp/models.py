@@ -7,7 +7,7 @@ class CustomUser(AbstractUser):
     balance = models.DecimalField(max_digits=12, decimal_places=2, default=15.00)
     is_verified = models.BooleanField(default=False)
     verification_code = models.CharField(max_length=6, blank=True, null=True)
-    last_claimed = models.DateTimeField(null=True, blank=True)
+    last_claimed = models.DateTimeField(default=timezone.now)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
