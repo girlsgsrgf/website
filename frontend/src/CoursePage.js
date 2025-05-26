@@ -13,8 +13,8 @@ const CoursePage = ({ onNavigate, balance }) => {
       <div className="course-section">
         <div className="course-header">
           <div>
-            <div className="course-label">FLYP courses</div>
-            <div className="course-link">A selection of top courses to improve the three main aspects of life</div>
+            <div className="course-label">FLYP Courses</div>
+            <div className="course-link">A curated collection of top-tier courses designed to enhance three key areas of life.</div>
           </div>
           <img src="/icons/course_logo.png" alt="logo" className="logo-image-course" />
         </div>
@@ -24,15 +24,30 @@ const CoursePage = ({ onNavigate, balance }) => {
         </button>
       </div>
 
-      {[...Array(5)].map((_, index) => (
-        <div className="course-card" key={index} onClick={handleCardClick}>
+        <div className="course-card" onClick={() => onNavigate('readCourse1')}>
           <img src="/icons/1course.png" alt="dot" className="course-img" />
           <div className="course-subtitle">
             Чтобы добиться успеха нужны три вещи: настойчивость, удача, труд и так далее...
           </div>
           <div className="course-title">Рычаг Власти</div>
         </div>
-      ))}
+
+        <div className="course-card" onClick={() => onNavigate('readCourse2')}>
+          <img src="/icons/1course.png" alt="dot" className="course-img" />
+          <div className="course-subtitle">
+            Чтобы добиться успеха нужны три вещи: настойчивость, удача, труд и так далее...
+          </div>
+          <div className="course-title">Рычаг Власти</div>
+        </div>
+
+        <div className="course-card" onClick={() => onNavigate('readCourse3')}>
+          <img src="/icons/1course.png" alt="dot" className="course-img" />
+          <div className="course-subtitle">
+            Чтобы добиться успеха нужны три вещи: настойчивость, удача, труд и так далее...
+          </div>
+          <div className="course-title">Рычаг Власти</div>
+        </div>
+
     </div>
   );
 };

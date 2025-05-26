@@ -39,6 +39,19 @@
   margin-top: 22px;
 }
 
+.roadmap-card-achieved {
+  height: 150px;
+  background: rgba(17, 17, 17, 0.2);
+  border: 2px solid #009405;
+  border-radius: 15px;
+  padding: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 50px;
+}
+
+
 
 .roadmap-card {
   height: 150px;
@@ -53,19 +66,21 @@
 }
 
 .roadmap-title {
+  text-align: center;
+  align-items: center;
   width: 28em;
   font-weight: bold;
   font-size: 22px;
   margin-top: -4em;
-  margin-left: 2.25em;
+  margin-left: 1.1em;
 }
 
 .roadmap-subtitle {
   width: 30em;
   font-weight: normal;
-  margin-left: -12em;
+  margin-left: -15em;
   margin-top: 4em;
-  font-size: 22px;
+  font-size: 18px;
   color: white;
 }
 

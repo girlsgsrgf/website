@@ -1,7 +1,7 @@
 import React from 'react';
 import './HomePage.css';
 
-const HomePage = ({ onNavigate, balance }) => {
+const HomePage = ({ onNavigate, balance, dailyIncome }) => {
   return (
     <div className="main-page">
       <h2 className="app-title">Flyup Chain</h2>
@@ -20,20 +20,11 @@ const HomePage = ({ onNavigate, balance }) => {
         <div className="get-now">Claim now!</div>
       </div>
 
-      <div className="level-card">
-        <div>
-          <div className="level-title">Level 2</div>
-          <div className="level-subtitle">$10 FLYP</div>
-        </div>
-        <div>
-          <button className="upgrade-button">Upgrade</button>     
-        </div>
-        <img src="/icons/upgradeimg.png" alt="dot" className="level-img" />
-      </div> 
+     
 
       <div className="news-box">
         <div className="news-header">24h Income</div>
-        <div className="news-text">+ 0.00 FLYP</div>
+        <div className="news-text">+ ${dailyIncome.toFixed(2)} FLYP</div>
         <div className="news-footer"><img src="/icons/perdaycoin.png" alt="dot" className="perdaycoin-img" /></div> 
       </div>
 
@@ -51,7 +42,16 @@ const HomePage = ({ onNavigate, balance }) => {
           <div className="feature-text">Airdrop</div>
         </div>
       </div>
-     
+      <div className="level-card">
+        <div>
+          <div className="level-title">Our Instagram</div>
+          <div className="level-subtitle">Subscribe for news</div>
+        </div>
+        <div>
+          <a className="upgrade-button-a" href="https://instagram.com/flyupcoin"><button className="upgrade-button">Subscirbe</button></a>    
+        </div>
+        <img src="/icons/upgradeimg.png" alt="dot" className="level-img" />
+      </div> 
     </div>
   );
 };

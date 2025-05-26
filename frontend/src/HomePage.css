@@ -61,7 +61,7 @@
 .get-flyp-button {
   margin: 16px auto 4px;
   margin-top: 1.6em;
-  margin-left: -0.2em;
+  margin-left: 0.5em;
   display: block;
   background: linear-gradient(145deg, #ffffff, #f0f8ff);
   color: black;
@@ -81,6 +81,7 @@
   font-size: 15px;
   margin-bottom: 16px;
   margin-top: 0.65em;
+  margin-left: 0.9em;
 }
 
 .level-card {
@@ -100,11 +101,11 @@
   font-size: 22px;
   margin-left: 0.5em;
   margin-top: -3em;
-  width: 80px;
+  width: 150px;
 }
 
 .level-subtitle {
-  width: 90px;
+  width: 200px;
   margin-left: 0.5em;
   margin-top: 0.2em;
   font-size: 18px;
@@ -120,8 +121,14 @@
   font-weight: 500;
   border: none;
   font-size: 20px;
-  margin-left: -4.2em;
+  margin-left: -10em;
   margin-top: 5em;
+}
+
+.upgrade-button-a {
+  font-size: 20px;
+  text-decoration: none;
+  color: black;
 }
 
 .features-row {
@@ -176,7 +183,7 @@
   height: 140px;
   margin-bottom: -2em;
   margin-top: -1.7em;
-  margin-left: 2.65em;
+  margin-left: -2.5em;
 }
 
 .dot-small-img {

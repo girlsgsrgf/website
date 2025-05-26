@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from django.utils import timezone
+from datetime import timedelta
 from django.core.management import call_command
 from django.http import HttpResponse
 from django.http import JsonResponse
@@ -73,8 +75,19 @@ def check_auth(request):
     return JsonResponse({'authenticated': request.user.is_authenticated})
 
 
-
 @login_required
 def get_user_balance(request):
     user = request.user
-    return JsonResponse({'balance': float(user.balance)})
+    now = timezone.now()
+    daily_income = 0.00
+
+    if user.last_claimed is None or now - user.last_claimed >= timedelta(hours=24):
+        user.balance += 0.01
+        user.last_claimed = now
+        daily_income = 0.01
+        user.save()
+
+    return JsonResponse({
+        'balance': float(user.balance),
+        'daily_income': float(daily_income)
+    })

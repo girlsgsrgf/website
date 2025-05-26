@@ -7,42 +7,44 @@ import AirdropPage from './AirdropPage';
 import CoursePage from './CoursePage';
 import RoadMapPage from './RoadMapPage';
 import ReadCoursePage from './ReadCoursePage';
-import RegisterPage from './RegisterPage';
+import ReadCoursePage1 from './ReadCoursePage1';
+import ReadCoursePage2 from './ReadCoursePage2';
+import ReadCoursePage3 from './ReadCoursePage3';
+
+import DepositPage from './DepositPage';
 import './App.css';
 import './BottomSheet.css';
 
 const App = () => {
-  const [balance, setBalance] = useState(0);
+  const [balance, setBalance] = useState(5);
   const [activeTab, setActiveTab] = useState('home');
   const [subPage, setSubPage] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [dailyIncome, setDailyIncome] = useState(0);
 
-  useEffect(() => {
+ const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-    fetch('/api/get-balance/', { credentials: 'include' })
-      .then((res) => {
-        if (!res.ok) throw new Error('Ошибка получения баланса');
+useEffect(() => {
+  fetch('/api/get-balance/', { credentials: 'include' })
+    .then((res) => {
+      if (res.status === 403 || res.status === 401) {
+        setIsAuthenticated(false);
+        return null;
+      }
       return res.json();
     })
-      .then((data) => {
+    .then((data) => {
+      if (data) {
         setBalance(data.balance);
+        setDailyIncome(data.daily_income || 0);
+        setIsAuthenticated(true);
+      }
     })
-      .catch((error) => {
-        console.error('Ошибка при загрузке баланса:', error);
+    .catch((error) => {
+      console.error('Ошибка при загрузке баланса:', error);
+      setIsAuthenticated(false);
     });
+}, []);
 
-
-    // Проверка авторизации с сервера Django
-    fetch('/api/check-auth/', { credentials: 'include' })
-      .then((res) => res.json())
-      .then((data) => {
-        setIsAuthenticated(data.authenticated);
-      })
-      .catch((error) => {
-        console.error('Ошибка проверки авторизации:', error);
-        setIsAuthenticated(false);
-      });
-  }, []);
 
   const tabs = [
     { key: 'home', icon: 'home.png', activeIcon: 'blue_home.png' },
@@ -90,23 +92,46 @@ const App = () => {
     );
   };
 
-  const renderContent = () => {
+const renderContent = () => {
+  try {
     if (activeTab === 'home') {
       if (subPage === 'getflyp') {
-        return <GetFlypPage />;
+        return <GetFlypPage balance={balance} onNavigate={setSubPage} isAuthenticated={isAuthenticated} />;
+
+      } else if (subPage === 'deposit') {
+        return <DepositPage onNavigate={setSubPage} />;
       }
-      return <HomePage onNavigate={setSubPage} balance={balance} />;
+      return <HomePage onNavigate={setSubPage} balance={balance} dailyIncome={dailyIncome} />;
     } else if (activeTab === 'wallet') {
-      if (subPage === 'readCourse') return <ReadCoursePage onNavigate={setSubPage} />;
+     if (subPage?.startsWith('readCourse')) {
+  switch (subPage) {
+    case 'readCourse1':
+      return <ReadCoursePage1 />;
+    case 'readCourse2':
+      return <ReadCoursePage2 />;
+    case 'readCourse3':
+      return <ReadCoursePage3 />;
+    default:
+      return <div>Курс не найден</div>;
+  }
+}
+
       return <CoursePage onNavigate={setSubPage} />;
     } else if (activeTab === 'news') {
-      return <GetFlypPage />;
+      if (subPage === 'deposit') {
+        return <DepositPage onNavigate={setSubPage} />;
+      }
+      return <GetFlypPage balance={balance} onNavigate={setSubPage} isAuthenticated={isAuthenticated} />;
     } else if (activeTab === 'settings') {
       return <RoadMapPage />;
     }
 
-    return null;
-  };
+    return <div>Страница не найдена</div>;
+  } catch (error) {
+    console.error("Ошибка в renderContent:", error);
+    return <div>Произошла ошибка при загрузке контента.</div>;
+  }
+};
 
   return (
     <div className="app">
