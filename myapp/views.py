@@ -79,12 +79,11 @@ def check_auth(request):
 def get_user_balance(request):
     user = request.user
     now = timezone.now()
-    daily_income = 0.00
+    daily_income = 0.01
 
     if user.last_claimed is None or now - user.last_claimed >= timedelta(hours=24):
         user.balance += 0.01
         user.last_claimed = now
-        daily_income = 0.01
         user.save()
 
     return JsonResponse({
