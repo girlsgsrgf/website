@@ -9,7 +9,7 @@ services:
         value: myproject.settings
 
   - type: worker
-      name: telegram-bot
-      env: python
-      buildCommand: pip install -r requirements.txt
-      startCommand: python bot.py
+    name: telegram-bot
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python bot.py
