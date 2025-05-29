@@ -1,11 +1,17 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 import logging
+import os
 
 # Enable logging
 logging.basicConfig(level=logging.INFO)
 
-BOT_TOKEN = "8155139765:AAHUTF9FcQ7SYqpDRMFR1VaCtcxyhl3F2Vg"  # Replace this with the token you get from @BotFather
+BOT_TOKEN = os.getenv("BOT_TOKEN")  # Replace this with the token you get from @BotFather
+
+if not BOT_TOKEN:
+    print("❌ BOT_TOKEN is not set!")
+    exit(1)
+
 IMAGE_URL = "image.png"  # Replace with your image URL
 
 CAPTION = "💰 Join and get an airdrop in our ecosystem! 🚀 Don’t miss your chance! 🌟"

@@ -13,3 +13,6 @@ services:
     env: python
     buildCommand: pip install -r requirements.txt
     startCommand: python bot.py
+    envVars:
+      - key: BOT_TOKEN
+        value: 8155139765:AAHUTF9FcQ7SYqpDRMFR1VaCtcxyhl3F2Vg
