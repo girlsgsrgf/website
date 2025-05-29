@@ -19,10 +19,11 @@
 .read-text {
   font-size: 18px;
   text-align: center;
+  padding: 20px;
 }
 
 .read-image {
   width: 100px;
   height: 100px;
-  margin-left: 6.5em;
+  margin-left: 7.8em;
 }

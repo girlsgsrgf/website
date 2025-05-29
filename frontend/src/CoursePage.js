@@ -19,33 +19,30 @@ const CoursePage = ({ onNavigate, balance }) => {
           <img src="/icons/course_logo.png" alt="logo" className="logo-image-course" />
         </div>
 
-        <button className="course-button" onClick={() => onNavigate('getflyp')}>
-          <img src="/icons/unlock.png" alt="dot" className="get-img" /> Unlock
-        </button>
       </div>
 
         <div className="course-card" onClick={() => onNavigate('readCourse1')}>
           <img src="/icons/1course.png" alt="dot" className="course-img" />
           <div className="course-subtitle">
-            Чтобы добиться успеха нужны три вещи: настойчивость, удача, труд и так далее...
+            Want to get rich? Solve problems. People pay for value — not hype. Focus on helping, and rest will follow...
           </div>
-          <div className="course-title">Рычаг Власти</div>
+          <div className="course-title">Value</div>
         </div>
 
         <div className="course-card" onClick={() => onNavigate('readCourse2')}>
-          <img src="/icons/1course.png" alt="dot" className="course-img" />
+          <img src="/icons/2course.png" alt="dot" className="course-img" />
           <div className="course-subtitle">
-            Чтобы добиться успеха нужны три вещи: настойчивость, удача, труд и так далее...
+            Love isn’t just emotion — it’s care, and growth. To receive love, learn to give it without fear...
           </div>
-          <div className="course-title">Рычаг Власти</div>
+          <div className="course-title">Love</div>
         </div>
 
         <div className="course-card" onClick={() => onNavigate('readCourse3')}>
-          <img src="/icons/1course.png" alt="dot" className="course-img" />
+          <img src="/icons/3course.png" alt="dot" className="course-img" />
           <div className="course-subtitle">
-            Чтобы добиться успеха нужны три вещи: настойчивость, удача, труд и так далее...
+            Your body is your foundation. Without health, success is hollow. Prioritize energy, and longevity every day...
           </div>
-          <div className="course-title">Рычаг Власти</div>
+          <div className="course-title">Health</div>
         </div>
 
     </div>

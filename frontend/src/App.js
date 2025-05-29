@@ -16,7 +16,7 @@ import './App.css';
 import './BottomSheet.css';
 
 const App = () => {
-  const [balance, setBalance] = useState(5);
+  const [balance, setBalance] = useState(0);
   const [activeTab, setActiveTab] = useState('home');
   const [subPage, setSubPage] = useState(null);
   const [dailyIncome, setDailyIncome] = useState(0);

@@ -43,12 +43,12 @@ function CustomDropdown({ options, selected, onSelect }) {
 
 const cryptoOptions = {
   USDT: {
-    TRC20: 'TV8a89suhfoa834ahiwhJHDJ98dh',
-    ERC20: '0xUsdtErc20AddressExample',
-    'BSC(BEP20)': '0xUsdtBep20AddressExample',
+    TRC20: 'TVc5BJxZQ33VJ5NbrmqKR7JDpq3hmJnobH',
+    ERC20: '0xc4a4cdf87c05bddb411edfeb89e208f84c5cf1ef',
+    'BSC(BEP20)': '0xd28bc835db383735eeed8a23294028c81b18b4f0',
   },
   BTC: {
-    Bitcoin: 'bc1qexamplebtcaddress123456789',
+    Bitcoin: '1FMNgcizNzsDbyNEEjW96xBaEg1Vs3tF9h',
   },
 };
 

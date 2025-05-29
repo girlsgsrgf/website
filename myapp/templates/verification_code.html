@@ -1,5 +1,131 @@
-<form method="post">
-  {% csrf_token %}
-  <input type="text" name="code" placeholder="Enter verification code" required />
-  <button type="submit">Verify</button>
-</form>
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Verification</title>
+  <style>
+    body {
+      background-color: black;
+      font-family: Arial, sans-serif;
+      color: white;
+      margin: 0;
+      padding: 2rem 4rem;
+    }
+
+    .verification-container {
+      min-height: 100vh;
+      position: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .wings-img {
+      height: 180px;
+      margin-bottom: 1rem;
+      margin-top: 2rem;
+    }
+
+    .verification-form-box {
+      background: rgba(255, 255, 255, 0.05);
+      border: 2px solid #3A3A3A;
+      border-radius: 16px;
+      padding: 2rem;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 0 5px #222;
+    }
+
+    .form-title {
+      text-align: center;
+      font-size: 22px;
+      margin-bottom: 1.5rem;
+    }
+
+    .verification-input {
+      width: 90%;
+      padding: 0.75rem 1rem;
+      margin: 0 auto 1.5rem auto;
+      border-radius: 10px;
+      border: none;
+      font-size: 16px;
+      background: #111;
+      color: white;
+      display: block;
+    }
+
+    .verification-input::placeholder {
+      color: #888;
+    }
+
+    .verification-button {
+      background-color: white;
+      color: black;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 9999px;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+      width: 100%;
+      max-width: 250px;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .verification-button:hover {
+      background-color: #ddd;
+    }
+
+    /* Ошибки */
+    .errorlist {
+      margin: 0 0 10px 0;
+      padding-left: 15px;
+      color: #ff6b6b;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="verification-container">
+    <img src="{% static 'images/wings.png' %}" alt="Fly Up" class="wings-img" />
+
+    <div class="verification-form-box">
+      <h2 class="form-title">Verify your email</h2>
+
+      <form method="post">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+          <ul class="errorlist">
+            {% for error in form.non_field_errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+
+        {% if error %}
+          <ul class="errorlist">
+            <li>{{ error }}</li>
+          </ul>
+        {% endif %}
+
+        <input
+          type="text"
+          name="code"
+          placeholder="Enter verification code"
+          required
+          class="verification-input"
+        />
+
+        <button type="submit" class="verification-button">Verify</button>
+      </form>
+    </div>
+  </div>
+
+</body>
+</html>
