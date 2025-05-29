@@ -18,7 +18,7 @@ const RewardsPage = () => (
 
     <p><strong>Steps to claim your rewards:</strong></p>
     <ol style={{ paddingLeft: '20px' }}>
-      <li>Register at <strong>yourwebsite.com</strong> → <em>+15 $FLYP</em></li>
+      <li>Register at <strong>flyup.help</strong> → <em>+15 $FLYP</em></li>
       <li>Follow us on Instagram</li>
       <li>DM “<strong>Get My Reward</strong>” → <em>+20 $FLYP</em></li>
     </ol>
