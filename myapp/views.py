@@ -1,22 +1,18 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.utils import timezone
 from datetime import timedelta
-from django.core.management import call_command
-from django.http import HttpResponse
 from django.http import JsonResponse
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
 from .forms import SignUpForm, SignInForm
 from .models import CustomUser
-from django.contrib.auth.decorators import login_required
 import random
 from django.core.mail import send_mail
 from django.conf import settings
 
+
 def index_view(request):
     return render(request, 'index.html')
-# views.py
-
 
 
 def signup_view(request):
@@ -33,11 +29,11 @@ def signup_view(request):
                 f'Your code is: {code}',
                 settings.DEFAULT_FROM_EMAIL,
                 [user.email],
-                fail_silently=False  # чтобы увидеть ошибки отправки
+                fail_silently=False,
             )
             return redirect('verify_email')
         else:
-            print(form.errors)  # для отладки
+            print(form.errors)
     else:
         form = SignUpForm()
     return render(request, 'signup.html', {'form': form})
@@ -57,6 +53,7 @@ def signin_view(request):
         form = SignInForm()
     return render(request, 'signin.html', {'form': form})
 
+
 def verify_email(request):
     if request.method == 'POST':
         code = request.POST.get('code')
@@ -72,8 +69,8 @@ def verify_email(request):
 
 
 def check_auth(request):
+    # Можно добавить CORS заголовки если требуется для фронта
     return JsonResponse({'authenticated': request.user.is_authenticated})
-
 
 @login_required
 def get_user_balance(request):
@@ -81,8 +78,13 @@ def get_user_balance(request):
     now = timezone.now()
     daily_income = 0.01
 
-    if user.last_claimed is None or now - user.last_claimed >= timedelta(hours=24):
-        user.balance += 0.01
+    if user.last_claimed is None:
+        user.last_claimed = now - timedelta(days=1)  # Чтобы при первом заходе начислилось хоть что-то
+
+    days_passed = (now.date() - user.last_claimed.date()).days
+
+    if days_passed >= 1:
+        user.balance += daily_income * days_passed
         user.last_claimed = now
         user.save()
 
@@ -90,3 +92,4 @@ def get_user_balance(request):
         'balance': float(user.balance),
         'daily_income': float(daily_income)
     })
+
