@@ -21,7 +21,6 @@ const App = () => {
   const [balance, setBalance] = useState(0);
   const [activeTab, setActiveTab] = useState('home');
   const [subPage, setSubPage] = useState(null);
-  const [dailyIncome, setDailyIncome] = useState(0);
 
  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -37,7 +36,6 @@ useEffect(() => {
     .then((data) => {
       if (data) {
         setBalance(data.balance);
-        setDailyIncome(data.daily_income || 0);
         setIsAuthenticated(true);
       }
     })
@@ -102,7 +100,7 @@ const renderContent = () => {
       } else if (subPage === 'deposit') {
         return <DepositPage onNavigate={setSubPage} />;
       }
-      return <HomePage onNavigate={setSubPage} balance={balance} dailyIncome={dailyIncome} />;
+      return <HomePage onNavigate={setSubPage} balance={balance} />;
     } else if (activeTab === 'wallet') {
       if (subPage?.startsWith('readCourse')) {
         switch (subPage) {

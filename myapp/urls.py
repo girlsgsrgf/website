@@ -44,6 +44,5 @@ urlpatterns = [
     path('verify/', views.verify_email, name='verify_email'),
     path('api/check-auth/', views.check_auth, name='check_auth'),
     path('api/get-balance/', get_user_balance, name='get_user_balance'),
-    path('api/claim/', get_user_balance, name='claim_reward'),
 
 ]
