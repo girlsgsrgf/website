@@ -72,24 +72,31 @@ def check_auth(request):
     # Можно добавить CORS заголовки если требуется для фронта
     return JsonResponse({'authenticated': request.user.is_authenticated})
 
+
 @login_required
 def get_user_balance(request):
     user = request.user
     now = timezone.now()
-    daily_income = 0.01
 
-    if user.last_claimed is None:
-        user.last_claimed = now - timedelta(days=1)  # Чтобы при первом заходе начислилось хоть что-то
+    if user.last_claimed:
+        elapsed_time = now - user.last_claimed
+        if elapsed_time < timedelta(hours=24):
+            remaining = timedelta(hours=24) - elapsed_time
+            return JsonResponse({
+                'success': False,
+                'message': 'You have to wait before next claim.',
+                'remaining_seconds': int(remaining.total_seconds())
+            })
 
-    days_passed = (now.date() - user.last_claimed.date()).days
-
-    if days_passed >= 1:
-        user.balance += daily_income * days_passed
-        user.last_claimed = now
-        user.save()
+    # Allow claim
+    user.balance += 0.01
+    user.last_claimed = now
+    user.save()
 
     return JsonResponse({
+        'success': True,
+        'message': 'Reward claimed!',
         'balance': float(user.balance),
-        'daily_income': float(daily_income)
+        'next_claim_in': 24 * 60 * 60  # 24 hours in seconds
     })
 

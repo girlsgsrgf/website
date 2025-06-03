@@ -10,6 +10,8 @@ import ReadCoursePage from './ReadCoursePage';
 import ReadCoursePage1 from './ReadCoursePage1';
 import ReadCoursePage2 from './ReadCoursePage2';
 import ReadCoursePage3 from './ReadCoursePage3';
+import MarketplacePage from './MarketplacePage';
+
 
 import DepositPage from './DepositPage';
 import './App.css';
@@ -49,6 +51,7 @@ useEffect(() => {
   const tabs = [
     { key: 'home', icon: 'home.png', activeIcon: 'blue_home.png' },
     { key: 'wallet', icon: 'wallet.png', activeIcon: 'blue_wallet.png' },
+    { key: 'marketplace', icon: 'shop.png', activeIcon: 'blue_shop.png' },
     { key: 'news', icon: 'news.png', activeIcon: 'blue_news.png' },
     { key: 'settings', icon: 'settings.png', activeIcon: 'blue_settings.png' },
   ];
@@ -91,37 +94,36 @@ useEffect(() => {
       </div>
     );
   };
-
 const renderContent = () => {
   try {
     if (activeTab === 'home') {
       if (subPage === 'getflyp') {
         return <GetFlypPage balance={balance} onNavigate={setSubPage} isAuthenticated={isAuthenticated} />;
-
       } else if (subPage === 'deposit') {
         return <DepositPage onNavigate={setSubPage} />;
       }
       return <HomePage onNavigate={setSubPage} balance={balance} dailyIncome={dailyIncome} />;
     } else if (activeTab === 'wallet') {
-     if (subPage?.startsWith('readCourse')) {
-  switch (subPage) {
-    case 'readCourse1':
-      return <ReadCoursePage1 />;
-    case 'readCourse2':
-      return <ReadCoursePage2 />;
-    case 'readCourse3':
-      return <ReadCoursePage3 />;
-    default:
-      return <div>Курс не найден</div>;
-  }
-}
-
+      if (subPage?.startsWith('readCourse')) {
+        switch (subPage) {
+          case 'readCourse1':
+            return <ReadCoursePage1 />;
+          case 'readCourse2':
+            return <ReadCoursePage2 />;
+          case 'readCourse3':
+            return <ReadCoursePage3 />;
+          default:
+            return <div>Курс не найден</div>;
+        }
+      }
       return <CoursePage onNavigate={setSubPage} />;
     } else if (activeTab === 'news') {
       if (subPage === 'deposit') {
         return <DepositPage onNavigate={setSubPage} />;
       }
       return <GetFlypPage balance={balance} onNavigate={setSubPage} isAuthenticated={isAuthenticated} />;
+    } else if (activeTab === 'marketplace') {
+      return <MarketplacePage />;
     } else if (activeTab === 'settings') {
       return <RoadMapPage />;
     }
