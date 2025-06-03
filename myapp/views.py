@@ -9,6 +9,7 @@ from .models import CustomUser
 import random
 from django.core.mail import send_mail
 from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
 
 
 def index_view(request):
@@ -72,7 +73,7 @@ def check_auth(request):
     # Можно добавить CORS заголовки если требуется для фронта
     return JsonResponse({'authenticated': request.user.is_authenticated})
 
-
+@csrf_exempt
 @login_required
 def get_user_balance(request):
     user = request.user

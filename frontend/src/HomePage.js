@@ -5,20 +5,38 @@ const HomePage = ({ onNavigate, balance, dailyIncome }) => {
   const [canClaim, setCanClaim] = useState(false);
   const [timer, setTimer] = useState(null);
   const [localBalance, setLocalBalance] = useState(balance);
+  const [isAuthenticated, setIsAuthenticated] = useState(null);
+
+  const formatTime = (seconds) => {
+    const hrs = String(Math.floor(seconds / 3600)).padStart(2, '0');
+    const mins = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
+    const secs = String(seconds % 60).padStart(2, '0');
+    return `${hrs}:${mins}:${secs}`;
+  };
 
   useEffect(() => {
-    fetch('/api/claim/', { method: 'POST' })
+    fetch('/api/check-auth/', { credentials: 'include' })
       .then(res => res.json())
       .then(data => {
-        if (data.success) {
-          setCanClaim(false);
-          setTimer(24 * 60 * 60);
-          setLocalBalance(data.balance);
-        } else if (data.remaining_seconds) {
-          setCanClaim(false);
-          setTimer(data.remaining_seconds);
-        } else {
-          setCanClaim(true);
+        setIsAuthenticated(data.authenticated);
+        if (data.authenticated) {
+          fetch('/api/claim/', {
+            method: 'POST',
+            credentials: 'include'
+          })
+            .then(res => res.json())
+            .then(data => {
+              if (data.success) {
+                setCanClaim(false);
+                setTimer(24 * 60 * 60);
+                setLocalBalance(data.balance);
+              } else if (data.remaining_seconds) {
+                setCanClaim(false);
+                setTimer(data.remaining_seconds);
+              } else {
+                setCanClaim(true);
+              }
+            });
         }
       });
   }, []);
@@ -39,9 +57,13 @@ const HomePage = ({ onNavigate, balance, dailyIncome }) => {
   }, [timer]);
 
   const handleClaim = () => {
-    fetch('/api/claim/', { method: 'POST' })
+    fetch('/api/claim/', {
+      method: 'POST',
+      credentials: 'include'
+    })
       .then(res => res.json())
       .then(data => {
+        console.log(data);
         if (data.success) {
           setCanClaim(false);
           setTimer(data.next_claim_in);
@@ -51,13 +73,6 @@ const HomePage = ({ onNavigate, balance, dailyIncome }) => {
           setTimer(data.remaining_seconds);
         }
       });
-  };
-
-  const formatTime = (seconds) => {
-    const hrs = String(Math.floor(seconds / 3600)).padStart(2, '0');
-    const mins = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
-    const secs = String(seconds % 60).padStart(2, '0');
-    return `${hrs}:${mins}:${secs}`;
   };
 
   return (
@@ -109,7 +124,11 @@ const HomePage = ({ onNavigate, balance, dailyIncome }) => {
           <div className="level-subtitle">Get 0.01 $FLYP every 24h</div>
         </div>
         <div>
-          {canClaim ? (
+          {isAuthenticated === false ? (
+            <a href="/signup/">
+              <button className="upgrade-button">Sign Up</button>
+            </a>
+          ) : canClaim ? (
             <button className="upgrade-button" onClick={handleClaim}>Claim</button>
           ) : (
             <div className="upgrade-button disabled">
@@ -124,3 +143,4 @@ const HomePage = ({ onNavigate, balance, dailyIncome }) => {
 };
 
 export default HomePage;
+
