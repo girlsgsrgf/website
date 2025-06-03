@@ -4,7 +4,7 @@ from datetime import timedelta
 from django.utils import timezone
 
 def default_last_claimed():
-    return timezone.now() - timedelta(hours=24)
+    return timezone.now() - timedelta(days=1)
 
 class CustomUser(AbstractUser):
     email = models.EmailField(unique=True)
