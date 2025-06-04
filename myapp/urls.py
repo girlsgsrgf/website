@@ -44,5 +44,6 @@ urlpatterns = [
     path('verify/', views.verify_email, name='verify_email'),
     path('api/check-auth/', views.check_auth, name='check_auth'),
     path('api/get-balance/', get_user_balance, name='get_user_balance'),
+    path('webhook/', views.telegram_webhook, name='telegram_webhook'),
 
 ]

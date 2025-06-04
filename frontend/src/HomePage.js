@@ -24,7 +24,7 @@ const HomePage = ({ onNavigate, balance }) => {
 
       <div className="news-box">
         <div className="news-header">24h Income</div>
-        <div className="news-text">+ $001 FLYP</div>
+        <div className="news-text">+ $0.00 FLYP</div>
         <div className="news-footer"><img src="/icons/perdaycoin.png" alt="dot" className="perdaycoin-img" /></div> 
       </div>
 

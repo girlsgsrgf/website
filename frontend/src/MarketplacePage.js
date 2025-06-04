@@ -5,7 +5,7 @@ const MarketplacePage = () => {
   return (
     <div>
       <h1>Marketplace</h1>
-      <p>Buy and sell items here!</p>
+      <p>Available on 20th June!</p>
       {/* Later: add item listings, prices, filters, etc. */}
     </div>
   );

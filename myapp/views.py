@@ -9,6 +9,10 @@ from .models import CustomUser
 import random
 from django.core.mail import send_mail
 from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse
+from telegram import Update
+from .bot import application
 
 
 def index_view(request):
@@ -79,3 +83,12 @@ def get_user_balance(request):
         'balance': float(user.balance)
     })
 
+
+@csrf_exempt
+def telegram_webhook(request):
+    if request.method == "POST":
+        data = json.loads(request.body.decode("utf-8"))
+        update = Update.de_json(data, application.bot)
+        application.update_queue.put_nowait(update)
+        return HttpResponse("OK")
+    return HttpResponse("GET not allowed", status=405)
