@@ -4,11 +4,6 @@ import os
 import django
 import sys
 
-# Настройка Django окружения
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'FlyupChain.settings')  # Замените на свои настройки
-django.setup()
-
 BOT_TOKEN = "8155139765:AAHUTF9FcQ7SYqpDRMFR1VaCtcxyhl3F2Vg"
 CAPTION = "💰 Join and get an airdrop in our ecosystem! 🚀 Don’t miss your chance! 🌟"
 IMAGE_URL = "https://yourdomain.com/static/image.png"  # Укажи публичный URL
