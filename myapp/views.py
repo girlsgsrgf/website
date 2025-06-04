@@ -86,7 +86,8 @@ def get_user_balance(request):
 
 
 def product_list(request):
-    products = Product.objects.all()
+    products = Product.objects.filter(is_bought=False)
+
     data = [
         {
             'id': product.id,
@@ -98,6 +99,25 @@ def product_list(request):
     ]
     return JsonResponse(data, safe=False)
 
+
 def buy_view(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
+    product = Product.objects.filter(id=product_id, is_bought=False).first()
+    user = request.user
+
+    if not product:
+        messages.error(request, "Product not found or already bought.")
+        return redirect('/')
+
+    if request.method == 'POST':
+        if user.balance < product.price:
+            messages.error(request, "Not enough balance.")
+        else:
+            user.balance -= product.price
+            user.save()
+            product.is_bought = True
+            product.save()
+            user.purchased_products.add(product)
+            messages.success(request, "Product successfully purchased!")
+            return redirect('/marketplace/')  # или куда нужно
+
     return render(request, 'buy.html', {'product': product})
