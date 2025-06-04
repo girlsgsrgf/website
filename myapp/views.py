@@ -84,13 +84,13 @@ def get_user_balance(request):
         'balance': float(user.balance)
     })
 
-
 @csrf_exempt
 def telegram_webhook(request):
     if request.method == "POST":
         try:
             data = json.loads(request.body.decode("utf-8"))
-            update = telegram_application.bot.update_queue.put_nowait(data)
+            update = Update.de_json(data, telegram_application.bot)
+            telegram_application.process_update(update)
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=400)
         return JsonResponse({"ok": True})
