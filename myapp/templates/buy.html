@@ -95,10 +95,18 @@
     <p class="description">{{ product.description }}</p>
     <p class="price">Price: ${{ product.price }}</p>
 
-    <form method="post">
+    {% if not product.is_bought %}
+  <form method="post" action="{% url 'buy_view' product.id %}">
+    {% csrf_token %}
+    <button class="buy" type="submit">BUY</button>
+  </form>
+  {% else %}
+    <form method="post" action="{% url 'sell_view' product.id %}">
       {% csrf_token %}
-      <button type="submit">BUY</button>
+      <button class="sell" type="submit">SELL for $50</button>
     </form>
+  {% endif %}
+
 
     {% if messages %}
       <div class="message">

@@ -1,8 +1,19 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import "./GetFlypPage.css";
 
 export default function GetFlypPage({ onNavigate, balance, isAuthenticated }) {
-  
+  const [myProducts, setMyProducts] = useState([]);
+
+  // Получаем продукты пользователя, если он авторизован
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetch('/api/my-products/')  // предположим такой эндпоинт отдаёт товары текущего пользователя
+        .then(res => res.json())
+        .then(data => setMyProducts(data))
+        .catch(console.error);
+    }
+  }, [isAuthenticated]);
+
   const handleButtonClick = useCallback(() => {
     if (isAuthenticated) {
       onNavigate('deposit');  // Переход к DepositPage
@@ -10,6 +21,25 @@ export default function GetFlypPage({ onNavigate, balance, isAuthenticated }) {
       window.location.href = '/signup/';  // Редирект на страницу регистрации
     }
   }, [isAuthenticated, onNavigate]);
+
+  // Обработчик кнопки Sell (пример)
+  const handleSellClick = (productId) => {
+    fetch(`/api/sell-product/${productId}/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+    })
+      .then(res => {
+        if (res.ok) {
+          // Обновляем список продуктов после успешной продажи
+          setMyProducts(myProducts.filter(p => p.id !== productId));
+          alert('Product put for sale successfully!');
+        } else {
+          alert('Failed to put product for sale.');
+        }
+      })
+      .catch(() => alert('Error while putting product for sale.'));
+  };
 
   return (
     <div className="getflyp-container">
@@ -56,8 +86,52 @@ export default function GetFlypPage({ onNavigate, balance, isAuthenticated }) {
             </div>
           </div>
         </div>
+
+        {/* Блок с продуктами пользователя */}
+        {isAuthenticated && myProducts.length > 0 && (
+          <div className="my-products-section" style={{ marginTop: '40px' }}>
+            <h3>Your Products</h3>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
+              {myProducts.map(product => (
+                <div
+                  key={product.id}
+                  style={{
+                    width: '45%',
+                    border: '1px solid #ccc',
+                    padding: '10px',
+                    borderRadius: '8px',
+                  }}
+                >
+                  <img
+                    src={product.image}
+                    alt={product.title}
+                    style={{ width: '100%', height: 'auto', borderRadius: '6px' }}
+                  />
+                  <h4 style={{ margin: '10px 0' }}>{product.title}</h4>
+                  <p>{product.description.slice(0, 40)}...</p>
+                  <p><strong>${product.price}</strong></p>
+                  <button
+                    style={{
+                      backgroundColor: '#c62828',
+                      color: 'white',
+                      border: 'none',
+                      padding: '10px',
+                      borderRadius: '5px',
+                      cursor: 'pointer',
+                      width: '100%',
+                      marginTop: '10px',
+                      fontWeight: 'bold'
+                    }}
+                    onClick={() => handleSellClick(product.id)}
+                  >
+                    Sell for $50
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
 }
-

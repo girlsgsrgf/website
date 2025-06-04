@@ -100,24 +100,80 @@ def product_list(request):
     return JsonResponse(data, safe=False)
 
 
+from django.db import transaction
+
+@login_required
 def buy_view(request, product_id):
-    product = Product.objects.filter(id=product_id, is_bought=False).first()
-    user = request.user
+    product = get_object_or_404(Product, id=product_id)
+    buyer = request.user
 
-    if not product:
-        messages.error(request, "Product not found or already bought.")
-        return redirect('/')
+    if product.owner == buyer:
+        messages.error(request, "You already own this product.")
+        return redirect('buy_view', product_id=product_id)
 
-    if request.method == 'POST':
-        if user.balance < product.price:
-            messages.error(request, "Not enough balance.")
-        else:
-            user.balance -= product.price
-            user.save()
-            product.is_bought = True
-            product.save()
-            user.purchased_products.add(product)
-            messages.success(request, "Product successfully purchased!")
-            return redirect('/marketplace/')  # или куда нужно
+    if not product.is_bought:
+        # Товар на продаже (is_bought = False), значит можно купить
+        if buyer.balance < product.price:
+            messages.error(request, "You don't have enough balance to buy this product.")
+            return redirect('buy_view', product_id=product_id)
+
+        if request.method == 'POST':
+            with transaction.atomic():
+                seller = product.owner  # может быть None, если товар изначально без владельца
+
+                # Списываем деньги с покупателя
+                buyer.balance -= product.price
+                buyer.save()
+
+                # Если продавец есть (т.е. это перепродажа), переводим деньги ему
+                if seller and seller != buyer:
+                    seller.balance += product.price
+                    seller.save()
+
+                # Передаем право собственности покупателю
+                product.owner = buyer
+                product.is_bought = True
+                product.save()
+
+            messages.success(request, "Product purchased successfully!")
+            return redirect('buy_view', product_id=product_id)
+    else:
+        messages.error(request, "Product is already bought.")
+        return redirect('buy_view', product_id=product_id)
 
     return render(request, 'buy.html', {'product': product})
+
+
+@login_required
+def sell_view(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    user = request.user
+
+    if product.owner != user:
+        messages.error(request, "You are not the owner of this product.")
+        return redirect('buy_view', product_id=product_id)
+
+    if request.method == 'POST':
+        # Выставляем товар на маркетплейс
+        product.is_bought = False
+        product.price = Decimal('50.00')  # фиксированная цена перепродажи
+        product.save()
+
+        messages.success(request, "Product is now on sale for $50.")
+        return redirect('buy_view', product_id=product_id)
+
+    return render(request, 'buy.html', {'product': product})
+
+
+
+@login_required
+def my_products_api(request):
+    products = Product.objects.filter(owner=request.user)
+    data = [{
+        'id': p.id,
+        'title': p.title,
+        'description': p.description,
+        'price': float(p.price),
+        'image': p.image_url,
+    } for p in products]
+    return JsonResponse(data, safe=False)
