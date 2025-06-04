@@ -88,8 +88,10 @@ def get_user_balance(request):
 @csrf_exempt
 def telegram_webhook(request):
     if request.method == "POST":
-        data = json.loads(request.body.decode("utf-8"))
-        update = Update.de_json(data, application.bot)
-        application.update_queue.put_nowait(update)
-        return HttpResponse("OK")
-    return HttpResponse("GET not allowed", status=405)
+        try:
+            data = json.loads(request.body.decode("utf-8"))
+            update = telegram_application.bot.update_queue.put_nowait(data)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=400)
+        return JsonResponse({"ok": True})
+    return HttpResponse("Method Not Allowed", status=405)

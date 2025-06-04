@@ -1,11 +1,19 @@
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
+from telegram.ext import Application, CommandHandler, ContextTypes
 import os
+import django
+import sys
+
+# Настройка Django окружения
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'FlyupChain.settings')  # Замените на свои настройки
+django.setup()
 
 BOT_TOKEN = "8155139765:AAHUTF9FcQ7SYqpDRMFR1VaCtcxyhl3F2Vg"
 CAPTION = "💰 Join and get an airdrop in our ecosystem! 🚀 Don’t miss your chance! 🌟"
-IMAGE_URL = "./image.png"
+IMAGE_URL = "https://yourdomain.com/static/image.png"  # Укажи публичный URL
 
+# Создание приложения Telegram
 application = Application.builder().token(BOT_TOKEN).build()
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -19,3 +27,6 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 application.add_handler(CommandHandler("start", start))
+
+# Для Django views.py — просто импортируем Application
+telegram_application = application
