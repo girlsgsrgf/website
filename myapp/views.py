@@ -11,6 +11,8 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
+from .models import Product
+from django.shortcuts import get_object_or_404
 
 
 
@@ -81,3 +83,21 @@ def get_user_balance(request):
     return JsonResponse({
         'balance': float(user.balance)
     })
+
+
+def product_list(request):
+    products = Product.objects.all()
+    data = [
+        {
+            'id': product.id,
+            'title': product.title,
+            'description': product.description,
+            'price': float(product.price),
+            'image': product.image.url if product.image else ''
+        } for product in products
+    ]
+    return JsonResponse(data, safe=False)
+
+def buy_view(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    return render(request, 'buy.html', {'product': product})

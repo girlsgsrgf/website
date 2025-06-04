@@ -44,5 +44,7 @@ urlpatterns = [
     path('verify/', views.verify_email, name='verify_email'),
     path('api/check-auth/', views.check_auth, name='check_auth'),
     path('api/get-balance/', get_user_balance, name='get_user_balance'),
+    path('api/products/', views.product_list, name='product_list'),
+    path('buy/<int:product_id>/', views.buy_view, name='buy_view'),
 
 ]

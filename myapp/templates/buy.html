@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+<head><title>Buy Product</title></head>
+<body>
+  <h1>{{ product.title }}</h1>
+  <img src="{{ product.image.url }}" alt="Product Image" style="max-width: 300px;">
+  <p>{{ product.description }}</p>
+  <p>Price: ${{ product.price }}</p>
+  <button onclick="alert('Buying product with ID {{ product.id }}')">BUY</button>
+</body>
+</html>
