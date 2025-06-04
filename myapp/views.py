@@ -93,7 +93,7 @@ def product_list(request):
             'title': product.title,
             'description': product.description,
             'price': float(product.price),
-            'image': product.image.url if product.image else ''
+            'image': product.image_url
         } for product in products
     ]
     return JsonResponse(data, safe=False)

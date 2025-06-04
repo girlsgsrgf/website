@@ -15,7 +15,10 @@ class Product(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    image = models.ImageField(upload_to='products/')
+    
+    @property
+    def image_url(self):
+        return f'/static/products/id{self.id}.png'
 
     def __str__(self):
         return self.title

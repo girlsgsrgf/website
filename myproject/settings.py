@@ -146,6 +146,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # This should be a differen
 
 TEMPLATES[0]['DIRS'] = [os.path.join(BASE_DIR, 'frontend/build')]
 
+
 import mimetypes 
 mimetypes.add_type("application/javascript", ".js", True)
 
