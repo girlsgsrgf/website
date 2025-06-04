@@ -11,9 +11,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
-from telegram import Update
-import json
-from .bot import application
+
 
 
 def index_view(request):
@@ -83,15 +81,3 @@ def get_user_balance(request):
     return JsonResponse({
         'balance': float(user.balance)
     })
-
-@csrf_exempt
-def telegram_webhook(request):
-    if request.method == "POST":
-        try:
-            data = json.loads(request.body.decode("utf-8"))
-            update = Update.de_json(data, telegram_application.bot)
-            telegram_application.process_update(update)
-        except Exception as e:
-            return JsonResponse({"error": str(e)}, status=400)
-        return JsonResponse({"ok": True})
-    return HttpResponse("Method Not Allowed", status=405)
