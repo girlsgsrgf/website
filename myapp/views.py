@@ -161,7 +161,7 @@ def sell_view(request, product_id):
 
     if not user_product or user_product.quantity == 0:
         messages.error(request, "У вас нет этого товара для продажи.")
-        return render(request, 'buy_view.html', {'product_id': product_id})
+        return render(request, 'buy.html', {'product_id': product_id})
 
 
     if request.method == 'POST':
@@ -169,12 +169,12 @@ def sell_view(request, product_id):
             quantity_to_sell = int(request.POST.get('quantity', '1'))
         except ValueError:
             messages.error(request, "Неверное количество для продажи.")
-            return render(request, 'buy_view.html', {'product_id': product_id})
+            return render(request, 'buy.html', {'product_id': product_id})
 
 
         if quantity_to_sell < 1 or quantity_to_sell > user_product.quantity:
             messages.error(request, "Неверное количество для продажи.")
-            return render(request, 'buy_view.html', {'product_id': product_id})
+            return render(request, 'buy.html', {'product_id': product_id})
 
 
         with transaction.atomic():
@@ -185,10 +185,10 @@ def sell_view(request, product_id):
             product.save()
 
         messages.success(request, f"Вы выставили {quantity_to_sell} шт. {product.title} на продажу.")
-        return render(request, 'buy_view.html', {'product_id': product_id})
+        return render(request, 'buy.html', {'product_id': product_id})
 
 
-    return render(request, 'sell.html', {'product': product, 'user_product': user_product})
+    return render(request, 'buy.html', {'product': product, 'user_product': user_product})
 
 
 @login_required
