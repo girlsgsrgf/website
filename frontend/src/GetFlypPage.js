@@ -22,24 +22,10 @@ export default function GetFlypPage({ onNavigate, balance, isAuthenticated }) {
     }
   }, [isAuthenticated, onNavigate]);
 
-  // Обработчик кнопки Sell (пример)
-  const handleSellClick = (productId) => {
-    fetch(`/api/sell-product/${productId}/`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-    })
-      .then(res => {
-        if (res.ok) {
-          // Обновляем список продуктов после успешной продажи
-          setMyProducts(myProducts.filter(p => p.id !== productId));
-          alert('Product put for sale successfully!');
-        } else {
-          alert('Failed to put product for sale.');
-        }
-      })
-      .catch(() => alert('Error while putting product for sale.'));
-  };
+const handleSellClick = (productId) => {
+  // Переходим на страницу sell товара, где будет buy.html с кнопкой sell
+  window.location.href = `api/sell-product/${productId}/`;  // Django URL, показывающий buy.html с sell-кнопкой
+};
 
   return (
     <div className="getflyp-container">

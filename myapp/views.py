@@ -150,7 +150,7 @@ def buy_view(request, product_id):
 
     return render(request, 'buy.html', {'product': product})
 
-@csrf_exempt
+    
 @login_required
 def sell_view(request, product_id):
     product = get_object_or_404(Product, id=product_id)
@@ -160,32 +160,29 @@ def sell_view(request, product_id):
 
     if not user_product or user_product.quantity == 0:
         messages.error(request, "У вас нет этого товара для продажи.")
-        # Передаём в шаблон product, а не просто product_id
         return render(request, 'buy.html', {'product': product})
 
     if request.method == 'POST':
-        try:
-            quantity_to_sell = int(request.POST.get('quantity', '1'))
-        except ValueError:
-            messages.error(request, "Неверное количество для продажи.")
-            return render(request, 'buy.html', {'product': product, 'user_product': user_product})
-
+        # обработка продажи (аналогично твоему коду)
+        quantity_to_sell = int(request.POST.get('quantity', '1'))
         if quantity_to_sell < 1 or quantity_to_sell > user_product.quantity:
             messages.error(request, "Неверное количество для продажи.")
-            return render(request, 'buy.html', {'product': product, 'user_product': user_product})
+        else:
+            with transaction.atomic():
+                user_product.quantity -= quantity_to_sell
+                user_product.save()
+                product.supply += quantity_to_sell
+                product.save()
+            messages.success(request, f"Вы выставили {quantity_to_sell} шт. {product.title} на продажу.")
+            return render(request, 'buy.html', {'product': product})
 
-        with transaction.atomic():
-            user_product.quantity -= quantity_to_sell
-            user_product.save()
+    # ПЕРЕДАЕМ в шаблон переменную, что мы в режиме продажи
+    return render(request, 'buy.html', {
+        'product': product,
+        'user_product': user_product,
+        'is_selling': True,  # ключевой флаг
+    })
 
-            product.supply += quantity_to_sell
-            product.save()
-
-        messages.success(request, f"Вы выставили {quantity_to_sell} шт. {product.title} на продажу.")
-        return render(request, 'buy.html', {'product': product, 'user_product': user_product})
-
-    # GET-запрос - показываем страницу покупки/продажи с данными
-    return render(request, 'buy.html', {'product': product, 'user_product': user_product})
 
 @login_required
 def my_products_api(request):

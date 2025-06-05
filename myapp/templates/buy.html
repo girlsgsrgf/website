@@ -101,29 +101,34 @@
 
   <div class="container">
     <h1>{{ product.title }}</h1>
-    <p class="description">{{ product.description }}</p>
-    <p class="price">Price per item: ${{ product.price }}</p>
-    <p>In stock: {{ product.supply }}</p>
+<p>Цена: ${{ product.price }}</p>
 
-    {% if product.supply > 0 %}
-      <form method="post" action="{% url 'buy_view' product.id %}">
-        {% csrf_token %}
-        <label for="quantity">Quantity:</label><br />
-        <input type="number" id="quantity" name="quantity" min="1" max="{{ product.supply }}" value="1" required><br />
-        <button type="submit">Buy</button>
-      </form>
-    {% else %}
-      <p><strong>Out of stock</strong></p>
-    {% endif %}
+{% if is_selling %}
+  <p>У вас есть: {{ user_product.quantity }} шт.</p>
+  <form method="post">
+    {% csrf_token %}
+    <label for="quantity">Количество для продажи:</label>
+    <input type="number" name="quantity" min="1" max="{{ user_product.quantity }}" value="1" required>
+    <button type="submit">Продать</button>
+  </form>
+{% else %}
+  <p>В наличии: {{ product.supply }} шт.</p>
+  <form method="post">
+    {% csrf_token %}
+    <label for="quantity">Количество для покупки:</label>
+    <input type="number" name="quantity" min="1" max="{{ product.supply }}" value="1" required>
+    <button type="submit">Купить</button>
+  </form>
+{% endif %}
 
-    {% if messages %}
-      <div class="message">
-        {% for message in messages %}
-          <p class="{{ message.tags }}">{{ message }}</p>
-        {% endfor %}
-      </div>
-    {% endif %}
-  </div>
+{% if messages %}
+<ul>
+  {% for message in messages %}
+  <li class="{{ message.tags }}">{{ message }}</li>
+  {% endfor %}
+</ul>
+{% endif %}
+
 
 </body>
 </html>
