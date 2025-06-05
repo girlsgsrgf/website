@@ -46,6 +46,7 @@ urlpatterns = [
     path('api/get-balance/', get_user_balance, name='get_user_balance'),
     path('api/products/', views.product_list, name='product_list'),
     path('buy/<int:product_id>/', views.buy_view, name='buy_view'),
+    path('api/sell-product/<int:product_id>/', views.sell_view, name='sell_view'),
     path('api/my-products/', views.my_products_api, name='my_products_api')
 
 ]

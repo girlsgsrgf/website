@@ -160,7 +160,6 @@ def sell_view(request, product_id):
     if request.method == 'POST':
         # Выставляем товар на маркетплейс
         product.is_bought = False
-        product.price = Decimal('50.00')  # фиксированная цена перепродажи
         product.save()
 
         messages.success(request, "Product is now on sale for $50.")

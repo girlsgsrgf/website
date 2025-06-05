@@ -124,7 +124,7 @@ export default function GetFlypPage({ onNavigate, balance, isAuthenticated }) {
                     }}
                     onClick={() => handleSellClick(product.id)}
                   >
-                    Sell for $50
+                    Sell for {product.price}
                   </button>
                 </div>
               ))}
