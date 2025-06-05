@@ -110,8 +110,10 @@ def buy_view(request, product_id):
     buyer = request.user
 
     if product.owner == buyer:
-        messages.error(request, "You already own this product.")
-        return redirect('buy_view', product_id=product_id)
+        if product.owner == buyer:
+            messages.error(request, "You already own this product.")
+            return render(request, 'buy.html', {'product': product})
+
 
     if not product.is_bought:
         # Товар на продаже (is_bought = False), значит можно купить
