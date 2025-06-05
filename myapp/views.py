@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from .forms import SignUpForm, SignInForm
-from .models import CustomUser
+from .models import Product, CustomUser, UserProduct
 import random
 from django.core.mail import send_mail
 from django.conf import settings
@@ -185,7 +185,7 @@ def sell_view(request, product_id):
         return render('buy_view', product_id=product_id)
 
     return render(request, 'sell.html', {'product': product, 'user_product': user_product})
-    
+
 
 @login_required
 def my_products_api(request):
