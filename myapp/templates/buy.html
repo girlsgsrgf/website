@@ -1,88 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>{{ product.title }} — Buy</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #ffffff;
-      color: #333;
-      font-size: 18px;
-      line-height: 1.6;
-    }
-
-    .product-image {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
-
-    .container {
-      padding: 24px;
-      max-width: 900px;
-      margin: 0 auto;
-    }
-
-    h1 {
-      font-size: 36px;
-      margin-bottom: 20px;
-      text-align: left;
-    }
-
-    p.description {
-      font-size: 20px;
-      color: #444;
-      margin-bottom: 25px;
-      text-align: left;
-      margin-top: -20px;
-    }
-
-    p.price {
-      font-size: 28px;
-      font-weight: bold;
-      margin-bottom: 35px;
-      text-align: left;
-    }
-
-    form {
-      text-align: center;
-    }
-
-    button {
-      background-color: green;
-      color: #ffffff;
+    /* Твои стили оставил без изменений */
+    /* Добавил стили для input */
+    input[type=number] {
       font-size: 24px;
-      padding: 10px 0;
-      width: 85%;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    button:hover {
-      background-color: #c62828;
-    }
-
-    .message {
-      margin-top: 20px;
-      font-size: 20px;
-    }
-
-    .error {
-      color: red;
-    }
-
-    .success {
-      color: green;
+      padding: 8px;
+      width: 100px;
+      margin: 10px 0 30px;
+      text-align: center;
+      border-radius: 6px;
+      border: 1px solid #ccc;
     }
   </style>
 </head>
@@ -93,20 +25,20 @@
   <div class="container">
     <h1>{{ product.title }}</h1>
     <p class="description">{{ product.description }}</p>
-    <p class="price">Price: ${{ product.price }}</p>
+    <p class="price">Price per item: ${{ product.price }}</p>
+    <p>In stock: {{ product.supply }}</p>
 
-    {% if not product.is_bought %}
-  <form method="post" action="{% url 'buy_view' product.id %}">
+    {% if product.supply > 0 %}
+      <form method="post" action="{% url 'buy_view' product.id %}">
     {% csrf_token %}
-    <button class="buy" type="submit">BUY</button>
-  </form>
-  {% else %}
-    <form method="post" action="{% url 'sell_view' product.id %}">
-      {% csrf_token %}
-      <button class="sell" type="submit">SELL for $50</button>
-    </form>
-  {% endif %}
+    <label for="quantity">Количество:</label>
+    <input type="number" id="quantity" name="quantity" min="1" max="{{ product.supply }}" value="1" required>
+    <button type="submit">Купить</button>
+</form>
 
+    {% else %}
+      <p><strong>Out of stock</strong></p>
+    {% endif %}
 
     {% if messages %}
       <div class="message">

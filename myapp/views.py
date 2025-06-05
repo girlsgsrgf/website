@@ -88,7 +88,7 @@ def get_user_balance(request):
 
 
 def product_list(request):
-    products = Product.objects.filter(is_bought=False)
+    products = Product.objects.filter(supply__gt=0)
 
     data = [
         {
@@ -102,50 +102,52 @@ def product_list(request):
     return JsonResponse(data, safe=False)
 
 
-from django.db import transaction
-
 @login_required
 def buy_view(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     buyer = request.user
 
-    if product.owner == buyer:
-        if product.owner == buyer:
-            messages.error(request, "You already own this product.")
+    if product.supply == 0:
+        messages.error(request, "Товар отсутствует в наличии.")
+        return render(request, 'buy.html', {'product': product})
+
+    if request.method == 'POST':
+        try:
+            quantity = int(request.POST.get('quantity', '1'))
+        except ValueError:
+            messages.error(request, "Неверное количество.")
             return render(request, 'buy.html', {'product': product})
 
+        if quantity < 1:
+            messages.error(request, "Количество должно быть не меньше 1.")
+            return render(request, 'buy.html', {'product': product})
 
-    if not product.is_bought:
-        # Товар на продаже (is_bought = False), значит можно купить
-        if buyer.balance < product.price:
-            messages.error(request, "You don't have enough balance to buy this product.")
-            return redirect('buy_view', product_id=product_id)
+        if quantity > product.supply:
+            messages.error(request, f"В наличии только {product.supply} штук.")
+            return render(request, 'buy.html', {'product': product})
 
-        if request.method == 'POST':
-            with transaction.atomic():
-                seller = product.owner  # может быть None, если товар изначально без владельца
+        total_price = product.price * quantity
 
-                # Списываем деньги с покупателя
-                buyer.balance -= product.price
-                buyer.save()
+        if buyer.balance < total_price:
+            messages.error(request, "Недостаточно средств для покупки.")
+            return render(request, 'buy.html', {'product': product})
 
-                # Если продавец есть (т.е. это перепродажа), переводим деньги ему
-                if seller and seller != buyer:
-                    seller.balance += product.price
-                    seller.save()
+        with transaction.atomic():
+            buyer.balance -= total_price
+            buyer.save()
 
-                # Передаем право собственности покупателю
-                product.owner = buyer
-                product.is_bought = True
-                product.save()
+            product.supply -= quantity
+            product.save()
 
-            messages.success(request, "Product purchased successfully!")
-            return redirect('buy_view', product_id=product_id)
-    else:
-        messages.error(request, "Product is already bought.")
-        return redirect('buy_view', product_id=product_id)
+            user_product, created = UserProduct.objects.get_or_create(user=buyer, product=product)
+            user_product.quantity += quantity
+            user_product.save()
+
+        messages.success(request, f"Вы успешно купили {quantity} шт. {product.title} за ${total_price:.2f}!")
+        return render(request, 'buy.html', {'product': product})
 
     return render(request, 'buy.html', {'product': product})
+
 
 @csrf_exempt
 @login_required
@@ -153,20 +155,34 @@ def sell_view(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     user = request.user
 
-    if product.owner != user:
-        messages.error(request, "You are not the owner of this product.")
+    user_product = UserProduct.objects.filter(user=user, product=product).first()
+
+    if not user_product or user_product.quantity == 0:
+        messages.error(request, "У вас нет этого товара для продажи.")
         return redirect('buy_view', product_id=product_id)
 
     if request.method == 'POST':
-        # Выставляем товар на маркетплейс
-        product.is_bought = False
-        product.save()
+        try:
+            quantity_to_sell = int(request.POST.get('quantity', '1'))
+        except ValueError:
+            messages.error(request, "Неверное количество для продажи.")
+            return redirect('buy_view', product_id=product_id)
 
-        messages.success(request, "Product is now on sale for $50.")
+        if quantity_to_sell < 1 or quantity_to_sell > user_product.quantity:
+            messages.error(request, "Неверное количество для продажи.")
+            return redirect('buy_view', product_id=product_id)
+
+        with transaction.atomic():
+            user_product.quantity -= quantity_to_sell
+            user_product.save()
+
+            product.supply += quantity_to_sell
+            product.save()
+
+        messages.success(request, f"Вы выставили {quantity_to_sell} шт. {product.title} на продажу.")
         return redirect('buy_view', product_id=product_id)
 
-    return render(request, 'buy.html', {'product': product})
-
+    return render(request, 'sell.html', {'product': product, 'user_product': user_product})
 
 
 @login_required
