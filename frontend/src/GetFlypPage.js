@@ -108,8 +108,10 @@ export default function GetFlypPage({ onNavigate, balance, isAuthenticated }) {
                     style={{ width: '100%', height: 'auto', borderRadius: '6px' }}
                   />
                   <h4 style={{ margin: '10px 0' }}>{product.title}</h4>
-                  <p>{product.description.slice(0, 40)}...</p>
+                 <p>{product.description.slice(0, 40)}...</p>
                   <p><strong>${product.price}</strong></p>
+                  <p><strong>Quantity: {product.quantity}</strong></p>
+
                   <button
                     style={{
                       backgroundColor: '#c62828',

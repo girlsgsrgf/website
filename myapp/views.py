@@ -14,6 +14,8 @@ from django.http import HttpResponse
 from .models import Product
 from django.shortcuts import get_object_or_404
 from django.contrib import messages
+from django.db import transaction
+
 
 
 
@@ -183,16 +185,21 @@ def sell_view(request, product_id):
         return render('buy_view', product_id=product_id)
 
     return render(request, 'sell.html', {'product': product, 'user_product': user_product})
-
+    
 
 @login_required
 def my_products_api(request):
-    products = Product.objects.filter(owner=request.user)
-    data = [{
-        'id': p.id,
-        'title': p.title,
-        'description': p.description,
-        'price': float(p.price),
-        'image': p.image_url,
-    } for p in products]
+    user_products = UserProduct.objects.filter(user=request.user, quantity__gt=0)
+
+    data = [
+        {
+            'id': up.product.id,
+            'title': up.product.title,
+            'description': up.product.description,
+            'price': float(up.product.price),
+            'quantity': up.quantity,
+            'image': up.product.image_url,
+        }
+        for up in user_products
+    ]
     return JsonResponse(data, safe=False)
