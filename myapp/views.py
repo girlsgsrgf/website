@@ -102,7 +102,6 @@ def product_list(request):
         } for product in products
     ]
     return JsonResponse(data, safe=False)
-
 @login_required
 def buy_view(request, product_id):
     product = get_object_or_404(Product, id=product_id)
@@ -119,11 +118,11 @@ def buy_view(request, product_id):
             messages.error(request, "Количество должно быть не меньше 1.")
             return render(request, 'buy.html', {'product': product})
 
-        total_price = 0
+        total_price = Decimal('0.00')
         remaining = quantity
 
         with transaction.atomic():
-            # 1. Покупка у других пользователей
+            # 1. Покупка у пользователей
             listings = ProductListing.objects.filter(product=product).order_by('created_at')
 
             for listing in listings:
@@ -132,23 +131,25 @@ def buy_view(request, product_id):
 
                 to_buy = min(listing.quantity, remaining)
                 cost = to_buy * listing.price
+                commission = cost * Decimal('0.05')
+                payout = cost - commission
 
                 if buyer.balance < total_price + cost:
                     messages.error(request, "Недостаточно средств для покупки.")
                     return render(request, 'buy.html', {'product': product})
 
-                # Деньги продавцу
-                listing.seller.balance += cost
+                # Перевод денег продавцу с учётом комиссии
+                listing.seller.balance += payout
                 listing.seller.save()
 
-                # Обновляем или удаляем listing
+                # Обновление listing
                 listing.quantity -= to_buy
                 if listing.quantity == 0:
                     listing.delete()
                 else:
                     listing.save()
 
-                # Добавляем товар покупателю
+                # Добавить товар покупателю
                 user_product, _ = UserProduct.objects.get_or_create(user=buyer, product=product)
                 user_product.quantity += to_buy
                 user_product.save()
@@ -156,7 +157,7 @@ def buy_view(request, product_id):
                 total_price += cost
                 remaining -= to_buy
 
-            # 2. Если ещё осталась нужда в количестве — покупаем у системы
+            # 2. Покупка у системы
             if remaining > 0:
                 if product.supply < remaining:
                     messages.error(request, f"Остаток: {quantity - remaining}. Не хватает {remaining} штук в наличии.")
@@ -179,6 +180,9 @@ def buy_view(request, product_id):
             # Финальное списание денег
             buyer.balance -= total_price
             buyer.save()
+
+            # Обновляем динамическую цену
+            product.update_dynamic_price()
 
         messages.success(request, f"Вы купили {quantity} шт. {product.title} за ${total_price:.2f}")
         return redirect('buy_view', product_id=product.id)

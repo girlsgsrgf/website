@@ -14,8 +14,20 @@ class Product(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
+    base_price = models.DecimalField(max_digits=10, decimal_places=2, default=10.00)  # fixed base
     supply = models.PositiveIntegerField(default=0)  # добавляем это поле
     owner = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True, related_name='owned_products')
+
+    def update_dynamic_price(self):
+        total_demand = sum([up.quantity for up in UserProduct.objects.filter(product=self)])
+        supply = self.supply or 1  # avoid division by zero
+
+        demand_factor = (total_demand - supply) / supply
+        new_price = float(self.base_price) * (1 + 0.1 * demand_factor)
+
+        # limit price to minimum base_price
+        self.price = max(self.price, round(new_price, 2))
+        self.save()
 
     @property
     def image_url(self):
