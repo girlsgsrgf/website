@@ -147,7 +147,7 @@ def buy_view(request, product_id):
 
     return render(request, 'buy.html', {'product': product})
 
-
+@csrf_exempt
 @login_required
 def sell_view(request, product_id):
     product = get_object_or_404(Product, id=product_id)
