@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from decimal import Decimal, ROUND_HALF_UP
 
 class CustomUser(AbstractUser):
     email = models.EmailField(unique=True)
@@ -19,14 +20,31 @@ class Product(models.Model):
     owner = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True, related_name='owned_products')
 
     def update_dynamic_price(self):
-        total_demand = sum([up.quantity for up in UserProduct.objects.filter(product=self)])
-        supply = self.supply or 1  # avoid division by zero
+        # Спрос — сколько товара у пользователей
+        total_demand = UserProduct.objects.filter(product=self).aggregate(
+            total=models.Sum('quantity')
+        )['total'] or 0
 
-        demand_factor = (total_demand - supply) / supply
-        new_price = float(self.base_price) * (1 + 0.1 * demand_factor)
+        # Предложение — сколько товара у системы + выставлено на продажу
+        total_listing = ProductListing.objects.filter(product=self).aggregate(
+            total=models.Sum('quantity')
+        )['total'] or 0
 
-        # limit price to minimum base_price
-        self.price = max(self.price, round(new_price, 2))
+        total_supply = self.supply + total_listing or 1  # avoid division by zero
+
+        demand_factor = (Decimal(total_demand) - Decimal(total_supply)) / Decimal(total_supply)
+
+        # Ценовой коэффициент (10% за единицу спроса сверх предложения)
+        price_multiplier = Decimal('1.0') + Decimal('0.1') * demand_factor
+
+        # Новая цена
+        new_price = (self.base_price * price_multiplier).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+
+        # Не ниже базовой цены
+        if new_price < self.base_price:
+            new_price = self.base_price
+
+        self.price = new_price
         self.save()
 
     @property
