@@ -16,6 +16,8 @@ from django.shortcuts import get_object_or_404
 from django.contrib import messages
 from django.db import transaction
 from decimal import Decimal
+from django.contrib.auth import get_user_model
+from .models import Message
 
 
 
@@ -259,3 +261,103 @@ def my_products_api(request):
         for up in user_products
     ]
     return JsonResponse(data, safe=False)
+
+
+User = get_user_model()
+
+@login_required
+def chat_users(request):
+    messages = Message.objects.filter(sender=request.user) | Message.objects.filter(receiver=request.user)
+    user_ids = set(messages.values_list('sender', flat=True)) | set(messages.values_list('receiver', flat=True))
+    user_ids.discard(request.user.id)
+
+    users = User.objects.filter(id__in=user_ids)
+    data = [{'id': u.id, 'username': u.username, 'email': u.email} for u in users]
+    return JsonResponse({'users': data})
+
+
+@login_required
+def search_users(request):
+    q = request.GET.get('q', '')
+    users = User.objects.filter(username__icontains=q).exclude(id=request.user.id)[:10]
+    results = [{'id': u.id, 'username': u.username, 'email': u.email} for u in users]
+    return JsonResponse({'results': results})
+
+
+@login_required
+def get_messages(request, user_id):
+    try:
+        target = User.objects.get(id=user_id)
+    except User.DoesNotExist:
+        return JsonResponse({'error': 'User not found'}, status=404)
+
+    messages = Message.objects.filter(
+        sender__in=[request.user, target],
+        receiver__in=[request.user, target]
+    ).order_by('timestamp')
+
+    data = [
+        {
+            'id': m.id,
+            'sender': m.sender.username,
+            'receiver': m.receiver.username,
+            'content': m.content,
+            'media_url': m.media.url if m.media else None,
+            'media_type': m.media_type,
+            'timestamp': m.timestamp.strftime('%Y-%m-%d %H:%M')
+        }
+        for m in messages
+    ]
+    return JsonResponse({'messages': data})
+
+
+@csrf_exempt
+@login_required
+def send_message(request):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Only POST allowed'}, status=405)
+
+    receiver_id = request.POST.get('receiver_id')
+    content = request.POST.get('content', '')
+    file = request.FILES.get('media')
+
+    try:
+        receiver = User.objects.get(id=receiver_id)
+    except User.DoesNotExist:
+        return JsonResponse({'error': 'Receiver not found'}, status=404)
+
+    media_type = None
+    if file:
+        ext = file.name.split('.')[-1].lower()
+        if ext in ['jpg', 'jpeg', 'png', 'gif']:
+            media_type = 'image'
+        elif ext in ['mp4', 'mov', 'avi']:
+            media_type = 'video'
+        elif ext in ['mp3', 'wav']:
+            media_type = 'audio'
+        elif ext in ['pdf', 'docx', 'txt']:
+            media_type = 'document'
+        else:
+            return JsonResponse({'error': 'Unsupported file type'}, status=400)
+
+    message = Message.objects.create(
+        sender=request.user,
+        receiver=receiver,
+        content=content,
+        media=file,
+        media_type=media_type,
+        timestamp=timezone.now()
+    )
+
+    return JsonResponse({
+        'status': 'sent',
+        'message': {
+            'id': message.id,
+            'sender': message.sender.username,
+            'receiver': message.receiver.username,
+            'content': message.content,
+            'media_url': message.media.url if message.media else None,
+            'media_type': message.media_type,
+            'timestamp': message.timestamp.strftime('%Y-%m-%d %H:%M'),
+        }
+    })

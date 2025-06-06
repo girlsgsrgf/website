@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-m+!tm%3*igyjzta(pw9n845)33q$lhnd7=njxa&c@de%-t5%3a
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.124.189', 'flyup.help', 'www.flyup.help', 'website-af5s.onrender.com']
+ALLOWED_HOSTS = ['192.168.133.119', 'flyup.help', 'www.flyup.help', 'website-af5s.onrender.com']
 
 
 # Application definition

@@ -47,6 +47,10 @@ urlpatterns = [
     path('api/products/', views.product_list, name='product_list'),
     path('buy/<int:product_id>/', views.buy_view, name='buy_view'),
     path('api/sell-product/<int:product_id>/', views.sell_view, name='sell_view'),
-    path('api/my-products/', views.my_products_api, name='my_products_api')
+    path('api/my-products/', views.my_products_api, name='my_products_api'),
+    path('api/chat/users/', views.chat_users, name='chat_users'),
+    path('api/chat/search/', views.search_users, name='search_users'),
+    path('api/chat/messages/<int:user_id>/', views.get_messages, name='get_messages'),
+    path('api/chat/send/', views.send_message, name='send_message'),
 
 ]

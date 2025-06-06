@@ -5,7 +5,7 @@ import TasksPage from './TasksPage';
 import RewardsPage from './RewardsPage';
 import AirdropPage from './AirdropPage';
 import CoursePage from './CoursePage';
-import RoadMapPage from './RoadMapPage';
+import MessagePage from './MessagePage';
 import ReadCoursePage from './ReadCoursePage';
 import ReadCoursePage1 from './ReadCoursePage1';
 import ReadCoursePage2 from './ReadCoursePage2';
@@ -123,7 +123,7 @@ const renderContent = () => {
     } else if (activeTab === 'marketplace') {
       return <MarketplacePage />;
     } else if (activeTab === 'settings') {
-      return <RoadMapPage />;
+      return <MessagePage />;
     }
 
     return <div>Страница не найдена</div>;
