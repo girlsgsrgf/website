@@ -18,6 +18,7 @@ from django.db import transaction
 from decimal import Decimal
 from django.contrib.auth import get_user_model
 from .models import Message
+from django.db.models import Q
 
 
 
@@ -264,14 +265,13 @@ def my_products_api(request):
 
 
 User = get_user_model()
-
 @login_required
 def chat_users(request):
-    messages = Message.objects.filter(sender=request.user) | Message.objects.filter(receiver=request.user)
-    user_ids = set(messages.values_list('sender', flat=True)) | set(messages.values_list('receiver', flat=True))
+    messages = Message.objects.filter(Q(sender=request.user) | Q(recipient=request.user))
+    user_ids = set(messages.values_list('sender', flat=True)) | set(messages.values_list('recipient', flat=True))
     user_ids.discard(request.user.id)
 
-    users = User.objects.filter(id__in=user_ids)
+    users = CustomUser.objects.filter(id__in=user_ids)
     data = [{'id': u.id, 'username': u.username, 'email': u.email} for u in users]
     return JsonResponse({'users': data})
 
@@ -279,7 +279,7 @@ def chat_users(request):
 @login_required
 def search_users(request):
     q = request.GET.get('q', '')
-    users = User.objects.filter(username__icontains=q).exclude(id=request.user.id)[:10]
+    users = CustomUser.objects.filter(username__icontains=q).exclude(id=request.user.id)[:10]
     results = [{'id': u.id, 'username': u.username, 'email': u.email} for u in users]
     return JsonResponse({'results': results})
 
@@ -287,23 +287,23 @@ def search_users(request):
 @login_required
 def get_messages(request, user_id):
     try:
-        target = User.objects.get(id=user_id)
-    except User.DoesNotExist:
+        target = CustomUser.objects.get(id=user_id)
+    except CustomUser.DoesNotExist:
         return JsonResponse({'error': 'User not found'}, status=404)
 
     messages = Message.objects.filter(
         sender__in=[request.user, target],
-        receiver__in=[request.user, target]
+        recipient__in=[request.user, target]
     ).order_by('timestamp')
 
     data = [
         {
             'id': m.id,
             'sender': m.sender.username,
-            'receiver': m.receiver.username,
+            'recipient': m.recipient.username,
             'content': m.content,
-            'media_url': m.media.url if m.media else None,
-            'media_type': m.media_type,
+            'media_url': m.media.url if hasattr(m, 'media') and m.media else None,
+            'media_type': getattr(m, 'media_type', None),
             'timestamp': m.timestamp.strftime('%Y-%m-%d %H:%M')
         }
         for m in messages
@@ -322,8 +322,8 @@ def send_message(request):
     file = request.FILES.get('media')
 
     try:
-        receiver = User.objects.get(id=receiver_id)
-    except User.DoesNotExist:
+        receiver = CustomUser.objects.get(id=receiver_id)
+    except CustomUser.DoesNotExist:
         return JsonResponse({'error': 'Receiver not found'}, status=404)
 
     media_type = None
@@ -342,7 +342,7 @@ def send_message(request):
 
     message = Message.objects.create(
         sender=request.user,
-        receiver=receiver,
+        recipient=receiver,
         content=content,
         media=file,
         media_type=media_type,
@@ -354,7 +354,7 @@ def send_message(request):
         'message': {
             'id': message.id,
             'sender': message.sender.username,
-            'receiver': message.receiver.username,
+            'recipient': message.recipient.username,
             'content': message.content,
             'media_url': message.media.url if message.media else None,
             'media_type': message.media_type,
