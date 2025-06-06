@@ -10,10 +10,23 @@ const SendMessage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(`/api/chat/messages/${userId}/`)
+    fetch(`/api/chat/messages/${userId}/`, { credentials: 'include' })
       .then(res => res.json())
-      .then(data => setMessages(data || []))
-      .catch(() => setMessages([]));
+      .then(data => {
+        // Обрабатываем разные варианты ответа
+        if (Array.isArray(data)) {
+          setMessages(data);
+        } else if (data && Array.isArray(data.messages)) {
+          setMessages(data.messages);
+        } else {
+          setMessages([]);
+          console.warn('Данные с сервера не содержат массив сообщений:', data);
+        }
+      })
+      .catch((error) => {
+        console.error('Ошибка при загрузке сообщений:', error);
+        setMessages([]);
+      });
   }, [userId]);
 
   useEffect(() => {
@@ -37,8 +50,11 @@ const SendMessage = () => {
         if (data.status === 'sent') {
           setMessages(prev => [...prev, data.message]);
           setMessage('');
+        } else {
+          console.warn('Сообщение не отправлено:', data);
         }
-      });
+      })
+      .catch(error => console.error('Ошибка отправки сообщения:', error));
   };
 
   return (
@@ -46,28 +62,34 @@ const SendMessage = () => {
       <button onClick={() => navigate('/messages')} style={{ marginBottom: 10 }}>
         Назад
       </button>
-      <div style={{
-        height: 400,
-        overflowY: 'auto',
-        border: '1px solid #ccc',
-        padding: 10,
-        marginBottom: 10,
-        backgroundColor: '#fafafa',
-      }}>
-        {messages.map((m) => (
-          <div
-            key={m.id}
-            style={{
-              margin: '10px 0',
-              padding: '6px 8px',
-              backgroundColor: '#fff',
-              borderRadius: 4,
-              boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
-            }}
-          >
-            <strong>{m.sender}</strong>: {m.content}
-          </div>
-        ))}
+      <div
+        style={{
+          height: 400,
+          overflowY: 'auto',
+          border: '1px solid #ccc',
+          padding: 10,
+          marginBottom: 10,
+          backgroundColor: '#fafafa',
+        }}
+      >
+        {Array.isArray(messages) ? (
+          messages.map((m) => (
+            <div
+              key={m.id}
+              style={{
+                margin: '10px 0',
+                padding: '6px 8px',
+                backgroundColor: '#fff',
+                borderRadius: 4,
+                boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
+              }}
+            >
+              <strong>{m.sender}</strong>: {m.content}
+            </div>
+          ))
+        ) : (
+          <div>Нет сообщений</div>
+        )}
         <div ref={messagesEndRef} />
       </div>
       <div style={{ display: 'flex' }}>
