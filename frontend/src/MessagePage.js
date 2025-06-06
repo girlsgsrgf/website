@@ -1,93 +1,63 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-const MessagePage = ({ userId, onBack }) => {
+const MessagePage = () => {
   const [users, setUsers] = useState([]);
-  const [selectedUserId, setSelectedUserId] = useState(() => userId || null);
-  const [messages, setMessages] = useState([]);
-  const [message, setMessage] = useState('');
   const [search, setSearch] = useState('');
-  const messagesEndRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    fetch('/api/chat/users/')
-      .then(res => res.json())
-      .then(data => setUsers(data));
+    fetchUsers();
   }, []);
 
-  useEffect(() => {
-    if (!selectedUserId) return;
-    fetch(`/api/chat/messages/${selectedUserId}/`)
-      .then(res => res.json())
-      .then(data => setMessages(data));
-  }, [selectedUserId]);
-
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
-
-  const handleSend = () => {
-    if (!message.trim()) return;
-    fetch('/api/chat/send/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({ recipient_id: selectedUserId, content: message }),
-    })
-      .then(res => res.json())
-      .then(data => {
-        setMessages(prev => [...prev, data]);
-        setMessage('');
-      });
+  const fetchUsers = () => {
+    fetch('/api/chat/users/')
+      .then((res) => res.json())
+      .then((data) => setUsers(data.users || []))
+      .catch((error) => console.error('Ошибка загрузки пользователей:', error));
   };
 
   const handleSearch = (e) => {
     const value = e.target.value;
     setSearch(value);
-    fetch(`/api/chat/search/?q=${value}`)
-      .then(res => res.json())
-      .then(data => setUsers(data));
+
+    if (!value.trim()) {
+      fetchUsers();
+      return;
+    }
+
+    fetch(`/api/chat/search/?q=${encodeURIComponent(value)}`)
+      .then((res) => res.json())
+      .then((data) => setUsers(data.results || []))
+      .catch((error) => console.error('Ошибка поиска:', error));
   };
 
   return (
-    <div className="message-page">
-      {!selectedUserId ? (
-        <>
-          <input
-            type="text"
-            placeholder="Поиск пользователей..."
-            value={search}
-            onChange={handleSearch}
-          />
-          <ul>
-            {users.map((u) => (
-              <li key={u.id} onClick={() => setSelectedUserId(u.id)}>
-                {u.username}
-              </li>
-            ))}
-          </ul>
-        </>
-      ) : (
-        <>
-          <button onClick={() => setSelectedUserId(null)}>Назад</button>
-          <div className="chat-box" style={{ height: '400px', overflowY: 'auto' }}>
-            {messages.map((m) => (
-              <div key={m.id} style={{ margin: '10px 0' }}>
-                <strong>{m.sender}</strong>: {m.content}
-              </div>
-            ))}
-            <div ref={messagesEndRef} />
-          </div>
-          <div className="message-input">
-            <input
-              type="text"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              placeholder="Введите сообщение"
-            />
-            <button onClick={handleSend}>Отправить</button>
-          </div>
-        </>
-      )}
+    <div style={{ maxWidth: 500, margin: 'auto', padding: 16 }}>
+      <h2>Сообщения</h2>
+      <input
+        type="text"
+        value={search}
+        onChange={handleSearch}
+        placeholder="Поиск пользователей..."
+        style={{ width: '100%', padding: 8, marginBottom: 12 }}
+      />
+      <ul style={{ listStyle: 'none', padding: 0 }}>
+        {users.map((user) => (
+          <li
+            key={user.id}
+            onClick={() => navigate(`/messages/${user.id}`)}
+            style={{
+              cursor: 'pointer',
+              padding: 10,
+              borderBottom: '1px solid #ddd',
+            }}
+          >
+            {user.username}
+          </li>
+        ))}
+        {users.length === 0 && <li>Пользователи не найдены</li>}
+      </ul>
     </div>
   );
 };
