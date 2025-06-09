@@ -66,11 +66,9 @@ const SendMessage = () => {
           messages.map((m) => (
             <div
               key={m.id}
-              className={`message-bubble ${
-                m.is_own ? 'own-message' : 'received-message'
-              }`}
+              className={`message-bubble ${m.is_own ? 'own-message' : 'received-message'}`}
             >
-              <strong>{m.sender}</strong>: {m.content}
+              {m.content}
             </div>
           ))
         ) : (
