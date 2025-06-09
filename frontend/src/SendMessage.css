@@ -18,39 +18,55 @@
   background-color: #f7f7f7;
   display: flex;
   flex-direction: column;
-  padding-bottom: 140px; /* увеличил с 100px */
+  padding-bottom: 140px;
+}
+
+.message-row {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+  max-width: 80%;
+}
+
+.message-row.own {
+  align-self: flex-end;
+  text-align: right;
+}
+
+.message-row.received {
+  align-self: flex-start;
+  text-align: left;
+}
+
+.sender-name {
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 2px;
+  padding: 0 6px;
 }
 
 .message-bubble {
-  margin: 6px 0;
   padding: 10px 14px;
   border-radius: 18px;
-  max-width: 75%;
   word-break: break-word;
   font-size: 14px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
-/* Sent by me */
 .own-message {
-  align-self: flex-end;
   background-color: #007aff;
   color: white;
-  text-align: right;
   border-bottom-right-radius: 4px;
 }
 
-/* Received */
 .received-message {
-  align-self: flex-start;
   background-color: #ffffff;
   color: black;
-  text-align: left;
   border-bottom-left-radius: 4px;
 }
 
 .input-box {
-  position: sticky; /* вместо fixed */
+  position: sticky;
   bottom: 0;
   left: 0;
   right: 0;

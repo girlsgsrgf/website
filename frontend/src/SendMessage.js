@@ -9,8 +9,7 @@ const SendMessage = () => {
   const messagesEndRef = useRef(null);
   const navigate = useNavigate();
 
-  // TODO: получи ID текущего пользователя из контекста или API
-  const currentUserId = 123; // замените на актуальный
+  const currentUserId = 123; // Replace with actual current user ID
 
   useEffect(() => {
     fetch(`/api/chat/messages/${userId}/`, { credentials: 'include' })
@@ -22,11 +21,11 @@ const SendMessage = () => {
           setMessages(data.messages);
         } else {
           setMessages([]);
-          console.warn('Данные с сервера не содержат массив сообщений:', data);
+          console.warn('Invalid message data from server:', data);
         }
       })
       .catch((error) => {
-        console.error('Ошибка при загрузке сообщений:', error);
+        console.error('Error loading messages:', error);
         setMessages([]);
       });
   }, [userId]);
@@ -53,10 +52,10 @@ const SendMessage = () => {
           setMessages(prev => [...prev, data.message]);
           setMessage('');
         } else {
-          console.warn('Сообщение не отправлено:', data);
+          console.warn('Message not sent:', data);
         }
       })
-      .catch(error => console.error('Ошибка отправки сообщения:', error));
+      .catch(error => console.error('Error sending message:', error));
   };
 
   return (
@@ -71,9 +70,14 @@ const SendMessage = () => {
             return (
               <div
                 key={m.id}
-                className={`message-bubble ${isOwn ? 'own-message' : 'received-message'}`}
+                className={`message-row ${isOwn ? 'own' : 'received'}`}
               >
-                {m.content}
+                <div className="sender-name">
+                  {isOwn ? 'Вы' : m.sender_username || `Пользователь ${m.sender_id}`}
+                </div>
+                <div className={`message-bubble ${isOwn ? 'own-message' : 'received-message'}`}>
+                  {m.content}
+                </div>
               </div>
             );
           })
