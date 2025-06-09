@@ -9,7 +9,7 @@ const SendMessage = () => {
   const messagesEndRef = useRef(null);
   const navigate = useNavigate();
 
-  const currentUserId = 123; // Replace with actual current user ID
+  const currentUserId = 123; // заменить на реального пользователя
 
   useEffect(() => {
     fetch(`/api/chat/messages/${userId}/`, { credentials: 'include' })
@@ -21,11 +21,11 @@ const SendMessage = () => {
           setMessages(data.messages);
         } else {
           setMessages([]);
-          console.warn('Invalid message data from server:', data);
+          console.warn('Данные с сервера не содержат массив сообщений:', data);
         }
       })
       .catch((error) => {
-        console.error('Error loading messages:', error);
+        console.error('Ошибка при загрузке сообщений:', error);
         setMessages([]);
       });
   }, [userId]);
@@ -52,10 +52,10 @@ const SendMessage = () => {
           setMessages(prev => [...prev, data.message]);
           setMessage('');
         } else {
-          console.warn('Message not sent:', data);
+          console.warn('Сообщение не отправлено:', data);
         }
       })
-      .catch(error => console.error('Error sending message:', error));
+      .catch(error => console.error('Ошибка отправки сообщения:', error));
   };
 
   return (
@@ -70,12 +70,16 @@ const SendMessage = () => {
             return (
               <div
                 key={m.id}
-                className={`message-row ${isOwn ? 'own' : 'received'}`}
+                className={`message-wrapper ${isOwn ? 'own-wrapper' : 'received-wrapper'}`}
               >
-                <div className="sender-name">
-                  {isOwn ? 'Вы' : m.sender_username || `Пользователь ${m.sender_id}`}
-                </div>
-                <div className={`message-bubble ${isOwn ? 'own-message' : 'received-message'}`}>
+                {!isOwn && (
+                  <div className="message-sender">
+                    {m.sender_username || `Пользователь ${m.sender_id}`}
+                  </div>
+                )}
+                <div
+                  className={`message-bubble ${isOwn ? 'own-message' : 'received-message'}`}
+                >
                   {m.content}
                 </div>
               </div>
