@@ -1,6 +1,6 @@
-// SendMessage.js
 import React, { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import './SendMessage.css';
 
 const SendMessage = () => {
   const { userId } = useParams();
@@ -13,7 +13,6 @@ const SendMessage = () => {
     fetch(`/api/chat/messages/${userId}/`, { credentials: 'include' })
       .then(res => res.json())
       .then(data => {
-        // Обрабатываем разные варианты ответа
         if (Array.isArray(data)) {
           setMessages(data);
         } else if (data && Array.isArray(data.messages)) {
@@ -58,47 +57,33 @@ const SendMessage = () => {
   };
 
   return (
-    <div style={{ maxWidth: 600, margin: 'auto' }}>
-      <button onClick={() => navigate('/messages')} style={{ marginBottom: 10 }}>
+    <div className="chat-container">
+      <button onClick={() => navigate('/messages')} className="back-button">
         Назад
       </button>
-      <div
-        style={{
-          height: 400,
-          overflowY: 'auto',
-          border: '1px solid #ccc',
-          padding: 10,
-          marginBottom: 10,
-          backgroundColor: '#fafafa',
-        }}
-      >
+      <div className="messages-box">
         {Array.isArray(messages) ? (
           messages.map((m) => (
             <div
               key={m.id}
-              style={{
-                margin: '10px 0',
-                padding: '6px 8px',
-                backgroundColor: '#fff',
-                borderRadius: 4,
-                boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
-              }}
+              className={`message-bubble ${
+                m.is_own ? 'own-message' : 'received-message'
+              }`}
             >
               <strong>{m.sender}</strong>: {m.content}
             </div>
           ))
         ) : (
-          <div>Нет сообщений</div>
+          <div className="no-messages">Нет сообщений</div>
         )}
         <div ref={messagesEndRef} />
       </div>
-      <div style={{ display: 'flex' }}>
+      <div className="input-box">
         <input
           type="text"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder="Введите сообщение"
-          style={{ flexGrow: 1, padding: 8, marginRight: 6 }}
           onKeyDown={(e) => e.key === 'Enter' && handleSend()}
         />
         <button onClick={handleSend}>Отправить</button>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import './MessagePage.css';
 
 const MessagePage = () => {
   const [users, setUsers] = useState([]);
@@ -33,30 +34,26 @@ const MessagePage = () => {
   };
 
   return (
-    <div style={{ maxWidth: 500, margin: 'auto', padding: 16 }}>
-      <h2>Сообщения</h2>
+    <div className="message-page">
+      <h2 className="message-title">Сообщения</h2>
       <input
         type="text"
         value={search}
         onChange={handleSearch}
         placeholder="Поиск пользователей..."
-        style={{ width: '100%', padding: 8, marginBottom: 12 }}
+        className="message-search"
       />
-      <ul style={{ listStyle: 'none', padding: 0 }}>
+      <ul className="user-list">
         {users.map((user) => (
           <li
             key={user.id}
             onClick={() => navigate(`/messages/${user.id}`)}
-            style={{
-              cursor: 'pointer',
-              padding: 10,
-              borderBottom: '1px solid #ddd',
-            }}
+            className="user-item"
           >
             {user.username}
           </li>
         ))}
-        {users.length === 0 && <li>Пользователи не найдены</li>}
+        {users.length === 0 && <li className="no-users">Пользователи не найдены</li>}
       </ul>
     </div>
   );

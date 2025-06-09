@@ -1,0 +1,52 @@
+.message-page {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 16px;
+  background-color: transparent; /* removed the white background */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  box-sizing: border-box;
+}
+
+.message-title {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  text-align: center;
+  color: #333;
+}
+
+.message-search {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.user-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.user-item {
+  padding: 14px 16px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  transition: background 0.2s;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.user-item:hover {
+  background-color: #f0f4ff;
+}
+
+.no-users {
+  text-align: center;
+  color: #888;
+  padding: 16px;
+}
