@@ -9,6 +9,9 @@ const SendMessage = () => {
   const messagesEndRef = useRef(null);
   const navigate = useNavigate();
 
+  // TODO: получи ID текущего пользователя из контекста или API
+  const currentUserId = 123; // замените на актуальный
+
   useEffect(() => {
     fetch(`/api/chat/messages/${userId}/`, { credentials: 'include' })
       .then(res => res.json())
@@ -63,14 +66,17 @@ const SendMessage = () => {
       </button>
       <div className="messages-box">
         {Array.isArray(messages) ? (
-          messages.map((m) => (
-            <div
-              key={m.id}
-              className={`message-bubble ${m.is_own ? 'own-message' : 'received-message'}`}
-            >
-              {m.content}
-            </div>
-          ))
+          messages.map((m) => {
+            const isOwn = m.is_own ?? (m.sender_id === currentUserId);
+            return (
+              <div
+                key={m.id}
+                className={`message-bubble ${isOwn ? 'own-message' : 'received-message'}`}
+              >
+                {m.content}
+              </div>
+            );
+          })
         ) : (
           <div className="no-messages">Нет сообщений</div>
         )}
