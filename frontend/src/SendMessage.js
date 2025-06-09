@@ -6,27 +6,27 @@ const SendMessage = () => {
   const { userId } = useParams();
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState('');
+  const [currentUserId, setCurrentUserId] = useState(null); // состояние для текущего пользователя
   const messagesEndRef = useRef(null);
   const navigate = useNavigate();
-
-  const currentUserId = 123; // заменить на реального пользователя
 
   useEffect(() => {
     fetch(`/api/chat/messages/${userId}/`, { credentials: 'include' })
       .then(res => res.json())
       .then(data => {
-        if (Array.isArray(data)) {
-          setMessages(data);
-        } else if (data && Array.isArray(data.messages)) {
+        if (data && Array.isArray(data.messages)) {
           setMessages(data.messages);
+          setCurrentUserId(data.current_user_id);
         } else {
           setMessages([]);
+          setCurrentUserId(null);
           console.warn('Данные с сервера не содержат массив сообщений:', data);
         }
       })
       .catch((error) => {
         console.error('Ошибка при загрузке сообщений:', error);
         setMessages([]);
+        setCurrentUserId(null);
       });
   }, [userId]);
 
@@ -64,19 +64,17 @@ const SendMessage = () => {
         Назад
       </button>
       <div className="messages-box">
-        {Array.isArray(messages) ? (
+        {Array.isArray(messages) && currentUserId !== null ? (
           messages.map((m) => {
-            const isOwn = m.is_own ?? (m.sender_id === currentUserId);
+            const isOwn = m.sender_id === currentUserId;
             return (
               <div
                 key={m.id}
                 className={`message-wrapper ${isOwn ? 'own-wrapper' : 'received-wrapper'}`}
               >
-                {!isOwn && (
-                  <div className="message-sender">
-                    {m.sender_username || `Пользователь ${m.sender_id}`}
-                  </div>
-                )}
+                <div className="message-sender">
+                  {!isOwn && (m.sender || `Пользователь`)}
+                </div>
                 <div
                   className={`message-bubble ${isOwn ? 'own-message' : 'received-message'}`}
                 >

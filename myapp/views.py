@@ -286,6 +286,8 @@ def search_users(request):
 
 @login_required
 def get_messages(request, user_id):
+    current_user = request.user
+    current_user_id = current_user.id
     try:
         target = CustomUser.objects.get(id=user_id)
     except CustomUser.DoesNotExist:
@@ -308,7 +310,7 @@ def get_messages(request, user_id):
         }
         for m in messages
     ]
-    return JsonResponse({'messages': data})
+    return JsonResponse({'messages': data, 'current_user_id': current_user_id})
 
 
 @csrf_exempt
