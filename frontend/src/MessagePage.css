@@ -10,9 +10,9 @@
 .message-title {
   font-size: 24px;
   font-weight: 600;
-  margin-bottom: 12px;
+  margin-bottom: 20px;
   text-align: center;
-  color: #333;
+  color: white;
 }
 
 .message-search {

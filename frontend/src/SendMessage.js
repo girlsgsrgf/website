@@ -61,7 +61,7 @@ const SendMessage = () => {
   return (
     <div className="chat-container">
       <button onClick={() => navigate('/messages')} className="back-button">
-        Назад
+      Go back
       </button>
       <div className="messages-box">
         {Array.isArray(messages) && currentUserId !== null ? (
