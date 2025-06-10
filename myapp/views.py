@@ -107,6 +107,7 @@ def product_list(request):
         } for product in products
     ]
     return JsonResponse(data, safe=False)
+
 @login_required
 def buy_view(request, product_id):
     product = get_object_or_404(Product, id=product_id)
@@ -181,14 +182,17 @@ def buy_view(request, product_id):
                 user_product.save()
 
                 total_price += cost
+                
+                # Обновляем динамическую цену
+                product.update_dynamic_price()
+
 
             # Финальное списание денег
             buyer.balance -= total_price
             buyer.save()
 
-            # Обновляем динамическую цену
-            product.update_dynamic_price()
-
+            
+            
         messages.success(request, f"Вы купили {quantity} шт. {product.title} за ${total_price:.2f}")
         return redirect('buy_view', product_id=product.id)
 

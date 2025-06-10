@@ -4,8 +4,6 @@ import './HomePage.css';
 const HomePage = ({ onNavigate, balance }) => {
   return (
     <div className="main-page">
-      <h2 className="app-title">Flyup Chain</h2>
-
       <div className="balance-section">
         <div className="balance-header">
           <div>
@@ -23,8 +21,8 @@ const HomePage = ({ onNavigate, balance }) => {
      
 
       <div className="news-box">
-        <div className="news-header">24h Income</div>
-        <div className="news-text">+ $0.00 FLYP</div>
+        <div className="news-header">Monthly income</div>
+        <div className="news-text">+ $100.00 FLYP</div>
         <div className="news-footer"><img src="/icons/perdaycoin.png" alt="dot" className="perdaycoin-img" /></div> 
       </div>
 

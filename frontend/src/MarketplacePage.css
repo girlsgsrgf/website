@@ -1,0 +1,62 @@
+.marketplace-container {
+  padding: 20px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.marketplace-title {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.marketplace-columns {
+  display: flex;
+  gap: 20px;
+}
+
+.marketplace-column {
+  flex: 1;
+}
+
+.marketplace-card {
+  height: 250px;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 15px;
+  margin-bottom: 20px;
+  padding-bottom: -20px;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+  background-color: #fff;
+}
+
+.marketplace-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.marketplace-card img {
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.marketplace-card h3 {
+  color: black;
+  margin-top: -10px;
+  margin-left: 5px;
+}
+
+.marketplace-card p {
+  color: #555;
+  font-size: 14px;
+  margin-top: -10px;
+  margin-left: 5px;
+}
+
+.marketplace-card .price {
+  font-weight: bold;
+  color: #222;
+  margin-left: 5px;
+}

@@ -35,12 +35,12 @@ const MessagePage = () => {
 
   return (
     <div className="message-page">
-      <h2 className="message-title">Сообщения</h2>
+      <h2 className="message-title">Messages</h2>
       <input
         type="text"
         value={search}
         onChange={handleSearch}
-        placeholder="Поиск пользователей..."
+        placeholder="Search users..."
         className="message-search"
       />
       <ul className="user-list">
@@ -53,7 +53,7 @@ const MessagePage = () => {
             {user.username}
           </li>
         ))}
-        {users.length === 0 && <li className="no-users">Пользователи не найдены</li>}
+        {users.length === 0 && <li className="no-users">No users found</li>}
       </ul>
     </div>
   );
