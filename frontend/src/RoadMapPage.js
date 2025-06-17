@@ -4,8 +4,6 @@ import './RoadMapPage.css';
 const RoadMapPage = ({ onNavigate, balance }) => {
   return (
     <div className="main-page">
-      <h2 className="app-title">Flyup Chain</h2>
-
       <div className="roadmap-section">
         <div className="roadmap-header">
           <div>

@@ -29,7 +29,6 @@ export default function GetFlypPage({ onNavigate, balance, isAuthenticated }) {
 
   return (
     <div className="getflyp-container">
-      <h2 className="app-title">Flyup Ecosystem</h2>
       <div>
         <div className="logo-title">
           <img src="icons/wings.png" alt="Fly Up" className="wings-img" />

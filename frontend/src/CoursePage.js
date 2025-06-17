@@ -8,8 +8,6 @@ const CoursePage = ({ onNavigate, balance }) => {
 
   return (
     <div className="main-page">
-      <h2 className="app-title">Flyup Ecosystem</h2>
-
       <div className="course-section">
         <div className="course-header">
           <div>

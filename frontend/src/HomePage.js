@@ -7,7 +7,7 @@ const HomePage = ({ onNavigate, balance }) => {
       <div className="balance-section">
         <div className="balance-header">
           <div>
-            <div className="balance-label">Total Balance</div>
+            <div className="balance-label">Ваш Баланс</div>
             <div className="balance-amount">${balance.toFixed(2)} FLYP</div>
             <div className="wallet-link"> ≈ ${balance.toFixed(2)} USD</div>
           </div>
@@ -15,7 +15,7 @@ const HomePage = ({ onNavigate, balance }) => {
         </div>
 
         <button className="get-flyp-button" onClick={() => onNavigate('getflyp')}><img src="/icons/getflyp.png" alt="dot" className="get-img" /> Get $FLYP</button>
-        <div className="get-now">Claim now!</div>
+        <div className="get-now">Зарегистрируйтесь и получите $15!</div>
       </div>
 
      
@@ -29,11 +29,11 @@ const HomePage = ({ onNavigate, balance }) => {
       <div className="features-row">
         <div className="feature-box" onClick={() => onNavigate('tasks')}>
           <img src="/icons/cashwallet.png" alt="dot" className="dot-img" />
-          <div className="feature-text">Tasks</div>
+          <div className="feature-text">Задачи</div>
         </div>
         <div className="feature-box" onClick={() => onNavigate('rewards')}>
           <img src="/icons/rewards.png" alt="dot" className="dot-img" />
-          <div className="feature-text">Rewards</div>
+          <div className="feature-text">Награды</div>
         </div>
         <div className="feature-box" onClick={() => onNavigate('airdrop')}>
           <img src="/icons/airdrop.png" alt="dot" className="dot-img" />
@@ -42,7 +42,7 @@ const HomePage = ({ onNavigate, balance }) => {
       </div>
       <div className="level-card">
         <div>
-          <div className="level-title">Our Instagram</div>
+          <div className="level-title">Наш Инстаграм</div>
           <div className="level-subtitle">Subscribe for news</div>
         </div>
         <div>

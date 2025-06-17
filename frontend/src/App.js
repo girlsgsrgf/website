@@ -7,7 +7,7 @@ import TasksPage from './TasksPage';
 import RewardsPage from './RewardsPage';
 import AirdropPage from './AirdropPage';
 import CoursePage from './CoursePage';
-import MessagePage from './MessagePage';
+import RoadMapPage from './RoadMapPage';
 import ReadCoursePage1 from './ReadCoursePage1';
 import ReadCoursePage2 from './ReadCoursePage2';
 import ReadCoursePage3 from './ReadCoursePage3';
@@ -134,7 +134,7 @@ const App = () => {
       } else if (activeTab === 'marketplace') {
         return <MarketplacePage />;
       } else if (activeTab === 'settings') {
-        return <MessagePage />;
+        return <RoadMapPage />;
       }
 
       return <div>Страница не найдена</div>;
