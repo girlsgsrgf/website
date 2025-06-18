@@ -19,7 +19,7 @@ function MarketPlacePage() {
 
   return (
     <div className="marketplace-container">
-      <h1 className="marketplace-title">Marketplace</h1>
+      <h1 className="marketplace-title">Маркетплейс</h1>
       <div className="marketplace-columns">
         <div className="marketplace-column">
           {leftColumn.map(product => (

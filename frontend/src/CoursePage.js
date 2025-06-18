@@ -11,10 +11,9 @@ const CoursePage = ({ onNavigate, balance }) => {
       <div className="course-section">
         <div className="course-header">
           <div>
-            <div className="course-label">FLYP Courses</div>
-            <div className="course-link">A curated collection of top-tier courses designed to enhance three key areas of life.</div>
+            <div className="course-label">Курсы</div>
+            <div className="course-link">База знаний для успеха.</div>
           </div>
-          <img src="/icons/course_logo.png" alt="logo" className="logo-image-course" />
         </div>
 
       </div>

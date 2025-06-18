@@ -28,14 +28,17 @@
 }
 
 .course-label {
+  margin-left: 0.5em;
+  color: black;
   font-weight: bold;
-  font-size: 25px;
+  font-size: 27px;
 }
 
 .course-link {
-  font-size: 14px;
+  margin-left: 0.5em;
+  font-size: 16px;
   font-weight: bold;
-  color: #9A9A9A;
+  color: black;
   margin-top: 22px;
 }
 
@@ -59,7 +62,7 @@
 
 .course-card {
   height: 180px;
-  background: rgba(17, 17, 17, 0.2);
+  background-color: black;
   border: 2px solid #333;
   border-radius: 15px;
   padding: 12px;
@@ -70,6 +73,7 @@
 }
 
 .course-title {
+  color: white;
   width: 100%;
   font-weight: bold;
   font-size: 22px;

@@ -7,10 +7,9 @@ const RoadMapPage = ({ onNavigate, balance }) => {
       <div className="roadmap-section">
         <div className="roadmap-header">
           <div>
-            <div className="roadmap-label">FLYP Roadmap</div>
+            <div className="roadmap-label">Roadmap</div>
             <div className="roadmap-link">A clear vision outlining our key milestones from launch to long-term growth and community rewards.</div>
           </div>
-          <img src="/icons/roadmap.png" alt="logo" className="logo-image-roadmap" />
         </div>
       </div>
 

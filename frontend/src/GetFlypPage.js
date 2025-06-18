@@ -30,14 +30,10 @@ export default function GetFlypPage({ onNavigate, balance, isAuthenticated }) {
   return (
     <div className="getflyp-container">
       <div>
-        <div className="logo-title">
-          <img src="icons/wings.png" alt="Fly Up" className="wings-img" />
-        </div>
-
         <div className="balance-section-getflyp">
-          <p className="label">Your Balance</p>
-          <h2 className="balance">${balance.toFixed(2)} FLYP</h2>
-          <div className="wallet-link-getflyp"> ≈ ${balance.toFixed(2)} USD</div>
+          <p className="label">Ваш Баланс</p>
+          <h2 className="balance">${balance.toFixed(2)}</h2>
+          <div className="wallet-link-getflyp"> ≈ ${balance.toFixed(2)} USDT</div>
           <div className="button-row">
             <button
               className="deposit-btn"
@@ -45,30 +41,6 @@ export default function GetFlypPage({ onNavigate, balance, isAuthenticated }) {
             >
               {isAuthenticated ? "Deposit" : "Sign Up"}
             </button>
-          </div>
-        </div>
-
-        <div className="upgrade-section">
-          <div className="card-content">
-            <div className="level-info">
-              <div>
-                <p className="level">Our Instagram</p>
-                <p className="cost">Subscribe for news</p>
-              </div>
-              <img src="icons/upgradeimg.png" alt="coin" className="coin-img" />
-              <div className="upgrade-btn-div">
-                <button className="upgrade-btn">
-                  <a
-                    className="upgrade-button-a"
-                    href="https://instagram.com/flyupcoin"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    Subscribe
-                  </a>
-                </button>
-              </div>
-            </div>
           </div>
         </div>
 

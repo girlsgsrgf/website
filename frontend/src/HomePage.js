@@ -1,55 +1,43 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './HomePage.css';
 
-const HomePage = ({ onNavigate, balance }) => {
+const HomePage = ({ balance: initialBalance }) => {
+  const [balance, setBalance] = useState(initialBalance);
+  const [clicked, setClicked] = useState(false);
+  const [showIncrement, setShowIncrement] = useState(false);
+
+  const handleClick = () => {
+    setClicked(true);
+    setBalance(prev => +(prev + 0.01).toFixed(2));
+    setShowIncrement(true);
+    setTimeout(() => setShowIncrement(false), 1000);
+    setTimeout(() => setClicked(false), 200); // revert icon if needed
+  };
+
   return (
     <div className="main-page">
-      <div className="balance-section">
-        <div className="balance-header">
-          <div>
-            <div className="balance-label">Ваш Баланс</div>
-            <div className="balance-amount">${balance.toFixed(2)} FLYP</div>
-            <div className="wallet-link"> ≈ ${balance.toFixed(2)} USD</div>
-          </div>
-          <img src="/icons/logo.png" alt="logo" className="logo-image" />
-        </div>
-
-        <button className="get-flyp-button" onClick={() => onNavigate('getflyp')}><img src="/icons/getflyp.png" alt="dot" className="get-img" /> Get $FLYP</button>
-        <div className="get-now">Зарегистрируйтесь и получите $15!</div>
-      </div>
-
-     
-
-      <div className="news-box">
-        <div className="news-header">Monthly income</div>
-        <div className="news-text">+ $100.00 FLYP</div>
-        <div className="news-footer"><img src="/icons/perdaycoin.png" alt="dot" className="perdaycoin-img" /></div> 
-      </div>
-
-      <div className="features-row">
-        <div className="feature-box" onClick={() => onNavigate('tasks')}>
-          <img src="/icons/cashwallet.png" alt="dot" className="dot-img" />
-          <div className="feature-text">Задачи</div>
-        </div>
-        <div className="feature-box" onClick={() => onNavigate('rewards')}>
-          <img src="/icons/rewards.png" alt="dot" className="dot-img" />
-          <div className="feature-text">Награды</div>
-        </div>
-        <div className="feature-box" onClick={() => onNavigate('airdrop')}>
-          <img src="/icons/airdrop.png" alt="dot" className="dot-img" />
-          <div className="feature-text">Airdrop</div>
+      <div className="card-container">
+        <img src="icons/card.png" alt="bank card" className="card-image" />
+        <div className="card-balance">
+          <div className="balance-label">Баланс:</div>
+          <div className="balance-amount">${balance.toFixed(2)} FLYP</div>
         </div>
       </div>
-      <div className="level-card">
-        <div>
-          <div className="level-title">Наш Инстаграм</div>
-          <div className="level-subtitle">Subscribe for news</div>
-        </div>
-        <div>
-          <a className="upgrade-button-a" href="https://instagram.com/flyupcoin"><button className="upgrade-button">Subscirbe</button></a>    
-        </div>
-        <img src="/icons/upgradeimg.png" alt="dot" className="level-img" />
-      </div> 
+
+      <div className="clicker-container" onClick={handleClick}>
+        {clicked ? (
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+            <path d="M0 10.9971V18C0 19.6569 1.34315 21 3 21H21C22.6569 21 24 19.6569 24 18V10.9971C23.9725 10.999 23.9447 11 23.9167 11H0.0833334C0.055294 11 0.0275035 10.999 0 10.9971Z" fill="black"/>
+            <path d="M24 9.00291V6C24 4.34315 22.6569 3 21 3H3C1.34315 3 0 4.34315 0 6V9.00291C0.0275035 9.00098 0.055294 9 0.0833334 9H23.9167C23.9447 9 23.9725 9.00098 24 9.00291Z" fill="black"/>
+          </svg>
+        ) : (
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+            <path fillRule="evenodd" clipRule="evenodd" d="M0 6C0 4.34315 1.34315 3 3 3H21C22.6569 3 24 4.34315 24 6V18C24 19.6569 22.6569 21 21 21H3C1.34315 21 0 19.6569 0 18V6ZM2 6C2 5.44772 2.44772 5 3 5H21C21.5523 5 22 5.44772 22 6V9H2V6ZM22 11V18C22 18.5523 21.5523 19 21 19H3C2.44772 19 2 18.5523 2 18V11H22Z" fill="black"/>
+          </svg>
+        )}
+
+        {showIncrement && <div className="floating-plus">+$0.01</div>}
+      </div>
     </div>
   );
 };
