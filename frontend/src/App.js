@@ -7,7 +7,7 @@ import TasksPage from './TasksPage';
 import RewardsPage from './RewardsPage';
 import AirdropPage from './AirdropPage';
 import CoursePage from './CoursePage';
-import RoadMapPage from './RoadMapPage';
+import MessagePage from './MessagePage';
 import ReadCoursePage1 from './ReadCoursePage1';
 import ReadCoursePage2 from './ReadCoursePage2';
 import ReadCoursePage3 from './ReadCoursePage3';
@@ -57,10 +57,10 @@ const App = () => {
 
 
   const tabs = [
-    { key: 'home', icon: homeSvg, activeIcon: activeHome },
-    { key: 'wallet', icon: walletSvg, activeIcon: activeWallet },
+    { key: 'home', icon: homeSvg, activeIcon: activeHome }, 
     { key: 'marketplace', icon: shopSvg, activeIcon: activeShop },
     { key: 'news', icon: newsSvg, activeIcon: activeNews },
+    { key: 'wallet', icon: walletSvg, activeIcon: activeWallet },
     { key: 'settings', icon: settingsSvg, activeIcon: activeSettings },
   ];
 
@@ -146,7 +146,7 @@ const App = () => {
       } else if (activeTab === 'marketplace') {
         return <MarketplacePage />;
       } else if (activeTab === 'settings') {
-        return <RoadMapPage />;
+        return <MessagePage />;
       }
 
       return <div>Страница не найдена</div>;

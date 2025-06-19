@@ -1,15 +1,36 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from decimal import Decimal, ROUND_HALF_UP
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+from django.db import models
 
-class CustomUser(AbstractUser):
-    email = models.EmailField(unique=True)
+class CustomUserManager(BaseUserManager):
+    def create_user(self, telegram_id, username, password=None, **extra_fields):
+        if not telegram_id:
+            raise ValueError('The Telegram ID is required')
+        user = self.model(telegram_id=telegram_id, username=username, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, telegram_id, username, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        return self.create_user(telegram_id, username, password, **extra_fields)
+
+class CustomUser(AbstractBaseUser, PermissionsMixin):
+    telegram_id = models.BigIntegerField(unique=True, null=False, blank=False)
+    username = models.CharField(max_length=150, unique=True)
     balance = models.DecimalField(max_digits=12, decimal_places=2, default=15.00)
-    is_verified = models.BooleanField(default=False)
-    verification_code = models.CharField(max_length=6, blank=True, null=True)
+    is_staff = models.BooleanField(default=False)
 
-    USERNAME_FIELD = 'email'
+    objects = CustomUserManager()
+
+    USERNAME_FIELD = 'telegram_id'
     REQUIRED_FIELDS = ['username']
+
+    def __str__(self):
+        return self.username
 
 class Product(models.Model):
     title = models.CharField(max_length=255)

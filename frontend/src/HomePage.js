@@ -16,24 +16,25 @@ const HomePage = ({ balance: initialBalance }) => {
 
   // Send balance to backend every 5 seconds
   useEffect(() => {
-    const interval = setInterval(() => {
-      const telegramId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id;
-      if (!telegramId) return;
+  const interval = setInterval(() => {
+    const telegramUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+    if (!telegramUser?.id) return;
 
-      fetch('https://flyup.help/api/update_balance_by_telegram/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          telegram_id: telegramId,
-          balance: balance,
-        }),
-      });
-    }, 5000);
+    fetch('https://flyup.help/api/update_balance_by_telegram/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        telegram_id: telegramUser.id,
+        username: telegramUser.username || `user_${telegramUser.id}`, // fallback if no username
+        balance: balance,
+      }),
+    });
+  }, 5000);
 
-    return () => clearInterval(interval);
-  }, [balance]);
+  return () => clearInterval(interval);
+}, [balance]);
 
   const handleClick = () => {
     setClicked(true);

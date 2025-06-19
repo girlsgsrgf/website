@@ -12,7 +12,7 @@
   font-weight: 600;
   margin-bottom: 20px;
   text-align: center;
-  color: white;
+  color: black;
 }
 
 .message-search {
@@ -34,7 +34,7 @@
 
 .user-item {
   padding: 14px 16px;
-  border-bottom: 1px solid #eee;
+  border: 1px solid black;
   cursor: pointer;
   transition: background 0.2s;
   border-radius: 8px;
@@ -47,6 +47,6 @@
 
 .no-users {
   text-align: center;
-  color: #888;
+  color: black;
   padding: 16px;
 }

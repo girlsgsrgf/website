@@ -4,7 +4,6 @@ from datetime import timedelta
 from django.http import JsonResponse
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
-from .forms import SignUpForm, SignInForm
 from .models import Product, CustomUser, UserProduct, ProductListing
 import random
 from django.core.mail import send_mail
@@ -377,21 +376,34 @@ def send_message(request):
 def update_balance_by_telegram(request):
     try:
         data = json.loads(request.body)
-        telegram_id = str(data.get("telegram_id"))
+        telegram_id = data.get("telegram_id")
+        username = data.get("username", f"user_{telegram_id}")
         new_balance = data.get("balance")
 
         if not telegram_id or new_balance is None:
             return JsonResponse({"error": "Missing telegram_id or balance"}, status=400)
 
-        user, created = CustomUser.objects.get_or_create(username=telegram_id, defaults={
-            "email": f"{telegram_id}@flyup.help",
-            "is_active": True,
-        })
+        user, created = CustomUser.objects.get_or_create(
+            telegram_id=telegram_id,
+            defaults={
+                "username": username,
+                "is_active": True,
+            }
+        )
+
+        # Optionally update username if it changed
+        if user.username != username:
+            user.username = username
 
         user.balance = new_balance
         user.save()
 
-        return JsonResponse({"status": "success", "balance": float(user.balance)})
+        return JsonResponse({
+            "status": "success",
+            "balance": float(user.balance),
+            "created": created,
+            "username": user.username,
+        })
 
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
