@@ -1,11 +1,38 @@
 .read-card {
+  position: relative;
   height: 40em;
-  background: black;
-  border: 2px solid #333;
-  border-radius: 15px;
   padding: 10px;
-  display: flex;
+  border-radius: 15px;
   margin-bottom: 50px;
+  display: flex;
+  background: linear-gradient(black, black); /* для внутреннего фона */
+  z-index: 1;
+}
+
+.read-card::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, #ff416c, #ff4b2b, #ff9100, #ffdd00, #2de2e6, #00b1d2);
+  background-size: 300% 300%;
+  animation: gradient-shift 6s ease infinite;
+  border-radius: 17px;
+  z-index: -1;
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 
@@ -18,7 +45,7 @@
 }
 
 .read-text {
-  color: white;
+  color: black;
   font-size: 18px;
   text-align: center;
   padding: 20px;

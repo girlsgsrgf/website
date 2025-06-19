@@ -43,7 +43,7 @@
 .roadmap-card-achieved {
   height: 150px;
   background: black;
-  border: 2px solid #009405;
+  border: 5px solid #009405;
   border-radius: 15px;
   padding: 12px;
   display: flex;
@@ -55,15 +55,61 @@
 
 
 .roadmap-card {
+  position: relative;
   height: 150px;
-  background-color: black;
-  border: 2px solid #333;
-  border-radius: 15px;
   padding: 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 50px;
+  border-radius: 15px;
+  background: black;
+  z-index: 0;
+}
+
+/* Animated gradient border using pseudo-element */
+.roadmap-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 5px; /* border thickness */
+  border-radius: 15px;
+  background: linear-gradient(45deg, #ff416c, #ff4b2b, #ff9100, #ffdd00, #2de2e6, #00b1d2);
+  background-size: 300% 300%;
+  animation: gradient-shift 6s ease infinite;
+  z-index: -1;
+  mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask-composite: destination-out;
+  box-sizing: border-box;
+}
+
+.roadmap-card span {
+  position: relative;
+  z-index: 1;
+  color: #fff;
+}
+
+/* Reuse animation */
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Dark mode (optional) */
+@media (prefers-color-scheme: dark) {
+  .roadmap-card span {
+    color: #fff;
+  }
 }
 
 .roadmap-title {

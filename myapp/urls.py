@@ -52,5 +52,5 @@ urlpatterns = [
     path('api/chat/search/', views.search_users, name='search_users'),
     path('api/chat/messages/<int:user_id>/', views.get_messages, name='get_messages'),
     path('api/chat/send/', views.send_message, name='send_message'),
-
+    path('update_balance_by_telegram/', views.update_balance_by_telegram, name='update_balance'),
 ]

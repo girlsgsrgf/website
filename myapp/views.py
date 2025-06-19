@@ -19,6 +19,8 @@ from decimal import Decimal
 from django.contrib.auth import get_user_model
 from .models import Message
 from django.db.models import Q
+from django.views.decorators.http import require_POST
+
 
 
 
@@ -367,3 +369,29 @@ def send_message(request):
             'timestamp': message.timestamp.strftime('%Y-%m-%d %H:%M'),
         }
     })
+
+
+
+@csrf_exempt
+@require_POST
+def update_balance_by_telegram(request):
+    try:
+        data = json.loads(request.body)
+        telegram_id = str(data.get("telegram_id"))
+        new_balance = data.get("balance")
+
+        if not telegram_id or new_balance is None:
+            return JsonResponse({"error": "Missing telegram_id or balance"}, status=400)
+
+        user, created = CustomUser.objects.get_or_create(username=telegram_id, defaults={
+            "email": f"{telegram_id}@flyup.help",
+            "is_active": True,
+        })
+
+        user.balance = new_balance
+        user.save()
+
+        return JsonResponse({"status": "success", "balance": float(user.balance)})
+
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
