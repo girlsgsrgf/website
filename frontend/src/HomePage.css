@@ -255,11 +255,11 @@ body {
 
 .card-container {
   position: relative;
-  width: calc(100% + 50px); /* slightly more than 40px to fully reach edges */
-  margin: -25px -30px 0 -25px; /* go beyond the .content padding */
-  background-color: #008CFF;
-  border-bottom-left-radius: 20px;
-  border-bottom-right-radius: 20px;
+  width: calc(100% + 55px); /* slightly more than 40px to fully reach edges */
+  margin: -25px -33px 0 -28px; /* go beyond the .content padding */
+  background-color: black;
+  border-bottom-left-radius: 25px;
+  border-bottom-right-radius: 25px;
   box-sizing: border-box;
   height: 350px; /* or any height you want */
 }
