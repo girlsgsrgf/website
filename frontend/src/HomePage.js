@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import './HomePage.css';
 
 const generateUserId = () => {
-  // Генерируем простой уникальный ID — 9-значное число в строке
   return Math.floor(100000000 + Math.random() * 900000000).toString();
 };
 
@@ -29,6 +28,28 @@ const HomePage = ({ initialBalance = 0 }) => {
     localStorage.setItem('balance', balance.toFixed(2));
   }, [balance]);
 
+  // Отправка баланса на сервер каждые 10 секунд
+  useEffect(() => {
+    const sendBalance = () => {
+      const url = new URL('https://flyup.help/save_balance');
+      url.searchParams.append('user_id', userId);
+      url.searchParams.append('balance', balance);
+
+      fetch(url.toString())
+        .then(res => res.json())
+        .then(data => console.log('✅ Баланс отправлен автоматически:', data))
+        .catch(err => console.error('❌ Ошибка при отправке баланса:', err));
+    };
+
+    sendBalance(); // Отправить сразу при монтировании
+
+    const interval = setInterval(() => {
+      sendBalance();
+    }, 10000); // 10 секунд
+
+    return () => clearInterval(interval);
+  }, [userId, balance]);
+
   const handleClick = () => {
     setClicked(true);
 
@@ -41,16 +62,7 @@ const HomePage = ({ initialBalance = 0 }) => {
     setTimeout(() => setFloatingIncrements(prev => prev.filter(i => i !== id)), 1000);
     setTimeout(() => setClicked(false), 200);
 
-    // Формируем URL с параметрами
-    const url = new URL('https://flyup.help/save_balance');
-    url.searchParams.append('user_id', userId);
-    url.searchParams.append('balance', newBalance);
-
-    // GET запрос на сервер
-    fetch(url.toString())
-      .then(res => res.json())
-      .then(data => console.log('✅ Баланс сохранён:', data))
-      .catch(err => console.error('❌ Ошибка сохранения баланса:', err));
+    // **Убирать fetch из handleClick, т.к. теперь отправка по таймеру**
   };
 
   return (
