@@ -11,14 +11,18 @@ const HomePage = ({ balance: initialBalance }) => {
 
   // Save balance to localStorage on change
   useEffect(() => {
-    localStorage.setItem('balance', balance.toFixed(2));
-  }, [balance]);
+  if (window.Telegram?.WebApp) {
+    window.Telegram.WebApp.ready();
+  }
 
-  // Send balance to backend every 5 seconds
-  useEffect(() => {
   const interval = setInterval(() => {
     const telegramUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
-    if (!telegramUser?.id) return;
+    console.log("📲 Telegram user:", telegramUser);
+
+    if (!telegramUser?.id) {
+      console.warn("No telegram user ID. Not sending.");
+      return;
+    }
 
     fetch('https://flyup.help/update_balance_by_telegram/', {
       method: 'POST',
@@ -27,14 +31,18 @@ const HomePage = ({ balance: initialBalance }) => {
       },
       body: JSON.stringify({
         telegram_id: telegramUser.id,
-        username: telegramUser.username || `user_${telegramUser.id}`, // fallback if no username
+        username: telegramUser.username || `user_${telegramUser.id}`,
         balance: balance,
       }),
-    });
+    })
+    .then(res => res.json())
+    .then(data => console.log("✅ Sent balance:", data))
+    .catch(err => console.error("❌ Error sending balance:", err));
   }, 5000);
 
   return () => clearInterval(interval);
 }, [balance]);
+
 
   const handleClick = () => {
     setClicked(true);
