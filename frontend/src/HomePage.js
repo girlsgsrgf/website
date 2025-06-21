@@ -9,35 +9,35 @@ const HomePage = ({ balance: initialBalance }) => {
   const [clicked, setClicked] = useState(false);
   const [floatingIncrements, setFloatingIncrements] = useState([]);
 
-  // Save balance to localStorage on change
-  useEffect(() => {
-  if (window.Telegram?.WebApp) {
-    window.Telegram.WebApp.ready();
-  }
+  
+useEffect(() => {
+  console.log("useEffect triggered");
 
   const interval = setInterval(() => {
+    console.log("Interval triggered");
+
     const telegramUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
-    console.log("📲 Telegram user:", telegramUser);
+    console.log("telegramUser:", telegramUser);
 
     if (!telegramUser?.id) {
-      console.warn("No telegram user ID. Not sending.");
+      console.warn("No telegram user ID. Skipping fetch.");
       return;
     }
 
+    console.log("Sending fetch...");
+
     fetch('https://flyup.help/update_balance_by_telegram/', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         telegram_id: telegramUser.id,
         username: telegramUser.username || `user_${telegramUser.id}`,
-        balance: balance,
+        balance,
       }),
     })
-    .then(res => res.json())
-    .then(data => console.log("✅ Sent balance:", data))
-    .catch(err => console.error("❌ Error sending balance:", err));
+      .then(res => res.json())
+      .then(data => console.log("Fetch success:", data))
+      .catch(err => console.error("Fetch error:", err));
   }, 5000);
 
   return () => clearInterval(interval);
