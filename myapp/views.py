@@ -369,40 +369,31 @@ def send_message(request):
         }
     })
 
-
-
 @csrf_exempt
-@require_POST
-def update_balance_by_telegram(request):
+def save_balance(request):
+    user_id = request.GET.get('user_id')
+    balance = request.GET.get('balance')
+
+    if not user_id or balance is None:
+        return JsonResponse({'error': 'Missing user_id or balance'}, status=400)
+
     try:
-        data = json.loads(request.body)
-        telegram_id = data.get("telegram_id")
-        username = data.get("username", f"user_{telegram_id}")
-        new_balance = data.get("balance")
+        balance = float(balance)
+    except ValueError:
+        return JsonResponse({'error': 'Invalid balance value'}, status=400)
 
-        if not telegram_id or new_balance is None:
-            return JsonResponse({"error": "Missing telegram_id or balance"}, status=400)
+    user, created = CustomUser.objects.get_or_create(
+        telegram_id=user_id,  # Здесь telegram_id - это наш user_id из браузера
+        defaults={'username': f'user_{user_id}', 'balance': balance}
+    )
 
-        user, created = CustomUser.objects.get_or_create(
-            telegram_id=telegram_id,
-            defaults={
-                "username": username
-            }
-        )
-
-        # Optionally update username if it changed
-        if user.username != username:
-            user.username = username
-
-        user.balance = new_balance
+    if not created:
+        user.balance = balance
         user.save()
 
-        return JsonResponse({
-            "status": "success",
-            "balance": float(user.balance),
-            "created": created,
-            "username": user.username,
-        })
-
-    except Exception as e:
-        return JsonResponse({"error": str(e)}, status=500)
+    return JsonResponse({
+        'status': 'success',
+        'user_id': user_id,
+        'balance': user.balance,
+        'created': created,
+    })
