@@ -1,30 +1,27 @@
 import React, { useCallback, useEffect, useState } from "react";
 import "./GetFlypPage.css";
 
-export default function GetFlypPage({ onNavigate, balance, isAuthenticated }) {
+export default function GetFlypPage({ onNavigate }) {
   const [myProducts, setMyProducts] = useState([]);
+  const [balance, setBalance] = useState(() => {
+    const stored = localStorage.getItem('balance');
+    return stored ? parseFloat(stored) : 0;
+  });
 
-  // Получаем продукты пользователя, если он авторизован
+  // Получаем продукты всегда (без авторизации)
   useEffect(() => {
-    if (isAuthenticated) {
-      fetch('/api/my-products/')  // предположим такой эндпоинт отдаёт товары текущего пользователя
-        .then(res => res.json())
-        .then(data => setMyProducts(data))
-        .catch(console.error);
-    }
-  }, [isAuthenticated]);
+    fetch('/api/my-products/')
+      .then(res => res.json())
+      .then(data => setMyProducts(data))
+      .catch(console.error);
+  }, []);
 
   const handleButtonClick = useCallback(() => {
-    if (isAuthenticated) {
-      onNavigate('deposit');  // Переход к DepositPage
-    } else {
-      window.location.href = '/signup/';  // Редирект на страницу регистрации
-    }
-  }, [isAuthenticated, onNavigate]);
+    window.location.href = '/deposit/';
+  }, []);
 
   const handleSellClick = (productId) => {
-    // Переходим на страницу sell товара, где будет buy.html с кнопкой sell
-    window.location.href = `api/sell-product/${productId}/`;  // Django URL, показывающий buy.html с sell-кнопкой
+    window.location.href = `api/sell-product/${productId}/`;
   };
 
   return (
@@ -33,18 +30,18 @@ export default function GetFlypPage({ onNavigate, balance, isAuthenticated }) {
         <div className="balance-section-getflyp">
           <p className="label">Ваш Баланс</p>
           <h2 className="balance">${balance.toFixed(2)}</h2>
-          <div className="wallet-link-getflyp"> ≈ ${balance.toFixed(2)} USDT</div>
+          <div className="wallet-link-getflyp">≈ ${balance.toFixed(2)} USDT</div>
           <div className="button-row">
             <button
               className="deposit-btn"
               onClick={handleButtonClick}
             >
-              {isAuthenticated ? "Deposit" : "Sign Up"}
+              Deposit
             </button>
           </div>
         </div>
 
-        {isAuthenticated && myProducts.length > 0 && (
+        {myProducts.length > 0 && (
           <div className="my-products-section">
             <h3 className="section-title">Your Products</h3>
             <div className="marketplace-columns">

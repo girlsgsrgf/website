@@ -109,10 +109,15 @@ def product_list(request):
     ]
     return JsonResponse(data, safe=False)
 
-@login_required
 def buy_view(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     buyer = request.user
+    new_balance = request.session.pop('new_balance', None)  # Получаем и удаляем из сессии
+    
+    context = {
+        'product': product,
+        'new_balance': new_balance,
+    }
 
     if request.method == 'POST':
         try:
@@ -192,16 +197,16 @@ def buy_view(request, product_id):
             buyer.balance -= total_price
             buyer.save()
 
-            
+            new_balance = float(buyer.balance)
+            request.session['new_balance'] = float(buyer.balance)
             
         messages.success(request, f"Вы купили {quantity} шт. {product.title} за ${total_price:.2f}")
         return redirect('buy_view', product_id=product.id)
 
-    return render(request, 'buy.html', {'product': product})
+    return render(request, 'buy.html', context)
 
 
 
-@login_required
 def sell_view(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     user = request.user
