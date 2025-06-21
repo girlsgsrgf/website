@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './HomePage.css';
 
 const generateUserId = () => {
@@ -22,37 +22,36 @@ const HomePage = ({ initialBalance = 0 }) => {
 
   const [clicked, setClicked] = useState(false);
   const [floatingIncrements, setFloatingIncrements] = useState([]);
+  const lastSentBalanceRef = useRef(balance);
 
   // Сохраняем баланс в localStorage при изменении
   useEffect(() => {
     localStorage.setItem('balance', balance.toFixed(2));
   }, [balance]);
 
-  // Отправка баланса на сервер каждые 10 секунд
+  // Отправка баланса только каждые 10 секунд и только если он изменился
   useEffect(() => {
-    const sendBalance = () => {
-      const url = new URL('https://flyup.help/save_balance');
-      url.searchParams.append('user_id', userId);
-      url.searchParams.append('balance', balance);
-
-      fetch(url.toString())
-        .then(res => res.json())
-        .then(data => console.log('✅ Баланс отправлен автоматически:', data))
-        .catch(err => console.error('❌ Ошибка при отправке баланса:', err));
-    };
-
-    sendBalance(); // Отправить сразу при монтировании
-
     const interval = setInterval(() => {
-      sendBalance();
-    }, 10000); // 10 секунд
+      if (balance !== lastSentBalanceRef.current) {
+        const url = new URL('https://flyup.help/save_balance');
+        url.searchParams.append('user_id', userId);
+        url.searchParams.append('balance', balance);
+
+        fetch(url.toString())
+          .then(res => res.json())
+          .then(data => {
+            console.log('✅ Баланс отправлен:', data);
+            lastSentBalanceRef.current = balance; // обновляем последний отправленный баланс
+          })
+          .catch(err => console.error('❌ Ошибка при отправке баланса:', err));
+      }
+    }, 10000); // каждые 10 секунд
 
     return () => clearInterval(interval);
   }, [userId, balance]);
 
   const handleClick = () => {
     setClicked(true);
-
     const newBalance = +(balance + 0.01).toFixed(2);
     setBalance(newBalance);
 
@@ -61,8 +60,6 @@ const HomePage = ({ initialBalance = 0 }) => {
     setFloatingIncrements(prev => [...prev, id]);
     setTimeout(() => setFloatingIncrements(prev => prev.filter(i => i !== id)), 1000);
     setTimeout(() => setClicked(false), 200);
-
-    // **Убирать fetch из handleClick, т.к. теперь отправка по таймеру**
   };
 
   return (
