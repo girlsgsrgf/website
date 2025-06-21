@@ -30,43 +30,43 @@ def index_view(request):
     return render(request, 'index.html')
 
 
-def signup_view(request):
-    if request.method == 'POST':
-        form = SignUpForm(request.POST)
-        if form.is_valid():
-            user = form.save(commit=False)
-            code = str(random.randint(100000, 999999))
-            user.verification_code = code
-            user.is_active = False
-            user.save()
-            send_mail(
-                'Your FlyUp Verification Code',
-                f'Your code is: {code}',
-                settings.DEFAULT_FROM_EMAIL,
-                [user.email],
-                fail_silently=False,
-            )
-            return redirect('verify_email')
-        else:
-            print(form.errors)
-    else:
-        form = SignUpForm()
-    return render(request, 'signup.html', {'form': form})
+#def signup_view(request):
+ #   if request.method == 'POST':
+  #      form = SignUpForm(request.POST)
+   #     if form.is_valid():
+    #        user = form.save(commit=False)
+     #       code = str(random.randint(100000, 999999))
+      #      user.verification_code = code
+       #     user.is_active = False
+        #    user.save()
+         #   send_mail(
+          #      'Your FlyUp Verification Code',
+           #     f'Your code is: {code}',
+            #    settings.DEFAULT_FROM_EMAIL,
+             #   [user.email],
+              #  fail_silently=False,
+            #)
+            #return redirect('verify_email')
+        #else:
+         #   print(form.errors)
+    #else:
+     #   form = SignUpForm()
+    #return render(request, 'signup.html', {'form': form})
 
 
-def signin_view(request):
-    if request.method == 'POST':
-        form = SignInForm(request, data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            if user.is_verified:
-                login(request, user)
-                return redirect('/')
-            else:
-                return redirect('verify_email')
-    else:
-        form = SignInForm()
-    return render(request, 'signin.html', {'form': form})
+#def signin_view(request):
+ #   if request.method == 'POST':
+  #      form = SignInForm(request, data=request.POST)
+   #     if form.is_valid():
+    #        user = form.get_user()
+     #       if user.is_verified:
+      #          login(request, user)
+       #         return redirect('/')
+        #    else:
+         #       return redirect('verify_email')
+    #else:
+     #   form = SignInForm()
+    #return render(request, 'signin.html', {'form': form})
 
 
 def verify_email(request):
@@ -386,8 +386,7 @@ def update_balance_by_telegram(request):
         user, created = CustomUser.objects.get_or_create(
             telegram_id=telegram_id,
             defaults={
-                "username": username,
-                "is_active": True,
+                "username": username
             }
         )
 

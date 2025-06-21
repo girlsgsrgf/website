@@ -20,7 +20,7 @@ const HomePage = ({ balance: initialBalance }) => {
     const telegramUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
     if (!telegramUser?.id) return;
 
-    fetch('https://flyup.help/api/update_balance_by_telegram/', {
+    fetch('https://flyup.help/update_balance_by_telegram/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
