@@ -10,266 +10,171 @@ body {
   margin: 0; /* remove margin to bring it to the top */
   padding-top: 1em; /* optional: if you still want spacing below the top edge */
 }
-.app-title {
-  font-weight: bold;
-  font-size: 18px;
-  margin-bottom: 20px;
-  margin-top: -0.2em;
-}
 
-.balance-section {
-  margin-left: -1em;
-  background: transparent;
-  border-radius: 10px;
-  padding: 10px 0;
-  margin-bottom: 20px;
-}
-
-.balance-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 12px;
-}
-
-.balance-label {
-  font-weight: bold;
-  font-size: 25px;
-}
-
-.balance-amount {
-  font-size: 32px;
-  font-weight: bold;
-  margin: 4px 0;
-  margin-top: 0.3em;
-}
-
-.wallet-link {
-  font-size: 13px;
-  color: #999;
-  margin-top: 0.5em;
-}
-
-.logo-circle {
-  width: 48px;
-  height: 48px;
-  background: white;
-  color: black;
-  font-weight: bold;
-  font-size: 20px;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.get-flyp-button {
-  margin: 16px auto 4px;
-  margin-top: 1.6em;
-  margin-left: 0.5em;
-  display: block;
-  background: linear-gradient(145deg, #ffffff, #f0f8ff);
-  color: black;
-  font-weight: bold;
-  border: none;
-  padding: 12px 50px;
-  width: 350px;
-  border-radius: 15px;
-  font-size: 22px;
-}
-
-
-
-.get-now {
-  text-align: center;
-  color: #999;
-  font-size: 15px;
-  margin-bottom: 16px;
-  margin-top: 0.65em;
-  margin-left: 0.9em;
-}
-
-.upgrade-button.disabled {
-  padding: 8px 20px;
-  border-radius: 12px;
-  background: white;
-  color: black;
-  font-weight: 500;
-  border: none;
-  font-size: 20px;
-  margin-left: -10em;
-  margin-top: 5em;
-}
-
-
-.level-card {
-  height: 160px;
-  background: rgba(17, 17, 17, 0.2);
-  border: 2px solid #333;
-  border-radius: 15px;
-  padding: 12px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.level-title {
-  font-weight: bold;
-  font-size: 22px;
-  margin-left: 0.5em;
-  margin-top: -3em;
-  width: 150px;
-}
-
-.level-subtitle {
-  width: 200px;
-  margin-left: 0.5em;
-  margin-top: 0.2em;
-  font-size: 18px;
-  color: white;
-}
-
-
-.upgrade-button {
-  padding: 8px 20px;
-  border-radius: 12px;
-  background: white;
-  color: black;
-  font-weight: 400;
-  border: none;
-  font-size: 20px;
-  margin-left: -10em;
-  margin-top: 5em;
-}
-
-.upgrade-button-a {
-  font-size: 20px;
-  text-decoration: none;
-  color: black;
-}
-
-.features-row {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 20px;
-  margin-top: 20px;
-}
-
-.feature-box {
-  height: 65px;
-  width: 30%;
-  background: rgba(17, 17, 17, 0.2);
-  border: 2px solid #333;
-  border-radius: 15px;
-  padding: 12px 0;
-  text-align: center;
-  font-size: 14px;
-}
-
-.red-dot {
-  width: 16px;
-  height: 16px;
-  background: red;
-  border-radius: 50%;
-  margin: 0 auto 6px;
-}
-
-.logo-image {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-}
-
-.get-img {
-  width: 25px;
-  height: 25px;
-  position: relative;
-  top: 3.5px; /* move it down */
-}
-
-
-.dot-img {
-  width: 50px;
-  height: 50px;
-  display: block;
-  margin: 0 auto 6px;
-}
-
-.level-img {
-  width: 140px;
-  height: 140px;
-  margin-bottom: -2em;
-  margin-top: -1.7em;
-  margin-left: -2.5em;
-}
-
-.dot-small-img {
-  width: 10px;
-  height: 10px;
-  margin-left: 4px;
-}
-
-.perdaycoin-img {
-  width: 46px;
-  height: 46px;
-  margin-left: 16em;
-}
-
-/* remove .logo-circle and .red-dot if unused anymore */
-
-
-.news-box {
-  height: 70px;
-  background: rgba(17, 17, 17, 0.2);
-  border: 2px solid #333;
-  border-radius: 15px;
-  padding: 12px;
-}
-
-.news-header {
-  width: 200px;
-  font-weight: bold;
-  margin-bottom: 6px;
-  font-size: 20px;
-  margin-left: 0.5em;
-  margin-top: 0.4em;
-}
-
-.news-text {
-  font-size: 18px;
-  margin-bottom: 10px;
-  margin-top: 0.35em;
-  margin-left: 0.5em;
-}
-
-.news-footer {
-  margin-top: -3.65em;
-}
-
-.red-dot.small {
-  width: 10px;
-  height: 10px;
-  margin-left: 4px;
-}
 
 .card-container {
   position: relative;
   width: calc(100% + 55px); /* slightly more than 40px to fully reach edges */
   margin: -25px -33px 0 -28px; /* go beyond the .content padding */
-  background-color: black;
+  background-color: #212121;
   border-bottom-left-radius: 25px;
   border-bottom-right-radius: 25px;
   box-sizing: border-box;
-  height: 350px; /* or any height you want */
+  height: 300px; /* or any height you want */
+}
+
+.flip-card {
+  background-color: transparent;
+  width: 90%;
+  max-width: 500px;
+  height: auto;
+  aspect-ratio: 16 / 10;
+  perspective: 1000px;
+  color: white;
+  position: relative;
+  margin: 0 auto;
+  padding-top: 2em; /* сверху 20px, слева и справа auto, снизу 0 */
+}
+
+.number {
+  position: absolute;
+  font-weight: bold;
+  font-size: 1em; /* было .6em */
+  top: 5em;
+  left: 1.6em;
+}
+
+.name {
+  position: absolute;
+  font-weight: bold;
+  font-size: 0.8em; /* было .5em */
+  top: 13.4em;
+  left: 2.2em;
+}
+
+.date_8264 {
+  position: absolute;
+  font-weight: bold;
+  font-size: 1.3em; /* было 0.5em */
+  top: 6.25em;
+  left: 1.8em;
+}
+
+.heading_8264 {
+  position: absolute;
+  letter-spacing: .2em;
+  font-size: 0.9em; /* было 0.5em */
+  top: 1em;
+  left: 14em;
+}
+
+.logo {
+  position: absolute;
+  top: 10em;
+  left: 17em;
+  transform: scale(1.65); /* увеличиваем логотип */
+}
+
+.chip {
+  position: absolute;
+  top: 2.6em;
+  left: 3.5em;
+  transform: scale(1.7);
+}
+
+.contactless {
+  position: absolute;
+  top: 5em;
+  left: 18.5em;
+  transform: scale(1.6);
 }
 
 
+.valid_thru {
+  position: absolute;
+  font-weight: bold;
+  font-size: 0.9em;
+  top: 8em;
+  left: 3.2em;
+}
 
-.card-image {
+.strip {
+  position: absolute;
+  background-color: black;
   width: 100%;
-  margin-top: 1em;
-  border-radius: 15px;
+  height: 3em;
+  top: 3em;
+  background: repeating-linear-gradient(
+    45deg,
+    #303030,
+    #303030 10px,
+    #202020 10px,
+    #202020 20px
+  );
+}
+
+.mstrip {
+  position: absolute;
+  background-color: rgb(255, 255, 255);
+  width: 12em;
+  height: 1.6em;
+  top: 8em;
+  left: .95em;
+  border-radius: 3.5px;
+}
+
+.sstrip {
+  position: absolute;
+  background-color: rgb(255, 255, 255);
+  width: 5.8em;
+  height: 1.6em;
+  top: 8em;
+  left: 15em;
+  border-radius: 3.5px;
+}
+
+.code {
+  font-weight: bold;
+  text-align: center;
+  margin: .2em;
+  color: black;
+}
+
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+}
+
+.flip-card:hover .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+.flip-card-front, .flip-card-back {
+  box-shadow: 0 8px 14px 0 rgba(0,0,0,0.2);
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  border-radius: 1rem;
+}
+
+.flip-card-front {
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 2px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -1px 0px inset;
+  background-color: #171717;
+}
+
+.flip-card-back {
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 2px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -1px 0px inset;
+  background-color: #171717;
+  transform: rotateY(180deg);
 }
 
 .card-balance {
@@ -285,11 +190,13 @@ body {
   font-size: 20px;
   font-weight: 500;
   margin-bottom: 4px;
+  display: none;
 }
 
 .balance-amount {
   font-size: 30px;
   font-weight: bold;
+  display: none;
 }
 
 
@@ -345,3 +252,92 @@ body {
 }
 
 /* Остальной ваш CSS для .clicker-container и .floating-plus сохраняется */
+
+
+/* From Uiverse.io by Yaya12085 */ 
+.card {
+  padding: 1rem;
+  background-color: #fff;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  width: 130px;
+  border-radius: 20px;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+}
+
+.title span {
+  position: relative;
+  padding: 0.5rem;
+  background-color: #10B981;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 9999px;
+}
+
+.title span svg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #ffffff;
+  height: 1rem;
+}
+
+.title-text {
+  margin-left: 0.5rem;
+  color: #374151;
+  font-size: 18px;
+}
+
+.percent {
+  margin-left: 0.5rem;
+  color: #02972f;
+  font-weight: 600;
+  display: flex;
+}
+
+.data {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.data p {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  color: #1F2937;
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  font-weight: 700;
+  text-align: left;
+}
+
+.data .range {
+  position: relative;
+  background-color: #E5E7EB;
+  width: 100%;
+  height: 0.5rem;
+  border-radius: 0.25rem;
+}
+
+.data .range .fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #10B981;
+  width: 76%;
+  height: 100%;
+  border-radius: 0.25rem;
+}
+
+
+.info-cards-row {
+  display: flex;
+  justify-content: center; /* or space-between/space-around */
+  gap: 16px; /* space between cards */
+  flex-wrap: wrap; /* optional: allows wrapping on smaller screens */
+  margin-bottom: 20px;
+}
