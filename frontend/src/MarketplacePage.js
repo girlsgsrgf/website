@@ -11,7 +11,8 @@ function MarketPlacePage() {
   }, []);
 
   const handleClick = (id) => {
-    window.location.href = `/buy/${id}/`;
+    const userId = localStorage.getItem('user_id'); 
+    window.location.href = `/buy/${id}/?user_id=${userId}`;
   };
 
   const leftColumn = products.filter((_, i) => i % 2 === 0);

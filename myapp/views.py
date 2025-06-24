@@ -111,7 +111,17 @@ def product_list(request):
 
 def buy_view(request, product_id):
     product = get_object_or_404(Product, id=product_id)
-    buyer = request.user
+    from django.contrib.auth import get_user_model
+    User = get_user_model()
+
+    user_id = request.GET.get('user_id')
+    if not user_id:
+        return HttpResponseForbidden("User ID is required")
+    try:
+        buyer = User.objects.get(id=user_id)
+    except User.DoesNotExist:
+        return HttpResponseNotFound("User not found")
+
     new_balance = request.session.pop('new_balance', None)  # Получаем и удаляем из сессии
     
     context = {
@@ -254,7 +264,6 @@ def sell_view(request, product_id):
         'user_product': user_product,
         'is_selling': True,
     })
-
 
 @login_required
 def my_products_api(request):
