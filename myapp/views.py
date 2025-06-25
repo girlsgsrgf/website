@@ -19,6 +19,8 @@ from django.contrib.auth import get_user_model
 from .models import Message
 from django.db.models import Q
 from django.views.decorators.http import require_POST
+from django.http import HttpResponseNotFound
+
 
 
 
@@ -94,9 +96,17 @@ def get_user_balance(request):
         'balance': float(user.balance)
     })
 
-
 def product_list(request):
+    search = request.GET.get('search', '').strip()
+    category = request.GET.get('category', '').strip()
+
     products = Product.objects.filter(supply__gt=0)
+
+    if search:
+        products = products.filter(title__icontains=search)
+
+    if category:
+        products = products.filter(category__iexact=category)
 
     data = [
         {
@@ -104,10 +114,14 @@ def product_list(request):
             'title': product.title,
             'description': product.description,
             'price': float(product.price),
-            'image': product.image_url
-        } for product in products
+            'category': product.category,       # add category to the response
+            'image': product.image_url,
+        }
+        for product in products
     ]
+
     return JsonResponse(data, safe=False)
+
 
 def buy_view(request, product_id):
     product = get_object_or_404(Product, id=product_id)

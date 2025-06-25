@@ -36,6 +36,7 @@ class Product(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
+    category = models.CharField(max_length=100, default="Uncategorized") 
     base_price = models.DecimalField(max_digits=10, decimal_places=2, default=10.00)  # fixed base
     supply = models.PositiveIntegerField(default=0)  # добавляем это поле
     owner = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True, related_name='owned_products')
