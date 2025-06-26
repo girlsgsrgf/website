@@ -19,7 +19,7 @@ from django.contrib.auth import get_user_model
 from .models import Message
 from django.db.models import Q
 from django.views.decorators.http import require_POST
-from django.http import HttpResponseNotFound
+from django.http import HttpResponseNotFound, HttpResponseForbidden
 
 
 
