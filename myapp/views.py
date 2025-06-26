@@ -134,9 +134,9 @@ def buy_view(request, product_id):
     try:
         buyer, created = CustomUser.objects.get_or_create(
         telegram_id=user_id,  # Здесь telegram_id - это наш user_id из браузера
-        defaults={'username': f'user_{user_id}', 'balance': balance}
+        defaults={'username': f'user_{user_id}'}
     )
-        
+
     except User.DoesNotExist:
         return HttpResponseNotFound("User not found")
 
