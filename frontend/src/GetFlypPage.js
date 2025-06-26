@@ -10,7 +10,8 @@ export default function GetFlypPage({ onNavigate }) {
 
   // Получаем продукты всегда (без авторизации)
   useEffect(() => {
-    fetch('/api/my-products/')
+    const userId = localStorage.getItem('user_id');
+    fetch('/api/my-products/?user_id=${userId}')
       .then(res => res.json())
       .then(data => setMyProducts(data))
       .catch(console.error);
@@ -30,7 +31,7 @@ export default function GetFlypPage({ onNavigate }) {
         <div className="balance-section-getflyp">
           <p className="label">Ваш Баланс</p>
           <h2 className="balance">${balance.toFixed(2)}</h2>
-          <div className="wallet-link-getflyp">≈ ${balance.toFixed(2)} USDT</div>
+          <div className="wallet-link-getflyp">{balance.toFixed(2)} USDT</div>
           <div className="button-row">
             <button
               className="deposit-btn"

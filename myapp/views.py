@@ -283,9 +283,12 @@ def sell_view(request, product_id):
         'is_selling': True,
     })
 
-@login_required
 def my_products_api(request):
-    user_products = UserProduct.objects.filter(user=request.user, quantity__gt=0)
+    from django.contrib.auth import get_user_model
+    User = get_user_model()
+
+    user_id = request.GET.get('user_id')
+    user_products = UserProduct.objects.filter(user=user_id, quantity__gt=0)
 
     data = [
         {
