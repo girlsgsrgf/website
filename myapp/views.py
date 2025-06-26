@@ -132,7 +132,11 @@ def buy_view(request, product_id):
     if not user_id:
         return HttpResponseForbidden("User ID is required")
     try:
-        buyer = User.objects.get(id=user_id)
+        buyer, created = CustomUser.objects.get_or_create(
+        telegram_id=user_id,  # Здесь telegram_id - это наш user_id из браузера
+        defaults={'username': f'user_{user_id}', 'balance': balance}
+    )
+        
     except User.DoesNotExist:
         return HttpResponseNotFound("User not found")
 
