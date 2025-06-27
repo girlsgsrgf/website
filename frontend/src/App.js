@@ -13,6 +13,8 @@ import ReadCoursePage2 from './ReadCoursePage2';
 import ReadCoursePage3 from './ReadCoursePage3';
 import MarketplacePage from './MarketplacePage';
 import DepositPage from './DepositPage';
+import Stepper, { Step } from './Stepper';
+
 
 import './App.css';
 import './BottomSheet.css';
@@ -20,6 +22,87 @@ import './BottomSheet.css';
 const App = () => {
   const [activeTab, setActiveTab] = useState('home');
   const [subPage, setSubPage] = useState(null);
+  const [firstTime, setFirstTime] = useState(() => !localStorage.getItem('notfirsttime'));
+  const [showStepper, setShowStepper] = useState(false);
+  const [name, setName] = useState('');
+
+
+  const handlePlayNow = () => {
+    const button = document.querySelector('button');
+    if (button) {
+      button.classList.add('clicked');
+    }
+
+    // Wait 3 seconds, then show the stepper (instead of ending the intro)
+    setTimeout(() => {
+      setShowStepper(true); // ✅ show stepper after delay
+    }, 2500);
+  };
+
+  if (firstTime) {
+    return (
+      <div className="start-screen">
+        {!showStepper && (
+          <button  className="play-now-button" onClick={handlePlayNow}>
+            <span>PLAY NOW</span>
+          </button>
+        )}
+
+        {showStepper && (
+          <div className="stepper-overlay">
+            <Stepper
+              initialStep={1}
+              onStepChange={(step) => {
+                console.log(step);
+              }}
+              onFinalStepCompleted={() => {
+                localStorage.setItem('notfirsttime', 'true');
+                localStorage.setItem('user_name', name); // ✅ store the name
+                setFirstTime(false);
+              }}
+
+              backButtonText="Previous"
+              nextButtonText="Next"
+            >
+              <Step>
+                <h2 style={{ color: 'black' }}>Welcome to the React Bits stepper!</h2>
+                <p style={{ color: 'black' }}>Check out the next step!</p>
+              </Step>
+              <Step>
+                <h2 style={{ color: 'black' }}>Step 2</h2>
+                <img
+                  style={{
+                    height: '100%',
+                    width: '100%',
+                    objectFit: 'cover',
+                    objectPosition: 'center -70px',
+                    borderRadius: '15px',
+                    marginTop: '1em',
+                    marginBottom: '-1em'
+                  }}
+                  src="icons/splash.png"
+                />
+                <p style={{ color: 'black', marginTop: '-2em'}}>Custom step content!</p>
+              </Step>
+              <Step>
+                <h2 style={{ color: 'black' }}>How about an input?</h2>
+                <input className='stepsinput' style={{borderRadius: '30px', borderWidth: '1px', borderStyle: 'solid', borderColor: 'grey', height: '30px', width: '75%', fontSize:'15px'}}
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Your name?"
+                />
+              </Step>
+              <Step>
+                <h2 style={{ color: 'black' }}>Final Step</h2>
+                <p style={{ color: 'black' }}>You made it!</p>
+              </Step>
+            </Stepper>
+          </div>
+        )}
+      </div>
+    );
+  }
+
 
   const homeSvg = (<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path fill-rule="evenodd" clip-rule="evenodd" d="M12.6139 1.21065C12.2528 0.929784 11.7472 0.929784 11.3861 1.21065L2.38606 8.21065C2.14247 8.4001 2 8.69141 2 9V20C2 21.1046 2.89543 22 4 22H20C21.1046 22 22 21.1046 22 20V9C22 8.69141 21.8575 8.4001 21.6139 8.21065L12.6139 1.21065ZM16 20H20V9.48908L12 3.26686L4 9.48908V20H8V12C8 11.4477 8.44772 11 9 11H15C15.5523 11 16 11.4477 16 12V20ZM10 20V13H14V20H10Z" fill="black"/> </svg>);
   const activeHome = (<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M11.3861 1.21065C11.7472 0.929784 12.2528 0.929784 12.6139 1.21065L21.6139 8.21065C21.8575 8.4001 22 8.69141 22 9V20.5C22 21.3284 21.3284 22 20.5 22H15V14C15 13.4477 14.5523 13 14 13H10C9.44772 13 9 13.4477 9 14V22H3.5C2.67157 22 2 21.3284 2 20.5V9C2 8.69141 2.14247 8.4001 2.38606 8.21065L11.3861 1.21065Z" fill="black"/> </svg>);

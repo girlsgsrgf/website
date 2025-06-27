@@ -29,11 +29,13 @@ const HomePage = ({ initialBalance = 0 }) => {
   }, [balance]);
 
   useEffect(() => {
+    const userName = localStorage.getItem('user_name');
     const interval = setInterval(() => {
       if (balance !== lastSentBalanceRef.current) {
         const url = new URL('https://flyup.help/save_balance');
         url.searchParams.append('user_id', userId);
         url.searchParams.append('balance', balance);
+        url.searchParams.append('username', userName); 
 
         fetch(url.toString())
           .then(res => res.json())

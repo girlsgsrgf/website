@@ -8,6 +8,7 @@
   margin-top: 0.5em;
 }
 
+/* Заголовок */
 .app-title {
   font-weight: bold;
   font-size: 18px;
@@ -25,7 +26,6 @@
   height: 180px;
   margin-bottom: 0.5rem;
 }
-
 
 /* Баланс */
 .balance-section-getflyp {
@@ -54,10 +54,6 @@
   margin-bottom: 10px;
 }
 
-.flyp {
-  font-style: italic;
-}
-
 /* Кнопки действий */
 .button-row {
   margin-top: -3.5em;
@@ -76,33 +72,102 @@
 }
 
 .deposit-btn:hover {
-  background-color: #ddd;
+  background-color: #444;
 }
 
+/* Радио-переключатель */
+.mydict {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+}
 
+.mydict div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
 
+.mydict input[type="radio"] {
+  clip: rect(0 0 0 0);
+  clip-path: inset(100%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+.mydict input[type="radio"]:checked + span {
+  box-shadow: 0 0 0 0.0625em #0043ed;
+  background-color: #dee7ff;
+  z-index: 1;
+  color: #0043ed;
+}
+
+label span {
+  display: block;
+  cursor: pointer;
+  background-color: #fff;
+  padding: 0.375em .75em;
+  position: relative;
+  margin-left: .0625em;
+  box-shadow: 0 0 0 0.0625em #b5bfd9;
+  letter-spacing: .05em;
+  color: #3e4963;
+  text-align: center;
+  transition: background-color .5s ease;
+}
+
+label:first-child span {
+  border-radius: .375em 0 0 .375em;
+}
+
+label:last-child span {
+  border-radius: 0 .375em .375em 0;
+}
+
+/* Секция продуктов */
 .my-products-section {
   margin-top: 40px;
 }
 
 .section-title {
   margin-bottom: 20px;
+  text-align: center;
+  color: #000;
+  font-weight: bold;
 }
 
-.my-products-grid {
+/* Две колонки */
+.marketplace-columns {
   display: flex;
+  justify-content: center;
+  gap: 20px;
   flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.marketplace-column {
+  flex: 1;
+  min-width: 280px;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
   gap: 20px;
 }
 
+/* Карточка продукта */
 .my-product-card {
   border: 1px solid #ccc;
   padding: 10px;
   border-radius: 8px;
   background-color: #fff;
   margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
-
 
 .my-product-image {
   width: 100%;
@@ -112,11 +177,15 @@
 
 .my-product-title {
   margin: 10px 0;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
 }
 
 .my-product-description {
   font-size: 14px;
   color: #555;
+  text-align: center;
 }
 
 .my-product-price,
@@ -126,6 +195,7 @@
   margin: 5px 0;
 }
 
+/* Кнопка "Sell" */
 .sell-button {
   background-color: #c62828;
   color: white;

@@ -27,7 +27,9 @@ const MessagePage = () => {
       return;
     }
 
-    fetch(`/api/chat/search/?q=${encodeURIComponent(value)}`)
+    const userId = localStorage.getItem('user_id');
+
+    fetch(`/api/chat/search/?user_id=${userId}&q=${encodeURIComponent(value)}`)
       .then((res) => res.json())
       .then((data) => setUsers(data.results || []))
       .catch((error) => console.error('Ошибка поиска:', error));

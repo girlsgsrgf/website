@@ -124,27 +124,36 @@ def product_list(request):
 
 
 def buy_view(request, product_id):
+    is_selling = request.GET.get('mode') == 'sell'
     product = get_object_or_404(Product, id=product_id)
     from django.contrib.auth import get_user_model
     User = get_user_model()
-
     user_id = request.GET.get('user_id')
+    username = request.GET.get('username')
+    if user_id:
+         request.session['user_id'] = user_id  # сохраняем в сессию
+    else:
+        user_id = request.session.get('user_id')  # достаем из сессии, если не пришло через GET
+
     if not user_id:
         return HttpResponseForbidden("User ID is required")
+
     try:
         buyer, created = CustomUser.objects.get_or_create(
-        telegram_id=user_id,  # Здесь telegram_id - это наш user_id из браузера
-        defaults={'username': f'user_{user_id}'}
-    )
-
+            telegram_id=user_id,
+            defaults={'username': username or f'user_{user_id}'}
+        )
     except User.DoesNotExist:
         return HttpResponseNotFound("User not found")
 
     new_balance = request.session.pop('new_balance', None)  # Получаем и удаляем из сессии
     
+    
     context = {
         'product': product,
         'new_balance': new_balance,
+        'is_selling': is_selling,
+        'user_product': UserProduct.objects.filter(user=buyer, product=product).first() if is_selling else None
     }
 
     if request.method == 'POST':
@@ -229,39 +238,49 @@ def buy_view(request, product_id):
             request.session['new_balance'] = float(buyer.balance)
             
         messages.success(request, f"Вы купили {quantity} шт. {product.title} за ${total_price:.2f}")
-        return redirect('buy_view', product_id=product.id)
+        return redirect(f'/buy/{product.id}/?user_id={user_id}')
 
     return render(request, 'buy.html', context)
 
 
-
 def sell_view(request, product_id):
     product = get_object_or_404(Product, id=product_id)
-    user = request.user
+
+    # Получение user_id из GET или сессии
+    user_id = request.GET.get('user_id')
+    if user_id:
+        request.session['user_id'] = user_id
+    else:
+        user_id = request.session.get('user_id')
+
+    if not user_id:
+        return HttpResponseForbidden("User ID is required")
+
+    user = get_object_or_404(CustomUser, telegram_id=user_id)
 
     user_product = UserProduct.objects.filter(user=user, product=product).first()
 
     if not user_product or user_product.quantity == 0:
         messages.error(request, "У вас нет этого товара для продажи.")
-        return render(request, 'buy.html', {'product': product})
+        return render(request, 'buy.html', {'product': product, 'is_selling': True})
 
     if request.method == 'POST':
         try:
             quantity_to_sell = int(request.POST.get('quantity', '1'))
         except ValueError:
             messages.error(request, "Неверное количество.")
-            return render(request, 'buy.html', {'product': product, 'is_selling': True})
+            return render(request, 'buy.html', {'product': product, 'user_product': user_product, 'is_selling': True})
 
         if quantity_to_sell < 1 or quantity_to_sell > user_product.quantity:
             messages.error(request, "Неверное количество для продажи.")
-            return render(request, 'buy.html', {'product': product, 'is_selling': True})
+            return render(request, 'buy.html', {'product': product, 'user_product': user_product, 'is_selling': True})
 
-        # Можно позволить продавцу указать цену, иначе использовать базовую
+        # Установка цены
         price = request.POST.get('price')
         try:
-            price = float(price) if price else product.price
+            price = float(price) if price else float(product.price)
         except ValueError:
-            price = product.price
+            price = float(product.price)
 
         with transaction.atomic():
             user_product.quantity -= quantity_to_sell
@@ -271,11 +290,14 @@ def sell_view(request, product_id):
                 seller=user,
                 product=product,
                 quantity=quantity_to_sell,
-                price=price
+                price=Decimal(price)
             )
 
         messages.success(request, f"Вы выставили {quantity_to_sell} шт. {product.title} на продажу.")
-        return redirect('buy_view', product_id=product.id)
+
+        # Перенаправляем с user_id обратно
+        from django.urls import reverse
+        return redirect(f"{reverse('buy_view', args=[product.id])}?user_id={user_id}&mode=sell")
 
     return render(request, 'buy.html', {
         'product': product,
@@ -284,11 +306,12 @@ def sell_view(request, product_id):
     })
 
 def my_products_api(request):
-    from django.contrib.auth import get_user_model
-    User = get_user_model()
-
     user_id = request.GET.get('user_id')
-    user_products = UserProduct.objects.filter(user=user_id, quantity__gt=0)
+    if not user_id:
+        return JsonResponse([], safe=False)
+
+    user = get_object_or_404(CustomUser, telegram_id=user_id)
+    user_products = UserProduct.objects.filter(user=user, quantity__gt=0)
 
     data = [
         {
@@ -305,26 +328,49 @@ def my_products_api(request):
 
 
 User = get_user_model()
-@login_required
+
+
+
 def chat_users(request):
-    messages = Message.objects.filter(Q(sender=request.user) | Q(recipient=request.user))
-    user_ids = set(messages.values_list('sender', flat=True)) | set(messages.values_list('recipient', flat=True))
-    user_ids.discard(request.user.id)
+    user_id = request.GET.get('user_id') or request.session.get('user_id')
+    if not user_id:
+        return JsonResponse({'error': 'Missing user_id'}, status=400)
+
+    # Получаем текущего пользователя по telegram_id
+    current_user = get_object_or_404(CustomUser, telegram_id=user_id)
+
+    # Находим все сообщения, где он отправитель или получатель
+    messages = Message.objects.filter(Q(sender=current_user) | Q(recipient=current_user))
+
+    # Собираем ID пользователей, с которыми был диалог
+    user_ids = set(messages.values_list('sender_id', flat=True)) | set(messages.values_list('recipient_id', flat=True))
+    user_ids.discard(current_user.id)  # Убираем самого себя
 
     users = CustomUser.objects.filter(id__in=user_ids)
-    data = [{'id': u.id, 'username': u.username, 'email': u.email} for u in users]
+
+    # Формируем ответ
+    data = [{'id': u.id, 'username': u.username} for u in users]
     return JsonResponse({'users': data})
-
-
-@login_required
+    
+@csrf_exempt
 def search_users(request):
+    user_id = request.GET.get('user_id')
     q = request.GET.get('q', '')
-    users = CustomUser.objects.filter(username__icontains=q).exclude(id=request.user.id)[:10]
-    results = [{'id': u.id, 'username': u.username, 'email': u.email} for u in users]
+
+    if not user_id:
+        return JsonResponse({'error': 'Missing user_id'}, status=400)
+
+    try:
+        current_user = CustomUser.objects.get(telegram_id=user_id)
+    except CustomUser.DoesNotExist:
+        return JsonResponse({'error': 'Current user not found'}, status=404)
+
+    users = CustomUser.objects.filter(username__icontains=q).exclude(id=current_user.id)[:10]
+    results = [{'id': u.id, 'username': u.username} for u in users]
     return JsonResponse({'results': results})
 
 
-@login_required
+
 def get_messages(request, user_id):
     current_user = request.user
     current_user_id = current_user.id
@@ -408,6 +454,7 @@ def send_message(request):
 def save_balance(request):
     user_id = request.GET.get('user_id')
     balance = request.GET.get('balance')
+    user_name = request.GET.get('username') 
 
     if not user_id or balance is None:
         return JsonResponse({'error': 'Missing user_id or balance'}, status=400)
@@ -417,9 +464,12 @@ def save_balance(request):
     except ValueError:
         return JsonResponse({'error': 'Invalid balance value'}, status=400)
 
+    if not user_name:
+        user_name = f'user_{user_id}'  # если имя не передано — резервное
+
     user, created = CustomUser.objects.get_or_create(
-        telegram_id=user_id,  # Здесь telegram_id - это наш user_id из браузера
-        defaults={'username': f'user_{user_id}', 'balance': balance}
+        telegram_id=user_id,
+        defaults={'username': user_name, 'balance': balance}
     )
 
     if not created:
@@ -432,3 +482,24 @@ def save_balance(request):
         'balance': user.balance,
         'created': created,
     })
+
+
+def my_listings_api(request):
+    user_id = request.GET.get('user_id')
+    user = get_object_or_404(CustomUser, telegram_id=user_id)
+
+    listings = ProductListing.objects.filter(seller=user)
+
+    data = [
+        {
+            'id': listing.product.id,
+            'title': listing.product.title,
+            'description': listing.product.description,
+            'price': float(listing.price),
+            'quantity': listing.quantity,
+            'image': listing.product.image_url,
+        }
+        for listing in listings
+    ]
+
+    return JsonResponse(data, safe=False)

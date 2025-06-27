@@ -247,14 +247,14 @@
 
 
 /* From Uiverse.io by david-mohseni */ 
-.loader {
+.realloader {
   position: relative;
   width: 54px;
   height: 54px;
   border-radius: 10px;
 }
 
-.loader div {
+.realloader div {
   width: 8%;
   height: 24%;
   background: rgb(128, 128, 128);

@@ -22,7 +22,9 @@ function MarketPlacePage() {
 
   const handleClick = (id) => {
     const userId = localStorage.getItem('user_id');
-    window.location.href = `/buy/${id}/?user_id=${userId}`;
+    const userName = localStorage.getItem('user_name'); // 👈 имя пользователя
+    const url = `/buy/${id}/?user_id=${userId}&username=${encodeURIComponent(userName)}`;
+    window.location.href = url;
   };
 
   return (

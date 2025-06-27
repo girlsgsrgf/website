@@ -79,9 +79,16 @@
       color: #721c24;
     }
 
+    /* Back button fixed in top-left corner */
+    .back-wrapper {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 999;
+    }
+
     .back-button {
       display: inline-block;
-      margin-bottom: 20px;
       text-decoration: none;
       transition: transform 0.2s ease;
     }
@@ -90,76 +97,77 @@
       transform: translateX(-4px);
     }
 
-    /* From Uiverse.io by vinodjangid07 */ 
-.Btn {
-  margin: 0 auto;
-  width: 130px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: rgb(15, 15, 15);
-  border: none;
-  color: white;
-  font-weight: 600;
-  gap: 8px;
-  cursor: pointer;
-  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.103);
-  position: relative;
-  overflow: hidden;
-  transition-duration: .3s;
-  font-size: 14px;
-}
+    /* From Uiverse.io by vinodjangid07 */
+    .Btn {
+      margin: 0 auto;
+      width: 130px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: rgb(15, 15, 15);
+      border: none;
+      color: white;
+      font-weight: 600;
+      gap: 8px;
+      cursor: pointer;
+      box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.103);
+      position: relative;
+      overflow: hidden;
+      transition-duration: .3s;
+      font-size: 14px;
+    }
 
-.svgIcon {
-  width: 16px;
-}
+    .svgIcon {
+      width: 16px;
+    }
 
-.svgIcon path {
-  fill: white;
-}
+    .svgIcon path {
+      fill: white;
+    }
 
-.Btn::before {
-  width: 130px;
-  height: 130px;
-  position: absolute;
-  content: "";
-  background-color: white;
-  border-radius: 50%;
-  left: -100%;
-  top: 0;
-  transition-duration: .3s;
-  mix-blend-mode: difference;
-}
+    .Btn::before {
+      width: 130px;
+      height: 130px;
+      position: absolute;
+      content: "";
+      background-color: white;
+      border-radius: 50%;
+      left: -100%;
+      top: 0;
+      transition-duration: .3s;
+      mix-blend-mode: difference;
+    }
 
-.Btn:hover::before {
-  transition-duration: .3s;
-  transform: translate(100%,-50%);
-  border-radius: 0;
-}
+    .Btn:hover::before {
+      transition-duration: .3s;
+      transform: translate(100%,-50%);
+      border-radius: 0;
+    }
 
-.Btn:active {
-  transform: translate(5px,5px);
-  transition-duration: .3s;
-}
-
+    .Btn:active {
+      transform: translate(5px,5px);
+      transition-duration: .3s;
+    }
   </style>
 </head>
 <body>
-  <a href="https://flyup.help" class="back-button" title="Back to Flyup">
-    <svg
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M8.70711 16.2929C9.09763 16.6834 9.09763 17.3166 8.70711 17.7071C8.31658 18.0976 7.68342 18.0976 7.29289 17.7071L2.29289 12.7071C1.90237 12.3166 1.90237 11.6834 2.29289 11.2929L7.29289 6.29289C7.68342 5.90237 8.31658 5.90237 8.70711 6.29289C9.09763 6.68342 9.09763 7.31658 8.70711 7.70711L5.41421 11L21 11C21.5523 11 22 11.4477 22 12C22 12.5523 21.5523 13 21 13L5.41422 13L8.70711 16.2929Z"
-        fill="black"
-      />
-    </svg>
-  </a>
+  <div class="back-wrapper">
+    <a href="https://flyup.help" class="back-button" title="Back to Flyup">
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M8.70711 16.2929C9.09763 16.6834 9.09763 17.3166 8.70711 17.7071C8.31658 18.0976 7.68342 18.0976 7.29289 17.7071L2.29289 12.7071C1.90237 12.3166 1.90237 11.6834 2.29289 11.2929L7.29289 6.29289C7.68342 5.90237 8.31658 5.90237 8.70711 6.29289C9.09763 6.68342 9.09763 7.31658 8.70711 7.70711L5.41421 11L21 11C21.5523 11 22 11.4477 22 12C22 12.5523 21.5523 13 21 13L5.41422 13L8.70711 16.2929Z"
+          fill="black"
+        />
+      </svg>
+    </a>
+  </div>
 
   <img src="{{ product.image_url }}" alt="{{ product.title }}" class="product-image">
 
