@@ -54,5 +54,7 @@ urlpatterns = [
     path('api/chat/send/', views.send_message, name='send_message'),
     path('save_balance/', views.save_balance, name='save_balance'),
     path('api/my-listings/', views.my_listings_api, name='my_listings_api'),
+    path('get_user_wealth/', views.get_user_wealth, name='get_user_wealth'),
+
 
 ]

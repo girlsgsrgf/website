@@ -23,6 +23,23 @@ const HomePage = ({ initialBalance = 0 }) => {
   const [clicked, setClicked] = useState(false);
   const [floatingIncrements, setFloatingIncrements] = useState([]);
   const lastSentBalanceRef = useRef(balance);
+  const [overallWealth, setOverallWealth] = useState(0);
+
+  useEffect(() => {
+    const userName = localStorage.getItem('user_name');
+    const url = new URL('http://192.168.212.211:8000/get_user_wealth');
+    url.searchParams.append('user_id', userId);
+    url.searchParams.append('username', userName); 
+
+    fetch(url.toString())
+      .then(res => res.json())
+      .then(data => {
+        if (data.overall_wealth) {
+          setOverallWealth(data.overall_wealth);
+        }
+      })
+      .catch(err => console.error('Ошибка при получении общего состояния:', err));
+  }, [userId]);
 
   useEffect(() => {
     localStorage.setItem('balance', balance.toFixed(2));
@@ -167,16 +184,10 @@ MDowMIXeN6gAAAAASUVORK5CYII="
         <p class="title-text">
             Total
         </p>
-        <p class="percent">
-           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1792 1792" fill="currentColor" height="20" width="20">
-                <path d="M1408 1216q0 26-19 45t-45 19h-896q-26 0-45-19t-19-45 19-45l448-448q19-19 45-19t45 19l448 448q19 19 19 45z">
-                </path>
-            </svg> 12%
-        </p>
     </div>
     <div class="data">
         <p>
-            1,300 
+            ${overallWealth.toFixed(2)}
         </p>
         
         <div class="range">
