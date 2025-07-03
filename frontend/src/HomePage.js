@@ -48,8 +48,8 @@ const HomePage = ({ initialBalance = 0 }) => {
   }, [balance]);
 
   useEffect(() => {
-  const totalWealth = +(balance + productsValue).toFixed(2);
-  setOverallWealth(totalWealth);
+    const totalWealth = parseFloat(balance) + parseFloat(productsValue);
+    setOverallWealth(+totalWealth.toFixed(2));
   }, [balance, productsValue]);
 
 
@@ -237,20 +237,36 @@ MDowMIXeN6gAAAAASUVORK5CYII="
     </div>
 </div>
 </div>
-        <div
-          className={`clicker-container ${clicked ? 'clicked' : ''}`}
-          onClick={handleClick}
-          style={{ cursor: 'pointer', position: 'relative' }}
-        >
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
-            <path d="M0 10.9971V18C0 19.6569 1.34315 21 3 21H21C22.6569 21 24 19.6569 24 18V10.9971C23.9725 10.999 23.9447 11 23.9167 11H0.0833334C0.055294 11 0.0275035 10.999 0 10.9971Z" fill="black" />
-            <path d="M24 9.00291V6C24 4.34315 22.6569 3 21 3H3C1.34315 3 0 4.34315 0 6V9.00291C0.0275035 9.00098 0.055294 9 0.0833334 9H23.9167C23.9447 9 23.9725 9.00098 24 9.00291Z" fill="black" />
-          </svg>
+<div className={`clicker-container ${clicked ? 'clicked' : ''}`} onClick={handleClick}>
+  {/* Background SVG pattern */}
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    height="100%"
+    width="100%"
+    style={{ position: 'absolute', width: '100%', height: '100%', zIndex: 0 }}
+  >
+    <defs>
+      <pattern patternUnits="userSpaceOnUse" height="30" width="30" id="dottedGrid">
+        <circle fill="rgba(0,0,0,0.15)" r="1" cy="2" cx="2" />
+      </pattern>
+    </defs>
+    <rect fill="url(#dottedGrid)" height="100%" width="100%" />
+  </svg>
 
-          {floatingIncrements.map(id => (
-            <div key={id} className="floating-plus">+$0.01</div>
-          ))}
-        </div>
+  {/* Generate button */}
+  <div className="button-wrap" style={{ position: 'relative', zIndex: 1 }}>
+    <button>
+      <span>Earn</span>
+    </button>
+    <div className="button-shadow"></div>
+  </div>
+
+  {/* Floating increment text */}
+  {floatingIncrements.map(id => (
+    <div key={id} className="floating-plus">+$0.01</div>
+  ))}
+</div>
+
 
         <div className="clicker-text">Нажимайте, чтобы заработать!</div>
       </div>
