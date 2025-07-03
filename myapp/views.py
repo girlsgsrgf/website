@@ -504,19 +504,16 @@ def my_listings_api(request):
 
     return JsonResponse(data, safe=False)
 
+    
 def get_user_wealth(request):
     user_id = request.GET.get('user_id')
     username = request.GET.get('username') or f'user_{user_id}'
 
     try:
-        # Пытаемся найти пользователя
         user = CustomUser.objects.get(telegram_id=user_id)
     except CustomUser.DoesNotExist:
-        # Если не нашли — пытаемся создать
         original_username = username
         suffix = 0
-
-        # Проверка на уникальность username
         while CustomUser.objects.filter(username=username).exists():
             suffix = random.randint(100, 999)
             username = f"{original_username}_{suffix}"
@@ -526,17 +523,12 @@ def get_user_wealth(request):
             username=username
         )
 
-    # Получаем все продукты пользователя
     user_products = UserProduct.objects.filter(user=user, quantity__gt=0)
-
-    # Считаем суммарную стоимость
     products_value = sum([
         up.quantity * up.product.price for up in user_products
     ])
 
-    overall_wealth = float(user.balance) + float(products_value)
-
     return JsonResponse({
         'username': user.username,
-        'overall_wealth': round(overall_wealth, 2)
+        'products_value': round(products_value, 2)
     })

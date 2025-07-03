@@ -24,19 +24,21 @@ const HomePage = ({ initialBalance = 0 }) => {
   const [floatingIncrements, setFloatingIncrements] = useState([]);
   const lastSentBalanceRef = useRef(balance);
   const [overallWealth, setOverallWealth] = useState(0);
+  const [productsValue, setProductsValue] = useState(0);
+
 
   useEffect(() => {
     const userName = localStorage.getItem('user_name');
-    const url = new URL('http://192.168.212.211:8000/get_user_wealth');
+    const url = new URL('https://flyup.help/get_user_wealth');
     url.searchParams.append('user_id', userId);
     url.searchParams.append('username', userName); 
 
     fetch(url.toString())
       .then(res => res.json())
       .then(data => {
-        if (data.overall_wealth) {
-          setOverallWealth(data.overall_wealth);
-        }
+      if (data.products_value !== undefined) {
+        setProductsValue(data.products_value);
+      }
       })
       .catch(err => console.error('Ошибка при получении общего состояния:', err));
   }, [userId]);
@@ -44,6 +46,12 @@ const HomePage = ({ initialBalance = 0 }) => {
   useEffect(() => {
     localStorage.setItem('balance', balance.toFixed(2));
   }, [balance]);
+
+  useEffect(() => {
+  const totalWealth = +(balance + productsValue).toFixed(2);
+  setOverallWealth(totalWealth);
+  }, [balance, productsValue]);
+
 
   useEffect(() => {
     const userName = localStorage.getItem('user_name');
