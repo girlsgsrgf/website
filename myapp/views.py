@@ -339,18 +339,20 @@ def chat_users(request):
     # Получаем текущего пользователя по telegram_id
     current_user = get_object_or_404(CustomUser, telegram_id=user_id)
 
-    # Находим все сообщения, где он отправитель или получатель
-    messages = Message.objects.filter(Q(sender=current_user) | Q(recipient=current_user))
+    # Получаем сообщения с его участием
+    messages = Message.objects.filter(
+        Q(sender_id=current_user.id) | Q(recipient_id=current_user.id)
+    )
 
-    # Собираем ID пользователей, с которыми был диалог
+    # ID собеседников
     user_ids = set(messages.values_list('sender_id', flat=True)) | set(messages.values_list('recipient_id', flat=True))
-    user_ids.discard(current_user.id)  # Убираем самого себя
+    user_ids.discard(current_user.id)
 
     users = CustomUser.objects.filter(id__in=user_ids)
-
-    # Формируем ответ
     data = [{'id': u.id, 'username': u.username} for u in users]
+
     return JsonResponse({'users': data})
+
     
 @csrf_exempt
 def search_users(request):
@@ -400,7 +402,6 @@ def get_messages(request, user_id):
 
 
 @csrf_exempt
-@login_required
 def send_message(request):
     if request.method != 'POST':
         return JsonResponse({'error': 'Only POST allowed'}, status=405)

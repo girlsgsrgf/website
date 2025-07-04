@@ -12,11 +12,14 @@ const MessagePage = () => {
   }, []);
 
   const fetchUsers = () => {
-    fetch('/api/chat/users/')
-      .then((res) => res.json())
-      .then((data) => setUsers(data.users || []))
-      .catch((error) => console.error('Ошибка загрузки пользователей:', error));
+  const userId = localStorage.getItem('user_id'); // или из props/state
+
+  fetch(`/api/chat/users/?user_id=${userId}`)
+    .then((res) => res.json())
+    .then((data) => setUsers(data.users || []))
+    .catch((error) => console.error('Ошибка загрузки пользователей:', error));
   };
+
 
   const handleSearch = (e) => {
     const value = e.target.value;
