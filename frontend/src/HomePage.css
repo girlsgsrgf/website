@@ -12,10 +12,42 @@ body {
 }
 
 
+.progress-bar-wrapper {
+  width: 100%;
+  height: 25px;
+  background-color: #eee;
+  border-radius: 12px;
+  margin-top: 20px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  background-color: #4caf50;
+  transition: width 0.2s ease-in-out;
+}
+
+#click-count {
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+#cooldown-timer {
+  margin-top: 10px;
+  color: red;
+  font-weight: bold;
+}
+
+.hidden {
+  display: none;
+}
+
+
 .card-container {
   position: relative;
   width: calc(100% + 55px); /* slightly more than 40px to fully reach edges */
-  margin: -25px -33px 0 -28px; /* go beyond the .content padding */
+  margin: -28px -33px 0 -28px; /* go beyond the .content padding */
   background-color: #212121;
   border-bottom-left-radius: 25px;
   border-bottom-right-radius: 25px;
@@ -55,9 +87,9 @@ body {
 .date_8264 {
   position: absolute;
   font-weight: bold;
-  font-size: 1.3em; /* было 0.5em */
-  top: 6.25em;
-  left: 1.8em;
+  font-size: 1.7em; /* было 0.5em */
+  top: 3.85em;
+  left: 1.1em;
 }
 
 .heading_8264 {
@@ -89,14 +121,6 @@ body {
   transform: scale(1.6);
 }
 
-
-.valid_thru {
-  position: absolute;
-  font-weight: bold;
-  font-size: 0.9em;
-  top: 8em;
-  left: 3.2em;
-}
 
 .strip {
   position: absolute;
@@ -257,6 +281,7 @@ body {
 /* From Uiverse.io by Yaya12085 */ 
 .card {
   padding: 1rem;
+  height: 100px;
   background-color: #fff;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   width: 130px;
@@ -306,11 +331,10 @@ body {
 }
 
 .data p {
-  margin-top: 0.5rem;
-  margin-bottom: 1rem;
+  margin-top: 0.1em;
+  margin-bottom: 0.4em;
   color: #1F2937;
-  font-size: 1.8rem;
-  line-height: 2.5rem;
+  font-size: 1.35em;
   font-weight: 700;
   text-align: left;
 }
@@ -328,7 +352,7 @@ body {
   top: 0;
   left: 0;
   background-color: #10B981;
-  width: 20%;
+  width: 100%;
   height: 100%;
   border-radius: 0.25rem;
 }

@@ -5,6 +5,9 @@ const generateUserId = () => {
   return Math.floor(100000000 + Math.random() * 900000000).toString();
 };
 
+const MAX_CLICKS = 300;
+const COOLDOWN_MS = 30 * 60 * 1000; 
+
 const HomePage = ({ initialBalance = 0 }) => {
   const [userId, setUserId] = useState(() => {
     let id = localStorage.getItem('user_id');
@@ -25,13 +28,17 @@ const HomePage = ({ initialBalance = 0 }) => {
   const lastSentBalanceRef = useRef(balance);
   const [overallWealth, setOverallWealth] = useState(0);
   const [productsValue, setProductsValue] = useState(0);
+  const [cooldownUntil, setCooldownUntil] = useState(null);
+  const [cooldownTimeLeft, setCooldownTimeLeft] = useState(0);
+  const [clicks, setClicks] = useState(() => {
+  const saved = localStorage.getItem('clicks');
+  return saved ? parseInt(saved) : 0; });
+
 
 
   useEffect(() => {
-    const userName = localStorage.getItem('user_name');
     const url = new URL('https://flyup.help/get_user_wealth');
     url.searchParams.append('user_id', userId);
-    url.searchParams.append('username', userName); 
 
     fetch(url.toString())
       .then(res => res.json())
@@ -54,13 +61,11 @@ const HomePage = ({ initialBalance = 0 }) => {
 
 
   useEffect(() => {
-    const userName = localStorage.getItem('user_name');
     const interval = setInterval(() => {
       if (balance !== lastSentBalanceRef.current) {
         const url = new URL('https://flyup.help/save_balance');
         url.searchParams.append('user_id', userId);
         url.searchParams.append('balance', balance);
-        url.searchParams.append('username', userName); 
 
         fetch(url.toString())
           .then(res => res.json())
@@ -75,16 +80,62 @@ const HomePage = ({ initialBalance = 0 }) => {
     return () => clearInterval(interval);
   }, [userId, balance]);
 
-  const handleClick = () => {
-    setClicked(true);
-    const newBalance = +(balance + 0.01).toFixed(2);
-    setBalance(newBalance);
+    useEffect(() => {
+      if (!cooldownUntil) return;
 
-    const id = Date.now();
-    setFloatingIncrements(prev => [...prev, id]);
-    setTimeout(() => setFloatingIncrements(prev => prev.filter(i => i !== id)), 1000);
-    setTimeout(() => setClicked(false), 200);
-  };
+      const interval = setInterval(() => {
+      const now = Date.now();
+      const diff = cooldownUntil - now;
+
+      if (diff <= 0) {
+       clearInterval(interval);
+        setCooldownUntil(null);
+        setClicks(0); // сбрасываем клики
+      } else {
+        setCooldownTimeLeft(diff);
+     }
+     }, 1000);
+
+     return () => clearInterval(interval);
+     }, [cooldownUntil]);
+
+
+      // Обновляем баланс и клики при клике
+      const handleClick = () => {
+        if (cooldownUntil) return; // блокировка
+
+        if (clicks >= MAX_CLICKS) {
+          setCooldownUntil(Date.now() + COOLDOWN_MS);
+          return;
+        }
+
+        setClicked(true);
+
+        const newBalance = +(balance + 0.01).toFixed(2);
+        setBalance(newBalance);
+        setClicks(clicks + 1);
+
+        const id = Date.now();
+        setFloatingIncrements(prev => [...prev, id]);
+        setTimeout(() => setFloatingIncrements(prev => prev.filter(i => i !== id)), 1000);
+        setTimeout(() => setClicked(false), 200);
+      };
+
+    useEffect(() => {
+      localStorage.setItem('clicks', clicks);
+      }, [clicks]);
+
+
+    // Функция форматирования времени в мин:сек
+    const formatTime = (ms) => {
+      const totalSeconds = Math.floor(ms / 1000);
+      const minutes = Math.floor(totalSeconds / 60);
+      const seconds = totalSeconds % 60;
+      return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    };
+
+    // Рассчёт заполнения шкалы в процентах
+    const progressPercent = Math.min(100, (clicks / MAX_CLICKS) * 100);
 
   return (
     <div className="main-page">
@@ -157,7 +208,6 @@ MDowMIXeN6gAAAAASUVORK5CYII="
             </svg>
 
             <p className="number">9759 2484 5269 6576</p>
-            <p className="valid_thru">Balance</p>
             <p className="date_8264">$ {balance.toFixed(2)}</p>
             <p className="name">BRUCE WAYNE</p>
 
@@ -176,6 +226,27 @@ MDowMIXeN6gAAAAASUVORK5CYII="
           </div>
         </div>
       </div>
+        {/* Добавляем шкалу прогресса */}
+      <div className="progress-bar-wrapper" style={{ marginTop: '20px', width: '300px', height: '20px', background: '#eee', borderRadius: '10px', overflow: 'hidden' }}>
+        <div
+          className="progress-bar"
+          style={{
+            height: '100%',
+            width: `${progressPercent}%`,
+            backgroundColor: 'green',
+            transition: 'width 0.3s ease'
+          }}
+        />
+      </div>
+      <div style={{ marginTop: '5px', fontWeight: 'bold' }}>
+        {clicks} / {MAX_CLICKS}
+      </div>
+
+      {cooldownUntil && (
+        <div style={{ marginTop: '10px', color: 'red', fontWeight: 'bold' }}>
+          Wait {formatTime(cooldownTimeLeft)}
+        </div>
+      )}
       </div>
 
       <div className="clicker-wrapper">
@@ -190,7 +261,7 @@ MDowMIXeN6gAAAAASUVORK5CYII="
             </svg>
         </span>
         <p class="title-text">
-            Total
+            NETWORK
         </p>
     </div>
     <div class="data">
@@ -218,16 +289,10 @@ MDowMIXeN6gAAAAASUVORK5CYII="
         <p class="title-text">
             USDT
         </p>
-        <p class="percent">
-           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1792 1792" fill="currentColor" height="20" width="20">
-                <path d="M1408 1216q0 26-19 45t-45 19h-896q-26 0-45-19t-19-45 19-45l448-448q19-19 45-19t45 19l448 448q19 19 19 45z">
-                </path>
-            </svg> 20%
-        </p>
     </div>
     <div class="data">
         <p>
-            39,500 
+            0 
         </p>
         
         <div class="range">
@@ -268,7 +333,7 @@ MDowMIXeN6gAAAAASUVORK5CYII="
 </div>
 
 
-        <div className="clicker-text">Нажимайте, чтобы заработать!</div>
+        <div className="clicker-text">Click to earn!</div>
       </div>
     </div>
   );

@@ -81,12 +81,12 @@ export default function GetFlypPage() {
   return (
     <div className="getflyp-container">
       <div className="balance-section-getflyp">
-        <p className="label">Ваш Баланс</p>
+        <p className="label">Your Balance</p>
         <h2 className="balance">${balance.toFixed(2)}</h2>
-        <div className="wallet-link-getflyp">{balance.toFixed(2)} USDT</div>
+        <div className="wallet-link-getflyp">0 USDT</div>
         <div className="button-row">
           <button className="deposit-btn" onClick={handleDepositClick}>
-            Deposit
+            Withdraw
           </button>
         </div>
       </div>
@@ -101,7 +101,7 @@ export default function GetFlypPage() {
               checked={viewMode === "myProducts"}
               onChange={() => setViewMode("myProducts")}
             />
-            <span>My products</span>
+            <span> Your Products</span>
           </label>
           <label>
             <input
@@ -110,7 +110,7 @@ export default function GetFlypPage() {
               checked={viewMode === "listings"}
               onChange={() => setViewMode("listings")}
             />
-            <span>Sellings or listings</span>
+            <span>Bussiness</span>
           </label>
         </div>
       </div>

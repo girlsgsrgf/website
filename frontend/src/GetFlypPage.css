@@ -99,10 +99,10 @@
 }
 
 .mydict input[type="radio"]:checked + span {
-  box-shadow: 0 0 0 0.0625em #0043ed;
-  background-color: #dee7ff;
+  box-shadow: 0 0 0 0.0625em black;
+  background-color: #E2E2E2;
   z-index: 1;
-  color: #0043ed;
+  color: black;
 }
 
 label span {

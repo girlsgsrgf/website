@@ -22,9 +22,23 @@ function MarketPlacePage() {
 
   const handleClick = (id) => {
     const userId = localStorage.getItem('user_id');
-    const userName = localStorage.getItem('user_name'); // 👈 имя пользователя
-    const url = `/buy/${id}/?user_id=${userId}&username=${encodeURIComponent(userName)}`;
+    const userRef = localStorage.getItem('ref'); // 👈 имя пользователя
+    const url = `/buy/${id}/?user_id=${userId}&ref=${encodeURIComponent(userRef)}`;
     window.location.href = url;
+  };
+
+  const handleSearchChange = (e) => {
+    setFilter({ ...filter, search: e.target.value });
+  };
+
+  const handleReset = (e) => {
+    e.preventDefault();
+    setFilter({ ...filter, search: '' });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // No actual submit action needed, filtering happens on input change
   };
 
   return (
@@ -44,18 +58,49 @@ function MarketPlacePage() {
 
 
       <div className="marketplace-filters">
-        <div className="marketplace-filter-group">
-          <label htmlFor="search">Search</label>
+          <form className="form" onSubmit={handleSubmit}>
+          <button type="submit" aria-label="search">
+            <svg
+              width="17"
+              height="16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              role="img"
+              aria-labelledby="search"
+            >
+              <path
+                d="M7.667 12.667A5.333 5.333 0 107.667 2a5.333 5.333 0 000 10.667zM14.334 14l-2.9-2.9"
+                stroke="currentColor"
+                strokeWidth="1.333"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+
           <input
+            className="input"
+            placeholder="Search"
+            required
             type="text"
-            id="search"
             value={filter.search}
-            onChange={(e) => setFilter({ ...filter, search: e.target.value })}
-            placeholder="Search Products"
+            onChange={handleSearchChange}
           />
-        </div>
+
+          <button className="reset" type="reset" onClick={handleReset} aria-label="reset search">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </form>
         <div className="marketplace-filter-group">
-          <label htmlFor="category">Category</label>
           <select
             id="category"
             value={filter.category}

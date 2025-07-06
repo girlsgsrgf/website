@@ -2,7 +2,7 @@ body, html, #root {
   margin: 0;
   padding: 0;
   height: 100%;
-  background-color: #e8e8e8;
+  background-color: #F3F3F3;
   color: white;
   font-family: sans-serif;
 }
@@ -27,12 +27,12 @@ body, html, #root {
   display: flex;
   justify-content: space-around;
   align-items: center;
-  background: white;
+  background: #141414;
   padding: 10px 0;
 }
 
 .menu-item {
-  margin-left: 1em;
+  margin-left: 2.8em;
   flex: 1;
   text-align: center;
   padding: 5px;

@@ -9,13 +9,6 @@ from django.http import HttpResponse
 from .views import get_user_balance
 
 
-def create_superuser(request):
-    if not User.objects.filter(username="admin").exists():
-        User.objects.create_superuser("admin", "admin@example.com", "admin123")
-        return HttpResponse("Superuser created.")
-    return HttpResponse("Superuser already exists.")
-
-
 urlpatterns = [
     # Serve the main index.html (React entry point)
     path('', TemplateView.as_view(template_name='index.html')),
@@ -38,7 +31,6 @@ urlpatterns = [
     re_path(r'^icons/(?P<path>.*)$', serve, {
         'document_root': os.path.join(settings.BASE_DIR, 'frontend/build/icons'),
     }),
-    path('create-superuser/', create_superuser),
     #path('signup/', views.signup_view, name='signup'),
     #path('signin/', views.signin_view, name='signin'),
     path('verify/', views.verify_email, name='verify_email'),
@@ -48,7 +40,6 @@ urlpatterns = [
     path('buy/<int:product_id>/', views.buy_view, name='buy_view'),
     path('api/sell-product/<int:product_id>/', views.sell_view, name='sell_view'),
     path('api/my-products/', views.my_products_api, name='my_products_api'),
-    path('api/chat/users/', views.chat_users, name='chat_users'),
     path('api/chat/search/', views.search_users, name='search_users'),
     path('api/chat/messages/<int:user_id>/', views.get_messages, name='get_messages'),
     path('api/chat/send/', views.send_message, name='send_message'),

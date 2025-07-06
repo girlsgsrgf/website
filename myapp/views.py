@@ -16,7 +16,7 @@ from django.contrib import messages
 from django.db import transaction
 from decimal import Decimal
 from django.contrib.auth import get_user_model
-from .models import Message
+from .models import Message 
 from django.db.models import Q
 from django.views.decorators.http import require_POST
 from django.http import HttpResponseNotFound, HttpResponseForbidden
@@ -30,7 +30,6 @@ from django.http import HttpResponseNotFound, HttpResponseForbidden
 
 def index_view(request):
     return render(request, 'index.html')
-
 
 #def signup_view(request):
  #   if request.method == 'POST':
@@ -130,6 +129,7 @@ def buy_view(request, product_id):
     User = get_user_model()
     user_id = request.GET.get('user_id')
     username = request.GET.get('username')
+    referral_code = request.GET.get('ref') 
     if user_id:
          request.session['user_id'] = user_id  # сохраняем в сессию
     else:
@@ -141,10 +141,25 @@ def buy_view(request, product_id):
     try:
         buyer, created = CustomUser.objects.get_or_create(
             telegram_id=user_id,
-            defaults={'username': username or f'user_{user_id}'}
+            defaults={'username': f'user_{user_id}'}
         )
     except User.DoesNotExist:
         return HttpResponseNotFound("User not found")
+       # Если пользователь только что создан — создаём реферал-профиль
+
+    if created:
+        referred_by = None
+        if referral_code:
+            try:
+                referrer = Referral.objects.get(code=referral_code).user
+                referred_by = referrer
+                referrer.balance += 20000
+                referrer.save()
+            except Referral.DoesNotExist:
+                referred_by = None
+
+        # Создаём реферальный профиль с уникальным кодом
+        Referral.objects.create(user=buyer, referred_by=referred_by)
 
     new_balance = request.session.pop('new_balance', None)  # Получаем и удаляем из сессии
     
@@ -329,30 +344,6 @@ def my_products_api(request):
 
 User = get_user_model()
 
-
-
-def chat_users(request):
-    user_id = request.GET.get('user_id') or request.session.get('user_id')
-    if not user_id:
-        return JsonResponse({'error': 'Missing user_id'}, status=400)
-
-    # Получаем текущего пользователя по telegram_id
-    current_user = get_object_or_404(CustomUser, telegram_id=user_id)
-
-    # Получаем сообщения с его участием
-    messages = Message.objects.filter(
-        Q(sender_id=current_user.id) | Q(recipient_id=current_user.id)
-    )
-
-    # ID собеседников
-    user_ids = set(messages.values_list('sender_id', flat=True)) | set(messages.values_list('recipient_id', flat=True))
-    user_ids.discard(current_user.id)
-
-    users = CustomUser.objects.filter(id__in=user_ids)
-    data = [{'id': u.id, 'username': u.username} for u in users]
-
-    return JsonResponse({'users': data})
-
     
 @csrf_exempt
 def search_users(request):
@@ -455,7 +446,7 @@ def send_message(request):
 def save_balance(request):
     user_id = request.GET.get('user_id')
     balance = request.GET.get('balance')
-    user_name = request.GET.get('username') 
+    user_name = f'user_{user_id}'
 
     if not user_id or balance is None:
         return JsonResponse({'error': 'Missing user_id or balance'}, status=400)
@@ -508,7 +499,7 @@ def my_listings_api(request):
     
 def get_user_wealth(request):
     user_id = request.GET.get('user_id')
-    username = request.GET.get('username') or f'user_{user_id}'
+    username = f'user_{user_id}'
 
     try:
         user = CustomUser.objects.get(telegram_id=user_id)

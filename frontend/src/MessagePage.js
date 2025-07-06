@@ -3,23 +3,20 @@ import { useNavigate } from 'react-router-dom';
 import './MessagePage.css';
 
 const MessagePage = () => {
-  const [users, setUsers] = useState([]);
   const [search, setSearch] = useState('');
   const navigate = useNavigate();
+
+  const fetchUsers = () => {
+    const userId = localStorage.getItem('user_id');
+
+    fetch(`/api/chat/users/?user_id=${userId}`)
+      .then(res => res.json())
+      .catch(err => console.error('Ошибка загрузки пользователей:', err));
+  };
 
   useEffect(() => {
     fetchUsers();
   }, []);
-
-  const fetchUsers = () => {
-  const userId = localStorage.getItem('user_id'); // или из props/state
-
-  fetch(`/api/chat/users/?user_id=${userId}`)
-    .then((res) => res.json())
-    .then((data) => setUsers(data.users || []))
-    .catch((error) => console.error('Ошибка загрузки пользователей:', error));
-  };
-
 
   const handleSearch = (e) => {
     const value = e.target.value;
@@ -33,9 +30,8 @@ const MessagePage = () => {
     const userId = localStorage.getItem('user_id');
 
     fetch(`/api/chat/search/?user_id=${userId}&q=${encodeURIComponent(value)}`)
-      .then((res) => res.json())
-      .then((data) => setUsers(data.results || []))
-      .catch((error) => console.error('Ошибка поиска:', error));
+      .then(res => res.json())
+      .catch(err => console.error('Ошибка поиска:', err));
   };
 
   return (
@@ -48,18 +44,6 @@ const MessagePage = () => {
         placeholder="Search users..."
         className="message-search"
       />
-      <ul className="user-list">
-        {users.map((user) => (
-          <li
-            key={user.id}
-            onClick={() => navigate(`/messages/${user.id}`)}
-            className="user-item"
-          >
-            {user.username}
-          </li>
-        ))}
-        {users.length === 0 && <li className="no-users">No users found</li>}
-      </ul>
     </div>
   );
 };

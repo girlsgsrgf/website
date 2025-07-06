@@ -3,6 +3,13 @@ from django.contrib.auth.models import AbstractUser
 from decimal import Decimal, ROUND_HALF_UP
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.db import models
+from django.conf import settings 
+
+def generate_unique_code():
+    while True:
+        code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+        if not Referral.objects.filter(code=code).exists():
+            return code
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, telegram_id, username, password=None, **extra_fields):
@@ -31,6 +38,26 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.username
+
+
+class Referral(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='referral_profile'
+    )
+    code = models.CharField(max_length=6, unique=True, default=generate_unique_code)
+    referred_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='referrals_made'
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} → {self.code}"
 
 class Product(models.Model):
     title = models.CharField(max_length=255)
