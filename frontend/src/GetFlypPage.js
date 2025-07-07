@@ -35,6 +35,19 @@ export default function GetFlypPage() {
     window.location.href = `/api/sell-product/${productId}/?user_id=${localStorage.getItem("user_id")}`;
   };
 
+  const renderBusinessCard = () => (
+    <div className="businesscard">
+      <div className="top-card"></div>
+      <div className="bottom-card">
+        <div className="card-content">
+          <span className="card-title">Card Title</span>
+          <p className="card-txt">A simple card</p>
+          <a href="#" className="card-btn">Read More</a>
+        </div>
+      </div>
+    </div>
+  );
+
   const renderProductsInColumns = (products) => {
     const left = products.filter((_, i) => i % 2 === 0);
     const right = products.filter((_, i) => i % 2 !== 0);
@@ -115,11 +128,14 @@ export default function GetFlypPage() {
         </div>
       </div>
 
-      <div className="my-products-section">
+        <div className="my-products-section">
         <h3 className="section-title">
           {viewMode === "myProducts" ? "Your Products" : "Your Listings"}
         </h3>
-        {viewMode === "myProducts" ? renderProductsInColumns(myProducts) : renderProductsInColumns(listings)}
+        {viewMode === "myProducts" 
+          ? renderProductsInColumns(myProducts) 
+          : renderBusinessCard()
+        }
       </div>
     </div>
   );

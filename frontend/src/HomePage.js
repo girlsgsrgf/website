@@ -5,8 +5,8 @@ const generateUserId = () => {
   return Math.floor(100000000 + Math.random() * 900000000).toString();
 };
 
-const MAX_CLICKS = 300;
-const COOLDOWN_MS = 30 * 60 * 1000; 
+const MAX_CLICKS = 30;
+const COOLDOWN_MS = 1 * 60 * 1000; 
 
 const HomePage = ({ initialBalance = 0 }) => {
   const [userId, setUserId] = useState(() => {
@@ -28,7 +28,10 @@ const HomePage = ({ initialBalance = 0 }) => {
   const lastSentBalanceRef = useRef(balance);
   const [overallWealth, setOverallWealth] = useState(0);
   const [productsValue, setProductsValue] = useState(0);
-  const [cooldownUntil, setCooldownUntil] = useState(null);
+  const [cooldownUntil, setCooldownUntil] = useState(() => {
+  const stored = localStorage.getItem('cooldown_until');
+  return stored ? parseInt(stored) : null;
+});
   const [cooldownTimeLeft, setCooldownTimeLeft] = useState(0);
   const [clicks, setClicks] = useState(() => {
   const saved = localStorage.getItem('clicks');
@@ -80,32 +83,35 @@ const HomePage = ({ initialBalance = 0 }) => {
     return () => clearInterval(interval);
   }, [userId, balance]);
 
-    useEffect(() => {
+   useEffect(() => {
       if (!cooldownUntil) return;
 
       const interval = setInterval(() => {
-      const now = Date.now();
-      const diff = cooldownUntil - now;
+        const now = Date.now();
+        const diff = cooldownUntil - now;
 
-      if (diff <= 0) {
-       clearInterval(interval);
-        setCooldownUntil(null);
-        setClicks(0); // сбрасываем клики
-      } else {
-        setCooldownTimeLeft(diff);
-     }
-     }, 1000);
+        if (diff <= 0) {
+          clearInterval(interval);
+          setCooldownUntil(null);
+          setClicks(0);
+          localStorage.removeItem('cooldown_until'); // 🧹 Удаляем
+        } else {
+          setCooldownTimeLeft(diff);
+        }
+      }, 1000);
 
-     return () => clearInterval(interval);
-     }, [cooldownUntil]);
+      return () => clearInterval(interval);
+       }, [cooldownUntil]);
 
 
       // Обновляем баланс и клики при клике
-      const handleClick = () => {
+    const handleClick = () => {
         if (cooldownUntil) return; // блокировка
 
         if (clicks >= MAX_CLICKS) {
-          setCooldownUntil(Date.now() + COOLDOWN_MS);
+          const until = Date.now() + COOLDOWN_MS;
+          setCooldownUntil(until);
+          localStorage.setItem('cooldown_until', until.toString());
           return;
         }
 
@@ -113,13 +119,18 @@ const HomePage = ({ initialBalance = 0 }) => {
 
         const newBalance = +(balance + 0.01).toFixed(2);
         setBalance(newBalance);
-        setClicks(clicks + 1);
+        setClicks(prev => prev + 1); // ← безопасное обновление
 
         const id = Date.now();
         setFloatingIncrements(prev => [...prev, id]);
-        setTimeout(() => setFloatingIncrements(prev => prev.filter(i => i !== id)), 1000);
+
+        setTimeout(() => {
+          setFloatingIncrements(prev => prev.filter(i => i !== id));
+        }, 1000);
+
         setTimeout(() => setClicked(false), 200);
       };
+
 
     useEffect(() => {
       localStorage.setItem('clicks', clicks);
@@ -138,6 +149,7 @@ const HomePage = ({ initialBalance = 0 }) => {
     const progressPercent = Math.min(100, (clicks / MAX_CLICKS) * 100);
 
   return (
+    <>
     <div className="main-page">
     <div className="card-container">
       <div className="flip-card">
@@ -207,7 +219,7 @@ MDowMIXeN6gAAAAASUVORK5CYII="
               />
             </svg>
 
-            <p className="number">9759 2484 5269 6576</p>
+            <p className="number">9750 2484 5209 6576</p>
             <p className="date_8264">$ {balance.toFixed(2)}</p>
             <p className="name">BRUCE WAYNE</p>
 
@@ -227,7 +239,7 @@ MDowMIXeN6gAAAAASUVORK5CYII="
         </div>
       </div>
         {/* Добавляем шкалу прогресса */}
-      <div className="progress-bar-wrapper" style={{ marginTop: '20px', width: '300px', height: '20px', background: '#eee', borderRadius: '10px', overflow: 'hidden' }}>
+      <div className="progress-bar-wrapper" style={{ marginTop: '20px', width: '340px', height: '13px', background: '#eee', borderRadius: '10px', overflow: 'hidden', fontFamily: "Inter"}}>
         <div
           className="progress-bar"
           style={{
@@ -238,12 +250,8 @@ MDowMIXeN6gAAAAASUVORK5CYII="
           }}
         />
       </div>
-      <div style={{ marginTop: '5px', fontWeight: 'bold' }}>
-        {clicks} / {MAX_CLICKS}
-      </div>
-
       {cooldownUntil && (
-        <div style={{ marginTop: '10px', color: 'red', fontWeight: 'bold' }}>
+        <div style={{ marginTop: '6px', color: 'red', fontWeight: 'bold', marginLeft: '10em' }}>
           Wait {formatTime(cooldownTimeLeft)}
         </div>
       )}
@@ -261,7 +269,7 @@ MDowMIXeN6gAAAAASUVORK5CYII="
             </svg>
         </span>
         <p class="title-text">
-            NETWORK
+            WEALTH
         </p>
     </div>
     <div class="data">
@@ -269,10 +277,6 @@ MDowMIXeN6gAAAAASUVORK5CYII="
             ${overallWealth.toFixed(2)}
         </p>
         
-        <div class="range">
-            <div class="fill">
-            </div>
-        </div>
     </div>
 </div>
 
@@ -294,11 +298,6 @@ MDowMIXeN6gAAAAASUVORK5CYII="
         <p>
             0 
         </p>
-        
-        <div class="range">
-            <div class="fill">
-            </div>
-        </div>
     </div>
 </div>
 </div>
@@ -336,7 +335,9 @@ MDowMIXeN6gAAAAASUVORK5CYII="
         <div className="clicker-text">Click to earn!</div>
       </div>
     </div>
+    </>
   );
 };
+
 
 export default HomePage;

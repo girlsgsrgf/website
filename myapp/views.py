@@ -4,7 +4,7 @@ from datetime import timedelta
 from django.http import JsonResponse
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
-from .models import Product, CustomUser, UserProduct, ProductListing
+from .models import Product, CustomUser, UserProduct
 import random
 from django.core.mail import send_mail
 from django.conf import settings
@@ -123,29 +123,23 @@ def product_list(request):
 
 
 def buy_view(request, product_id):
-    is_selling = request.GET.get('mode') == 'sell'
     product = get_object_or_404(Product, id=product_id)
-    from django.contrib.auth import get_user_model
-    User = get_user_model()
+    is_selling = request.GET.get('mode') == 'sell'
     user_id = request.GET.get('user_id')
-    username = request.GET.get('username')
-    referral_code = request.GET.get('ref') 
+    referral_code = request.GET.get('ref')
+
     if user_id:
-         request.session['user_id'] = user_id  # сохраняем в сессию
+        request.session['user_id'] = user_id
     else:
-        user_id = request.session.get('user_id')  # достаем из сессии, если не пришло через GET
+        user_id = request.session.get('user_id')
 
     if not user_id:
         return HttpResponseForbidden("User ID is required")
 
-    try:
-        buyer, created = CustomUser.objects.get_or_create(
-            telegram_id=user_id,
-            defaults={'username': f'user_{user_id}'}
-        )
-    except User.DoesNotExist:
-        return HttpResponseNotFound("User not found")
-       # Если пользователь только что создан — создаём реферал-профиль
+    buyer, created = CustomUser.objects.get_or_create(
+        telegram_id=user_id,
+        defaults={'username': f'user_{user_id}'}
+    )
 
     if created:
         referred_by = None
@@ -156,14 +150,12 @@ def buy_view(request, product_id):
                 referrer.balance += 20000
                 referrer.save()
             except Referral.DoesNotExist:
-                referred_by = None
+                pass
 
-        # Создаём реферальный профиль с уникальным кодом
         Referral.objects.create(user=buyer, referred_by=referred_by)
 
-    new_balance = request.session.pop('new_balance', None)  # Получаем и удаляем из сессии
-    
-    
+    new_balance = request.session.pop('new_balance', None)
+
     context = {
         'product': product,
         'new_balance': new_balance,
@@ -176,83 +168,36 @@ def buy_view(request, product_id):
             quantity = int(request.POST.get('quantity', '1'))
         except ValueError:
             messages.error(request, "Неверное количество.")
-            return render(request, 'buy.html', {'product': product})
+            return render(request, 'buy.html', context)
 
         if quantity < 1:
             messages.error(request, "Количество должно быть не меньше 1.")
-            return render(request, 'buy.html', {'product': product})
+            return render(request, 'buy.html', context)
 
-        total_price = Decimal('0.00')
-        remaining = quantity
+        cost = quantity * product.price
+
+        if product.supply < quantity:
+            messages.error(request, f"На складе всего {product.supply} шт.")
+            return render(request, 'buy.html', context)
+
+        if buyer.balance < cost:
+            messages.error(request, "Недостаточно средств.")
+            return render(request, 'buy.html', context)
 
         with transaction.atomic():
-            # 1. Покупка у пользователей
-            listings = ProductListing.objects.filter(product=product).order_by('created_at')
+            product.supply -= quantity
+            product.update_dynamic_price()
+            product.save()
 
-            for listing in listings:
-                if remaining == 0:
-                    break
-
-                to_buy = min(listing.quantity, remaining)
-                cost = to_buy * listing.price
-                commission = cost * Decimal('0.05')
-                payout = cost - commission
-
-                if buyer.balance < total_price + cost:
-                    messages.error(request, "Недостаточно средств для покупки.")
-                    return render(request, 'buy.html', {'product': product})
-
-                # Перевод денег продавцу с учётом комиссии
-                listing.seller.balance += payout
-                listing.seller.save()
-
-                # Обновление listing
-                listing.quantity -= to_buy
-                if listing.quantity == 0:
-                    listing.delete()
-                else:
-                    listing.save()
-
-                # Добавить товар покупателю
-                user_product, _ = UserProduct.objects.get_or_create(user=buyer, product=product)
-                user_product.quantity += to_buy
-                user_product.save()
-
-                total_price += cost
-                remaining -= to_buy
-
-            # 2. Покупка у системы
-            if remaining > 0:
-                if product.supply < remaining:
-                    messages.error(request, f"Остаток: {quantity - remaining}. Не хватает {remaining} штук в наличии.")
-                    return render(request, 'buy.html', {'product': product})
-
-                cost = remaining * product.price
-                if buyer.balance < total_price + cost:
-                    messages.error(request, "Недостаточно средств для покупки у системы.")
-                    return render(request, 'buy.html', {'product': product})
-
-                product.supply -= remaining
-                product.save()
-
-                user_product, _ = UserProduct.objects.get_or_create(user=buyer, product=product)
-                user_product.quantity += remaining
-                user_product.save()
-
-                total_price += cost
-                
-                # Обновляем динамическую цену
-                product.update_dynamic_price()
-
-
-            # Финальное списание денег
-            buyer.balance -= total_price
+            buyer.balance -= cost
             buyer.save()
 
-            new_balance = float(buyer.balance)
-            request.session['new_balance'] = float(buyer.balance)
-            
-        messages.success(request, f"Вы купили {quantity} шт. {product.title} за ${total_price:.2f}")
+            user_product, _ = UserProduct.objects.get_or_create(user=buyer, product=product)
+            user_product.quantity += quantity
+            user_product.save()
+
+        request.session['new_balance'] = float(buyer.balance)
+        messages.success(request, f"Вы купили {quantity} шт. {product.title} за ${cost:.2f}")
         return redirect(f'/buy/{product.id}/?user_id={user_id}')
 
     return render(request, 'buy.html', context)
@@ -261,7 +206,6 @@ def buy_view(request, product_id):
 def sell_view(request, product_id):
     product = get_object_or_404(Product, id=product_id)
 
-    # Получение user_id из GET или сессии
     user_id = request.GET.get('user_id')
     if user_id:
         request.session['user_id'] = user_id
@@ -272,7 +216,6 @@ def sell_view(request, product_id):
         return HttpResponseForbidden("User ID is required")
 
     user = get_object_or_404(CustomUser, telegram_id=user_id)
-
     user_product = UserProduct.objects.filter(user=user, product=product).first()
 
     if not user_product or user_product.quantity == 0:
@@ -290,27 +233,22 @@ def sell_view(request, product_id):
             messages.error(request, "Неверное количество для продажи.")
             return render(request, 'buy.html', {'product': product, 'user_product': user_product, 'is_selling': True})
 
-        # Установка цены
-        price = request.POST.get('price')
-        try:
-            price = float(price) if price else float(product.price)
-        except ValueError:
-            price = float(product.price)
+        price_per_unit = product.price * Decimal('0.9')  # Продаём системе дешевле, напр. на 10%
+        total_revenue = quantity_to_sell * price_per_unit
 
         with transaction.atomic():
             user_product.quantity -= quantity_to_sell
             user_product.save()
 
-            ProductListing.objects.create(
-                seller=user,
-                product=product,
-                quantity=quantity_to_sell,
-                price=Decimal(price)
-            )
+            product.supply += quantity_to_sell
+            product.update_dynamic_price()
+            product.save()
 
-        messages.success(request, f"Вы выставили {quantity_to_sell} шт. {product.title} на продажу.")
+            user.balance += total_revenue
+            user.save()
 
-        # Перенаправляем с user_id обратно
+        messages.success(request, f"Вы продали {quantity_to_sell} шт. {product.title} за ${total_revenue:.2f}")
+
         from django.urls import reverse
         return redirect(f"{reverse('buy_view', args=[product.id])}?user_id={user_id}&mode=sell")
 
@@ -475,26 +413,6 @@ def save_balance(request):
         'created': created,
     })
 
-
-def my_listings_api(request):
-    user_id = request.GET.get('user_id')
-    user = get_object_or_404(CustomUser, telegram_id=user_id)
-
-    listings = ProductListing.objects.filter(seller=user)
-
-    data = [
-        {
-            'id': listing.product.id,
-            'title': listing.product.title,
-            'description': listing.product.description,
-            'price': float(listing.price),
-            'quantity': listing.quantity,
-            'image': listing.product.image_url,
-        }
-        for listing in listings
-    ]
-
-    return JsonResponse(data, safe=False)
 
     
 def get_user_wealth(request):

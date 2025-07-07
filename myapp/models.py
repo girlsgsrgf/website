@@ -4,6 +4,7 @@ from decimal import Decimal, ROUND_HALF_UP
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.db import models
 from django.conf import settings 
+from django.db.models import Sum
 
 def generate_unique_code():
     while True:
@@ -69,32 +70,31 @@ class Product(models.Model):
     owner = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True, related_name='owned_products')
 
     def update_dynamic_price(self):
+    
         # Спрос — сколько товара у пользователей
         total_demand = UserProduct.objects.filter(product=self).aggregate(
-            total=models.Sum('quantity')
+            total=Sum('quantity')
         )['total'] or 0
 
-        # Предложение — сколько товара у системы + выставлено на продажу
-        total_listing = ProductListing.objects.filter(product=self).aggregate(
-            total=models.Sum('quantity')
-        )['total'] or 0
+        # Предложение — только у системы
+        total_supply = self.supply or 1  # защита от деления на 0
 
-        total_supply = self.supply + total_listing or 1  # avoid division by zero
-
+        # Разница между спросом и предложением
         demand_factor = (Decimal(total_demand) - Decimal(total_supply)) / Decimal(total_supply)
 
-        # Ценовой коэффициент (10% за единицу спроса сверх предложения)
+        # Ценовой коэффициент — рост/падение на 10% за каждую единицу относительного спроса
         price_multiplier = Decimal('1.0') + Decimal('0.1') * demand_factor
 
         # Новая цена
         new_price = (self.base_price * price_multiplier).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
 
-        # Не ниже базовой цены
+        # Минимум — базовая цена
         if new_price < self.base_price:
             new_price = self.base_price
 
         self.price = new_price
         self.save()
+
 
     @property
     def image_url(self):
@@ -111,13 +111,6 @@ class UserProduct(models.Model):
     class Meta:
         unique_together = ('user', 'product')
 
-class ProductListing(models.Model):
-    seller = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField()
-    price = models.DecimalField(max_digits=10, decimal_places=2)  # можно дать возможность указывать цену
-    created_at = models.DateTimeField(auto_now_add=True)
-
 
 class Message(models.Model):
     sender = models.ForeignKey('CustomUser', on_delete=models.CASCADE, related_name='sent_messages')
@@ -133,3 +126,52 @@ class Message(models.Model):
 
     def __str__(self):
         return f"From {self.sender} to {self.recipient} at {self.timestamp}"
+
+class Business(models.Model):
+    title = models.CharField(max_length=255)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    daily_profit = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'))
+
+    def __str__(self):
+        return f"{self.title} (${self.price}) +${self.daily_profit}/day"
+
+
+class UserBusiness(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    business = models.ForeignKey(Business, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+    last_paid = models.DateField(null=True, blank=True)  # Когда последний раз начисляли прибыль
+
+    def __str__(self):
+        return f"{self.user} owns {self.quantity} x {self.business.title}"
+
+    def pay_revenue(self):
+        today = timezone.now().date()
+        if self.last_paid == today:
+            return Decimal('0.00')  # Уже выплачено сегодня
+
+        total_profit = self.business.daily_profit * self.quantity
+        self.user.balance += total_profit
+        self.user.save()
+
+        self.last_paid = today
+        self.save()
+
+        # Optional: track history
+        DailyRevenue.objects.create(
+            user=self.user,
+            business=self.business,
+            amount=total_profit,
+            date=today
+        )
+        return total_profit
+
+
+class DailyRevenue(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    business = models.ForeignKey(Business, on_delete=models.CASCADE)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    date = models.DateField()
+
+    def __str__(self):
+        return f"{self.user} earned ${self.amount} from {self.business} on {self.date}"
