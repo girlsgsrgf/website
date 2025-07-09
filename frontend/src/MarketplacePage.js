@@ -28,6 +28,16 @@ function MarketPlacePage() {
     window.location.href = url;
   };
 
+  function formatPrice(price) {
+  if (price >= 1_000_000) {
+    return (price / 1_000_000).toFixed(price % 1_000_000 === 0 ? 0 : 1) + 'M';
+  } else if (price >= 1_000) {
+    return (price / 1_000).toFixed(price % 1_000 === 0 ? 0 : 1) + 'k';
+  }
+  return price.toString();
+  }
+
+
   const handleSearchChange = (e) => {
     setFilter({ ...filter, search: e.target.value });
   };
@@ -156,7 +166,7 @@ function MarketPlacePage() {
                 <p className="product-category">{product.category}</p>
                 <p className="product-title">{product.title}</p>
                 <div className="product-price">
-                  <sup>$</sup><span>{product.price}</span>
+                 <sup>$</sup><span>{formatPrice(product.price)}</span>
                 </div>
               </div>
             </div>

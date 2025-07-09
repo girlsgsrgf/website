@@ -1,10 +1,11 @@
 from django.contrib import admin
 from .models import CustomUser, Product, UserProduct
-from .models import Business, UserBusiness, DailyRevenue
+from .models import Business, UserBusiness, DailyRevenue, Referral
 
 admin.site.register(CustomUser)
 admin.site.register(Product)
 admin.site.register(UserProduct)
+admin.site.register(Referral)
 
 @admin.register(Business)
 class BusinessAdmin(admin.ModelAdmin):

@@ -12,6 +12,8 @@ export default function GetFlypPage() {
   const [viewMode, setViewMode] = useState("myProducts"); // 'myProducts' or 'listings'
   const [ownedBusinesses, setOwnedBusinesses] = useState([]); // to track purchased businesses
   const [showWithdrawWarning, setShowWithdrawWarning] = useState(false)
+  const [referralCode, setReferralCode] = useState(null);
+
 
   const userId = localStorage.getItem("user_id");
 
@@ -33,6 +35,12 @@ export default function GetFlypPage() {
       .then((res) => res.json())
       .then((data) => setOwnedBusinesses(data.map(b => b.business.id)))
       .catch(console.error);
+
+    fetch(`/api/referral-code/?user_id=${userId}`)
+        .then(res => res.json())
+        .then(data => setReferralCode(data.code))
+        .catch(console.error);
+
   }, [userId]);
 
   const handleDepositClick = () => {
@@ -82,12 +90,23 @@ export default function GetFlypPage() {
         className="businesscard"
         style={{ backgroundColor: owned ? "#90ee90" : "#fff" }}
       >
-        <div className="top-card"></div>
+        <div className="top-card"> <img
+          src={business.image_url}
+          alt={business.title}
+          className="business-image"
+          style={{
+            width: '100%',
+            height: 'auto',
+            objectFit: 'cover',
+            borderRadius: '12px 12px 0 0',
+          }}
+        />
+        </div>
         <div className="bottom-card">
           <div className="card-content">
             <span className="card-title">{business.title}</span>
-            <p className="card-txt">Price: ${business.price}</p>
-            <p className="card-txt">Daily profit: ${business.daily_profit}</p>
+            <p className="card-txt-price">Price: ${business.price}</p>
+            <p className="card-txt-profit">Daily profit: {business.daily_profit} USDT</p>
 
             {owned ? (
               <button className="card-btn acquired" disabled>
@@ -120,11 +139,12 @@ export default function GetFlypPage() {
               <img src={product.image} alt={product.title} className="my-product-image" />
               <h4 className="my-product-title">{product.title}</h4>
               <p className="my-product-description">{product.description.slice(0, 40)}...</p>
-              <p className="my-product-price"><strong>${product.price}</strong></p>
+              <p className="my-product-price"><strong>$ {product.price}</strong></p>
               <p className="my-product-quantity"><strong>Quantity: {product.quantity}</strong></p>
+              <p className="my-product-quantity"><strong>Comission: 10%</strong></p>
               {viewMode === "myProducts" && (
                 <button className="sell-button" onClick={() => handleSellClick(product.id)}>
-                  Sell for {product.price}
+                  Sell for $ {product.price}
                 </button>
               )}
             </div>
@@ -136,12 +156,12 @@ export default function GetFlypPage() {
             <div key={product.id} className="my-product-card">
               <img src={product.image} alt={product.title} className="my-product-image" />
               <h4 className="my-product-title">{product.title}</h4>
-              <p className="my-product-description">{product.description.slice(0, 40)}...</p>
-              <p className="my-product-price"><strong>${product.price}</strong></p>
+              <p className="my-product-price"><strong>$ {product.price}</strong></p>
               <p className="my-product-quantity"><strong>Quantity: {product.quantity}</strong></p>
+              <p className="my-product-quantity"><strong>Comission: 10%</strong></p>
               {viewMode === "myProducts" && (
                 <button className="sell-button" onClick={() => handleSellClick(product.id)}>
-                  Sell for {product.price}
+                  Sell for $ {product.price}
                 </button>
               )}
             </div>
@@ -156,8 +176,13 @@ export default function GetFlypPage() {
       <div className="card-getflyp-container">
         <div className="getflyp-container">
           <div className="balance-section-getflyp">
-            <p className="label">Your Balance</p>
-            <h2 className="balance">${balance.toFixed(2)}</h2>
+            <p className="label">Crypto Wallet</p>
+            <h2 className="balance">{balance.toFixed(2)} USDT</h2>
+            {referralCode && (
+              <p className="referral-code" style={{ fontSize: '14px', color: '#666' }}>
+                Your referral code: <strong>{referralCode}</strong>
+              </p>
+            )}
             <div className="button-row">
               <button className="deposit-btn" onClick={handleDepositClick}>
                 Withdraw
@@ -193,7 +218,7 @@ export default function GetFlypPage() {
 
       <div className="my-products-section">
         <h3 className="section-title">
-          {viewMode === "myProducts" ? "Your Products" : "Your Listings"}
+          {viewMode === "myProducts" ? "Your Products" : "Business"}
         </h3>
         {viewMode === "myProducts"
           ? renderProductsInColumns(myProducts)

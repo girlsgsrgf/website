@@ -66,16 +66,16 @@
 }
 
 .product-image {
-  aspect-ratio: 1 / 1;
-  width: 70%;
-  margin: 10px auto;
+  aspect-ratio: 4 / 3;
+  width: 100%;
+  margin: 0px auto;
 }
 
 .product-info {
   padding: 16px;
   display: flex;
   flex-direction: column;
-  margin-top: -0.5em;
+  margin-top: 0.2em;
 }
 
 .product-category {
@@ -189,7 +189,7 @@
   display: block;
   height: 1em;
   padding-left: 6px;
-  color: #956afa;
+  color: #4A00E0;
   animation: spin_4991 4s infinite;
 }
 

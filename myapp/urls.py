@@ -47,4 +47,5 @@ urlpatterns = [
     path('get_user_wealth/', views.get_user_wealth, name='get_user_wealth'),
     path('api/buy-business/', views.buy_business, name='buy_business'),
     path("api/businesses/", views.list_businesses, name="list_businesses"),
+    path('api/referral-code/', views.get_referral_code),
 ]

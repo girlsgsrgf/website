@@ -16,11 +16,13 @@ from django.contrib import messages
 from django.db import transaction
 from decimal import Decimal
 from django.contrib.auth import get_user_model
-from .models import Message 
+from .models import Message, Referral
 from django.db.models import Q
 from django.views.decorators.http import require_POST
 from django.http import HttpResponseNotFound, HttpResponseForbidden
 from .models import Business
+import random
+
 
 
 
@@ -455,7 +457,7 @@ def buy_business(request):
         business_id = request.POST.get("business_id")
 
         try:
-            user = User.objects.get(id=user_id)
+            user = CustomUser.objects.get(telegram_id=user_id)
             business = Business.objects.get(id=business_id)
         except (User.DoesNotExist, Business.DoesNotExist):
             return JsonResponse({"error": "User or business not found"}, status=404)
@@ -486,7 +488,18 @@ def list_businesses(request):
             "title": b.title,
             "price": str(b.price),
             "daily_profit": str(b.daily_profit),
+            "image_url": b.image_url,
         }
         for b in businesses
     ]
     return JsonResponse(data, safe=False)
+
+
+def get_referral_code(request):
+    user_id = request.GET.get("user_id")
+    try:
+        user = User.objects.get(id=user_id)
+        referral = Referral.objects.get(user=user)
+        return JsonResponse({"code": referral.code})
+    except (User.DoesNotExist, Referral.DoesNotExist):
+        return JsonResponse({"code": None})

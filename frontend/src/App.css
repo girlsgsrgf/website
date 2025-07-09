@@ -78,7 +78,7 @@ body, html, #root {
  position: absolute;
  width: 100%;
  font-size: 15px;
- font-weight: 100;
+ font-weight: bold;
  left: 50%;
  top: 39%;
  letter-spacing: 3px;
@@ -164,6 +164,5 @@ body, html, #root {
 }
 
 .stepsinput::placeholder {
-  color: black;
-  font-weight: bold; /* optional styling */
+  color: grey;
 }

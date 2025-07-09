@@ -1,9 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
+
+
 /* Общий контейнер */
 .getflyp-container {
   background: transparent;
   color: #fff;
   min-height: 100vh;
-  font-family: Arial, sans-serif;
   margin-top: 0.5em;
 }
 
@@ -28,6 +30,7 @@
 }
 
 .label {
+  font-family: "Inter";
   color: white;
   font-size: 22px;
   font-weight: bold;
@@ -35,6 +38,7 @@
 }
 
 .balance {
+  font-family: "Inter";
   color: white;
   font-size: 32px;
   font-weight: bold;
@@ -48,6 +52,7 @@
 }
 
 .deposit-btn {
+  font-family: "Inter";
   background-color: white;
   color: black;
   border: none;
@@ -70,6 +75,7 @@
 }
 
 .mydict div {
+  font-family: "Inter";
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -86,6 +92,7 @@
 }
 
 .mydict input[type="radio"]:checked + span {
+  font-family: "Inter";
   box-shadow: 0 0 0 0.0625em black;
   background-color: #E2E2E2;
   z-index: 1;
@@ -93,6 +100,7 @@
 }
 
 label span {
+  font-family: "Inter";
   display: block;
   cursor: pointer;
   background-color: #fff;
@@ -120,6 +128,7 @@ label:last-child span {
 }
 
 .section-title {
+  font-family: "Inter";
   margin-bottom: 20px;
   text-align: center;
   color: #000;
@@ -145,6 +154,7 @@ label:last-child span {
 
 /* Карточка продукта */
 .my-product-card {
+  font-family: "Inter";
   width: 100%;
   border: 1px solid #ccc;
   padding: 8px;
@@ -153,6 +163,7 @@ label:last-child span {
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-left: -0.55em;
 }
 
 .my-product-image {
@@ -162,29 +173,33 @@ label:last-child span {
 }
 
 .my-product-title {
+  font-family: "Inter";
   margin: 8px 0;
   font-weight: bold;
   color: #333;
-  font-size: 16px;
+  font-size: 30px;
   text-align: center;
 }
 
 .my-product-description {
-  font-size: 13px;
+  font-family: "Inter";
+  font-size: 18px;
   color: #555;
   text-align: center;
 }
 
 .my-product-price,
 .my-product-quantity {
-  font-size: 13px;
-  color: #333;
+  font-family: "Inter";
+  font-size: 25px;
+  color: red;
   margin: 4px 0;
 }
 
 /* Кнопка "Sell" */
 .sell-button {
-  background-color: #c62828;
+  font-family: "Inter";
+  background-color: red;
   color: white;
   border: none;
   padding: 8px;
@@ -212,9 +227,10 @@ label:last-child span {
 
 /* From Uiverse.io by Artahs */ 
 .businesscard {
+  font-family: "Inter";
   position: relative;
   width: 180px;
-  height: 264px;
+  height: 270px;
   background-color: #fff;
   border-radius: 20px;
   /*box-shadow: 0px 5px 5px #313131;*/
@@ -226,7 +242,9 @@ label:last-child span {
   border-top-right-radius: 20px;
   height: 65%;
   transition: height 0.3s ease;
-  background-color: #fff;
+  background-color: white;
+  position: relative; /* Important */
+  z-index: 1;
 }
 
 .bottom-card {
@@ -235,7 +253,14 @@ label:last-child span {
   border-bottom-right-radius: 20px;
   height: 35%;
   transition: height 0.3s ease;
-  background-color: #0a3cff;
+  background-color: black;
+  position: relative; /* Important */
+  z-index: 2;
+}
+
+.business-image {
+  position: relative;
+  z-index: 0;
 }
 
 .bottom-card::before {
@@ -247,7 +272,7 @@ label:last-child span {
   width: 175px;
   transition: bottom 0.3s ease;
   border-bottom-left-radius: 20px;
-  box-shadow: 0 30px 0 0 #0a3cff;
+  box-shadow: 0 30px 0 0 black;
 }
 
 .card-content {
@@ -259,15 +284,25 @@ label:last-child span {
   color: #fff;
 }
 .card-title {
+  font-family: "Inter";
+  margin-top: 0.5em;
   font-weight: 700;
   font-size: 18px;
 }
-.card-txt {
+.card-txt-price {
+  font-family: "Inter";
+  font-size: 14px;
+}
+
+.card-txt-profit {
+  font-family: "Inter";
+  font-weight: bold;
   font-size: 14px;
   margin-top: -0.3em;
 }
 
 .card-btn {
+  font-family: "Inter";
   font-size: 13px;
   margin-top: 5%;
   text-decoration: none;
@@ -279,8 +314,8 @@ label:last-child span {
 }
 
 .businesscard:hover {
-  box-shadow: 0px 2px 2px #0a3bffa1;
-  border: solid 1px #0a3cff;
+  box-shadow: 0px 2px 2px black;
+  border: solid 1px #black;
 }
 
 .businesscard:hover .top-card {
@@ -303,6 +338,7 @@ label:last-child span {
 }
 
 .withdraw-warning-popup {
+  font-family: "Inter";
   position: fixed;
   bottom: 60px;
   left: 50%;
@@ -324,4 +360,12 @@ label:last-child span {
   10% { opacity: 1; }
   90% { opacity: 1; }
   100% { opacity: 0; }
+}
+
+
+.referral-code {
+  margin-top: 5px;
+  font-size: 14px;
+  color: #444;
+  text-align: center;
 }

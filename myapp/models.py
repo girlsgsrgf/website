@@ -5,6 +5,7 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseU
 from django.db import models
 from django.conf import settings 
 from django.db.models import Sum
+import random
 
 def generate_unique_code():
     while True:
@@ -131,6 +132,10 @@ class Business(models.Model):
     title = models.CharField(max_length=255)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     daily_profit = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'))
+
+    @property
+    def image_url(self):
+        return f'/static/business/id{self.id}.png'
 
     def __str__(self):
         return f"{self.title} (${self.price}) +${self.daily_profit}/day"

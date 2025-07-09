@@ -65,27 +65,15 @@ const App = () => {
               nextButtonText="Next"
             >
               <Step>
-                <h2 style={{ color: 'black' }}>Welcome to the React Bits stepper!</h2>
-                <p style={{ color: 'black' }}>Check out the next step!</p>
+                <h2 style={{ color: 'black' }}>Welcome to Batman: Legacy!</h2>
+                <p style={{ color: 'black', fontWeight: "bold" }}>Earn USDT, Trade and get Rich!</p>
               </Step>
               <Step>
                 <h2 style={{ color: 'black' }}>Step 2</h2>
-                <img
-                  style={{
-                    height: '100%',
-                    width: '100%',
-                    objectFit: 'cover',
-                    objectPosition: 'center -70px',
-                    borderRadius: '15px',
-                    marginTop: '1em',
-                    marginBottom: '-1em'
-                  }}
-                  src="icons/splash.png"
-                />
-                <p style={{ color: 'black', marginTop: '-2em'}}>Custom step content!</p>
+                <p style={{ color: 'black', marginTop: '-0.6em', fontWeight: "bold"}}>Remember for each referral you get $25,000</p>
               </Step>
               <Step>
-                <h2 style={{ color: 'black' }}>How about an input?</h2>
+                <h2 style={{ color: 'black' }}>Do you have a Referral code?</h2>
                 <input className='stepsinput' style={{borderRadius: '30px', borderWidth: '1px', borderStyle: 'solid', borderColor: 'grey', height: '30px', width: '75%', fontSize:'15px'}}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
@@ -94,7 +82,7 @@ const App = () => {
               </Step>
               <Step>
                 <h2 style={{ color: 'black' }}>Final Step</h2>
-                <p style={{ color: 'black' }}>You made it!</p>
+                <p style={{ color: 'black', fontWeight: "bold" }}>You made it! Enjoy the game!</p>
               </Step>
             </Stepper>
           </div>
