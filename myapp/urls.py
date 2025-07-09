@@ -45,6 +45,6 @@ urlpatterns = [
     path('api/chat/send/', views.send_message, name='send_message'),
     path('save_balance/', views.save_balance, name='save_balance'),
     path('get_user_wealth/', views.get_user_wealth, name='get_user_wealth'),
-
-
+    path('api/buy-business/', views.buy_business, name='buy_business'),
+    path("api/businesses/", views.list_businesses, name="list_businesses"),
 ]

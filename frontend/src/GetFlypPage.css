@@ -3,56 +3,43 @@
   background: transparent;
   color: #fff;
   min-height: 100vh;
-  padding-bottom: 2rem;
   font-family: Arial, sans-serif;
   margin-top: 0.5em;
 }
 
-/* Заголовок */
-.app-title {
-  font-weight: bold;
-  font-size: 18px;
+
+.card-getflyp-container {
+  position: relative;
+  width: calc(100% + 49px); /* slightly more than 40px to fully reach edges */
+  margin: -28px -34px 0 -28px; /* go beyond the .content padding */
+  background-color: #212121;
+  border-bottom-left-radius: 25px;
+  border-bottom-right-radius: 25px;
+  box-sizing: border-box;
+  height: 160px; /* or any height you want */
 }
 
-/* Логотип и заголовок */
-.logo-title {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
-.wings-img {
-  height: 180px;
-  margin-bottom: 0.5rem;
-}
 
 /* Баланс */
 .balance-section-getflyp {
-  margin-top: -1em;
+  margin-top: -2em;
   padding: 1.5rem 1rem 0;
-  margin-left: 0.2em;
+  margin-left: 1.5em;
 }
 
 .label {
-  color: black;
+  color: white;
   font-size: 22px;
   font-weight: bold;
   margin-bottom: -20px;
 }
 
 .balance {
-  color: black;
+  color: white;
   font-size: 32px;
   font-weight: bold;
 }
 
-.wallet-link-getflyp {
-  font-size: 13px;
-  color: black;
-  margin-top: -1.5em;
-  margin-bottom: 10px;
-}
 
 /* Кнопки действий */
 .button-row {
@@ -61,8 +48,8 @@
 }
 
 .deposit-btn {
-  background-color: black;
-  color: white;
+  background-color: white;
+  color: black;
   border: none;
   padding: 0.65rem 1.65rem;
   border-radius: 9999px;
@@ -77,7 +64,7 @@
 
 /* Радио-переключатель */
 .mydict {
-  margin-top: 1rem;
+  margin-top: 1.5em;
   display: flex;
   justify-content: center;
 }
@@ -138,32 +125,31 @@ label:last-child span {
   color: #000;
   font-weight: bold;
 }
-
-/* Две колонки */
+/* Контейнер с двумя колонками */
 .marketplace-columns {
   display: flex;
-  justify-content: center;
-  gap: 20px;
   flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
   margin-top: 20px;
 }
 
+/* Каждая колонка — 48% ширины на мобильных устройствах */
 .marketplace-column {
-  flex: 1;
-  min-width: 280px;
-  max-width: 400px;
+  flex: 0 0 48%;
+  max-width: 48%;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 12px;
 }
 
 /* Карточка продукта */
 .my-product-card {
+  width: 100%;
   border: 1px solid #ccc;
-  padding: 10px;
+  padding: 8px;
   border-radius: 8px;
   background-color: #fff;
-  margin-bottom: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -176,23 +162,24 @@ label:last-child span {
 }
 
 .my-product-title {
-  margin: 10px 0;
+  margin: 8px 0;
   font-weight: bold;
   color: #333;
+  font-size: 16px;
   text-align: center;
 }
 
 .my-product-description {
-  font-size: 14px;
+  font-size: 13px;
   color: #555;
   text-align: center;
 }
 
 .my-product-price,
 .my-product-quantity {
-  font-size: 14px;
+  font-size: 13px;
   color: #333;
-  margin: 5px 0;
+  margin: 4px 0;
 }
 
 /* Кнопка "Sell" */
@@ -200,12 +187,13 @@ label:last-child span {
   background-color: #c62828;
   color: white;
   border: none;
-  padding: 10px;
+  padding: 8px;
   border-radius: 5px;
   cursor: pointer;
   width: 100%;
-  margin-top: 10px;
+  margin-top: 8px;
   font-weight: bold;
+  font-size: 14px;
   transition: background-color 0.2s;
 }
 
@@ -213,12 +201,20 @@ label:last-child span {
   background-color: #b71c1c;
 }
 
+/* 🟢 Адаптив для очень маленьких экранов (опционально) */
+@media (max-width: 400px) {
+  .marketplace-column {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}
+
 
 /* From Uiverse.io by Artahs */ 
 .businesscard {
   position: relative;
-  width: 190px;
-  height: 254px;
+  width: 180px;
+  height: 264px;
   background-color: #fff;
   border-radius: 20px;
   /*box-shadow: 0px 5px 5px #313131;*/
@@ -268,11 +264,12 @@ label:last-child span {
 }
 .card-txt {
   font-size: 14px;
+  margin-top: -0.3em;
 }
 
 .card-btn {
   font-size: 13px;
-  margin-top: 15%;
+  margin-top: 5%;
   text-decoration: none;
   color: white;
   background-color: transparent;
@@ -303,4 +300,28 @@ label:last-child span {
   color: black;
   background-color: #fff;
   transition: background-color 0.4s ease;
+}
+
+.withdraw-warning-popup {
+  position: fixed;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #ff4d4d;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  animation: fadeInOut 3s ease forwards;
+  opacity: 0;
+  animation-fill-mode: forwards;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { opacity: 0; }
 }

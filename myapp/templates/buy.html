@@ -272,6 +272,66 @@
       transform: translate(5px,5px);
       transition-duration: .3s;
     }
+
+.withdraw-success-popup {
+  position: fixed;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: lightgreen;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  animation: fadeInOut 3s ease forwards;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}    
+
+.withdraw-warning-popup {
+  position: fixed;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #ff4d4d;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  animation: fadeInOut 3s ease forwards;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    visibility: hidden;
+  }
+  10% {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+  90% {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+}
+
+
   </style>
 </head>
 <body>
@@ -296,13 +356,13 @@
 
   <div class="container">
     <h1>{{ product.title }}</h1>
-    <p>Цена: ${{ product.price }}</p>
+    <p>Price: ${{ product.price }}</p>
 
     {% if is_selling %}
-      <p>У вас есть: {{ user_product.quantity }} шт.</p>
+      <p>Available: {{ user_product.quantity }} units.</p>
       <form method="post">
         {% csrf_token %}
-        <label for="quantity">Количество для продажи:</label>
+        <label for="quantity">Quantity for sale:</label>
         <input type="number" name="quantity" min="1" max="{{ user_product.quantity }}" value="1" required>
         <button class="Btn" type="submit">
           Sell
@@ -310,10 +370,10 @@
         </button>
       </form>
     {% else %}
-      <p>В наличии: {{ product.supply }} шт.</p>
+      <p>Available: {{ product.supply }} units.</p>
       <form method="post">
         {% csrf_token %}
-        <label for="quantity">Количество для покупки:</label>
+        <label for="quantity">Quantity for purchase:</label>
         <input type="number" name="quantity" min="1" max="{{ product.supply }}" value="1" required>
         <button class="Btn" type="submit">
           Pay
@@ -325,51 +385,15 @@
    {% if messages %}
   {% for message in messages %}
     {% if 'success' in message.tags %}
-      <!-- UIverse success notification -->
-      <div class="notifications-container">
-        <div class="success">
-          <div class="flex">
-            <div class="flex-shrink-0">
-              <svg class="succes-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-              </svg>
-            </div>
-            <div class="success-prompt-wrap">
-              <p class="success-prompt-heading">Success</p>
-              <div class="success-prompt-prompt">
-                <p>{{ message }}</p>
-              </div>
-              <div class="success-button-container"></div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <div class="withdraw-success-popup">
+        {{ message }}</div>
     {% elif 'error' in message.tags %}
-      <!-- UIverse error notification -->
-      <div class="notifications-container">
-        <div class="error-alert">
-          <div class="flex">
-            <div class="flex-shrink-0">
-              <svg aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" class="error-svg">
-                <path clip-rule="evenodd" fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"></path>
-              </svg>
-            </div>
-            <div class="error-prompt-container">
-              <p class="error-prompt-heading">Error</p>
-              <div class="error-prompt-wrap">
-                <ul class="error-prompt-list" role="list">
-                  <li>{{ message }}</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <div class="withdraw-warning-popup">
+        {{ message }}</div>
     {% else %}
       <!-- Default fallback (for info, warning, etc.) -->
-      <div class="message">
-        <p class="{{ message.tags }}">{{ message }}</p>
-      </div>
+       <div class="withdraw-warning-popup">
+        {{ message }}</div>
     {% endif %}
   {% endfor %}
 {% endif %}

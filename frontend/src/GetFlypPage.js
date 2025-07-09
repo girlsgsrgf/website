@@ -8,46 +8,106 @@ export default function GetFlypPage() {
   });
 
   const [myProducts, setMyProducts] = useState([]);
-  const [listings, setListings] = useState([]);
+  const [listings, setListings] = useState([]); // This will be your businesses list now
   const [viewMode, setViewMode] = useState("myProducts"); // 'myProducts' or 'listings'
+  const [ownedBusinesses, setOwnedBusinesses] = useState([]); // to track purchased businesses
+  const [showWithdrawWarning, setShowWithdrawWarning] = useState(false)
+
+  const userId = localStorage.getItem("user_id");
 
   useEffect(() => {
-    const userId = localStorage.getItem("user_id");
-
     // Получение моих продуктов
     fetch(`/api/my-products/?user_id=${userId}`)
       .then((res) => res.json())
       .then((data) => setMyProducts(data))
       .catch(console.error);
 
-    // Получение листингов пользователя
-    fetch(`/api/my-listings/?user_id=${userId}`)
+    // Получение листингов пользователя - теперь это список бизнесов
+    fetch(`/api/businesses/`)  // assuming you have an endpoint that returns all businesses
       .then((res) => res.json())
       .then((data) => setListings(data))
       .catch(console.error);
-  }, []);
+
+    // Получение списка приобретенных бизнесов для текущего пользователя
+    fetch(`/api/user-businesses/?user_id=${userId}`)
+      .then((res) => res.json())
+      .then((data) => setOwnedBusinesses(data.map(b => b.business.id)))
+      .catch(console.error);
+  }, [userId]);
 
   const handleDepositClick = () => {
-    window.location.href = "/deposit/";
+  setShowWithdrawWarning(true);
+  setTimeout(() => setShowWithdrawWarning(false), 3000);
   };
 
   const handleSellClick = (productId) => {
-    window.location.href = `/api/sell-product/${productId}/?user_id=${localStorage.getItem("user_id")}`;
+    window.location.href = `/api/sell-product/${productId}/?user_id=${userId}`;
   };
 
-  const renderBusinessCard = () => (
-    <div className="businesscard">
-      <div className="top-card"></div>
-      <div className="bottom-card">
-        <div className="card-content">
-          <span className="card-title">Card Title</span>
-          <p className="card-txt">A simple card</p>
-          <a href="#" className="card-btn">Read More</a>
+  // Покупка бизнеса с проверкой баланса
+  const handleBuyBusiness = (businessId, price) => {
+    if (balance < price) {
+      alert("Insufficient balance to buy this business!");
+      return;
+    }
+
+    fetch("/api/buy-business/", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: `user_id=${userId}&business_id=${businessId}`,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          setBalance(parseFloat(data.new_balance));
+          setOwnedBusinesses((prev) => [...prev, businessId]);
+        } else {
+          alert(data.error || "Failed to buy business");
+        }
+      })
+      .catch(() => alert("Error during purchase"));
+  };
+
+  // Разбивка на 2 колонки для бизнеса
+  const leftBusinesses = listings.filter((_, i) => i % 2 === 0);
+  const rightBusinesses = listings.filter((_, i) => i % 2 !== 0);
+
+  // Рендер бизнес-карточки с кнопкой Buy/Acquired
+  const renderBusinessCard = (business) => {
+    const owned = ownedBusinesses.includes(business.id);
+
+    return (
+      <div
+        key={business.id}
+        className="businesscard"
+        style={{ backgroundColor: owned ? "#90ee90" : "#fff" }}
+      >
+        <div className="top-card"></div>
+        <div className="bottom-card">
+          <div className="card-content">
+            <span className="card-title">{business.title}</span>
+            <p className="card-txt">Price: ${business.price}</p>
+            <p className="card-txt">Daily profit: ${business.daily_profit}</p>
+
+            {owned ? (
+              <button className="card-btn acquired" disabled>
+                Acquired
+              </button>
+            ) : (
+              <button
+                className="card-btn"
+                onClick={() => handleBuyBusiness(business.id, parseFloat(business.price))}
+              >
+                Buy
+              </button>
+            )}
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  };
 
+  // Ваши функции для продуктов без изменений
   const renderProductsInColumns = (products) => {
     const left = products.filter((_, i) => i % 2 === 0);
     const right = products.filter((_, i) => i % 2 !== 0);
@@ -92,15 +152,18 @@ export default function GetFlypPage() {
   };
 
   return (
-    <div className="getflyp-container">
-      <div className="balance-section-getflyp">
-        <p className="label">Your Balance</p>
-        <h2 className="balance">${balance.toFixed(2)}</h2>
-        <div className="wallet-link-getflyp">0 USDT</div>
-        <div className="button-row">
-          <button className="deposit-btn" onClick={handleDepositClick}>
-            Withdraw
-          </button>
+    <>
+      <div className="card-getflyp-container">
+        <div className="getflyp-container">
+          <div className="balance-section-getflyp">
+            <p className="label">Your Balance</p>
+            <h2 className="balance">${balance.toFixed(2)}</h2>
+            <div className="button-row">
+              <button className="deposit-btn" onClick={handleDepositClick}>
+                Withdraw
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -114,7 +177,7 @@ export default function GetFlypPage() {
               checked={viewMode === "myProducts"}
               onChange={() => setViewMode("myProducts")}
             />
-            <span> Your Products</span>
+            <span>Owned Products</span>
           </label>
           <label>
             <input
@@ -123,20 +186,35 @@ export default function GetFlypPage() {
               checked={viewMode === "listings"}
               onChange={() => setViewMode("listings")}
             />
-            <span>Bussiness</span>
+            <span>Business</span>
           </label>
         </div>
       </div>
 
-        <div className="my-products-section">
+      <div className="my-products-section">
         <h3 className="section-title">
           {viewMode === "myProducts" ? "Your Products" : "Your Listings"}
         </h3>
-        {viewMode === "myProducts" 
-          ? renderProductsInColumns(myProducts) 
-          : renderBusinessCard()
+        {viewMode === "myProducts"
+          ? renderProductsInColumns(myProducts)
+          : (
+            <div style={{ display: "flex", justifyContent: "center", gap: "10px" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                {leftBusinesses.map(renderBusinessCard)}
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                {rightBusinesses.map(renderBusinessCard)}
+              </div>
+            </div>
+          )
         }
       </div>
-    </div>
+      {showWithdrawWarning && (
+      <div className="withdraw-warning-popup">
+        Withdrawals are not available right now!
+      </div>
+       )}
+
+    </>
   );
 }

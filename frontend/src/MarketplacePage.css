@@ -49,8 +49,9 @@
 /* Product card */
 .product-card {
   width: 170px;
+  height: 200px;
   background-color: #fff;
-  border-radius: 18px;
+  border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -137,12 +138,14 @@
   background-color: var(--bg-color);
   padding: 1rem 2rem;
   position: relative;
-  width: calc(100% + 16px); /* slightly more than 40px to fully reach edges */
-  margin: -45px -33px 0 -45px;
+  width: calc(104%); /* slightly more than 40px to fully reach edges */
+  margin: -45px -60px 0 -40px;
   /* Center content */
   display: flex;
   justify-content: center;  /* center horizontally */
-  align-items: center;      /* center vertically */    
+  align-items: center; 
+  border-bottom-left-radius: 40px;
+  border-bottom-right-radius: 40px;     /* center vertically */    
 }
 
 .loader {
@@ -247,7 +250,7 @@
   width: 6%;
   height: 16%;
   margin-top: 6em;
-  margin-left: 10.5em;
+  margin-left: 10.6em;
   background: rgb(128, 128, 128);
   position: absolute;
   opacity: 0;
@@ -416,6 +419,7 @@ input:not(:placeholder-shown) ~ .reset {
 
 
 .marketplace-filter-group {
+  color: black;
   font-family: "Inter";
   display: flex;
   flex-direction: column;
@@ -429,7 +433,7 @@ input:not(:placeholder-shown) ~ .reset {
   font-size: 14px;
   font-weight: bold;
   margin-bottom: 8px;
-  color: #333;
+  color: black;
 }
 
 .marketplace-filter-group input,
@@ -437,11 +441,11 @@ input:not(:placeholder-shown) ~ .reset {
   font-family: "Inter";
   padding: 12px 14px;
   font-size: 16px;
-  border-radius: 12px;
+  border-radius: 8px;
   outline: none;
   transition: 0.2s ease;
-  background-color: white;       /* 👈 white background */
-  border: 1px solid #ccc;        /* 👈 gray solid border */
+  background-color: white;
+  border-width: 0px;
 }
 
 .marketplace-filter-group input:focus,

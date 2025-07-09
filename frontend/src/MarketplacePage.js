@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import Select from 'react-select';
 import './MarketPlacePage.css';
 
 function MarketPlacePage() {
@@ -40,6 +41,14 @@ function MarketPlacePage() {
     e.preventDefault();
     // No actual submit action needed, filtering happens on input change
   };
+
+  const categoryOptions = [
+    { value: '', label: 'All Categories' },
+    ...categories.map(cat => ({ value: cat, label: cat })),
+  ];
+
+  // Find selected option from filter.category (to control Select)
+  const selectedCategoryOption = categoryOptions.find(opt => opt.value === filter.category) || categoryOptions[0];
 
   return (
     <div className="marketplace-wrapper">
@@ -101,16 +110,40 @@ function MarketPlacePage() {
           </button>
         </form>
         <div className="marketplace-filter-group">
-          <select
-            id="category"
-            value={filter.category}
-            onChange={(e) => setFilter({ ...filter, category: e.target.value })}
-          >
-            <option value="">All Categories</option>
-            {categories.map((cat, idx) => (
-              <option key={idx} value={cat}>{cat}</option>
-            ))}
-          </select>
+                    <Select
+            options={categoryOptions}
+            value={selectedCategoryOption}
+            onChange={(selectedOption) => {
+              setFilter(prev => ({ ...prev, category: selectedOption.value }));
+            }}
+            isClearable={false}
+            isSearchable={false}
+            classNamePrefix="react-select"
+            styles={{
+              control: (provided, state) => ({
+                ...provided,
+                borderColor: 'black',
+                boxShadow: state.isFocused ? '0 0 0 1px black' : null,
+                '&:hover': {
+                  borderColor: 'black',
+                },
+              }),
+              option: (provided, state) => ({
+                ...provided,
+                backgroundColor: state.isSelected ? 'black' : state.isFocused ? '#ddd' : 'white',
+                color: state.isSelected ? 'white' : 'black',
+                cursor: 'pointer',
+              }),
+              singleValue: (provided, state) => ({
+                ...provided,
+                color: 'black',
+              }),
+              menu: (provided) => ({
+                ...provided,
+                borderColor: 'black',
+              }),
+            }}
+          />
         </div>
       </div>
 

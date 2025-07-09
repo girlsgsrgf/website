@@ -20,6 +20,7 @@ from .models import Message
 from django.db.models import Q
 from django.views.decorators.http import require_POST
 from django.http import HttpResponseNotFound, HttpResponseForbidden
+from .models import Business
 
 
 
@@ -167,21 +168,21 @@ def buy_view(request, product_id):
         try:
             quantity = int(request.POST.get('quantity', '1'))
         except ValueError:
-            messages.error(request, "Неверное количество.")
+            messages.error(request, "Incorrect quantity.")
             return render(request, 'buy.html', context)
 
         if quantity < 1:
-            messages.error(request, "Количество должно быть не меньше 1.")
+            messages.error(request, "The quantity must be at least 1.")
             return render(request, 'buy.html', context)
 
         cost = quantity * product.price
 
         if product.supply < quantity:
-            messages.error(request, f"На складе всего {product.supply} шт.")
+            messages.error(request, f"Only {product.supply} units available.")
             return render(request, 'buy.html', context)
 
         if buyer.balance < cost:
-            messages.error(request, "Недостаточно средств.")
+            messages.error(request, "Insufficient funds.")
             return render(request, 'buy.html', context)
 
         with transaction.atomic():
@@ -197,7 +198,7 @@ def buy_view(request, product_id):
             user_product.save()
 
         request.session['new_balance'] = float(buyer.balance)
-        messages.success(request, f"Вы купили {quantity} шт. {product.title} за ${cost:.2f}")
+        messages.success(request, f"You purchased {quantity} units of {product.title} for ${cost:.2f}.")
         return redirect(f'/buy/{product.id}/?user_id={user_id}')
 
     return render(request, 'buy.html', context)
@@ -219,18 +220,18 @@ def sell_view(request, product_id):
     user_product = UserProduct.objects.filter(user=user, product=product).first()
 
     if not user_product or user_product.quantity == 0:
-        messages.error(request, "У вас нет этого товара для продажи.")
+        messages.error(request, "You don't have this product to sell.")
         return render(request, 'buy.html', {'product': product, 'is_selling': True})
 
     if request.method == 'POST':
         try:
             quantity_to_sell = int(request.POST.get('quantity', '1'))
         except ValueError:
-            messages.error(request, "Неверное количество.")
+            messages.error(request, "Invalid quantity.")
             return render(request, 'buy.html', {'product': product, 'user_product': user_product, 'is_selling': True})
 
         if quantity_to_sell < 1 or quantity_to_sell > user_product.quantity:
-            messages.error(request, "Неверное количество для продажи.")
+            messages.error(request, "Invalid quantity for sale.")
             return render(request, 'buy.html', {'product': product, 'user_product': user_product, 'is_selling': True})
 
         price_per_unit = product.price * Decimal('0.9')  # Продаём системе дешевле, напр. на 10%
@@ -247,7 +248,10 @@ def sell_view(request, product_id):
             user.balance += total_revenue
             user.save()
 
-        messages.success(request, f"Вы продали {quantity_to_sell} шт. {product.title} за ${total_revenue:.2f}")
+            request.session['new_balance'] = float(user.balance)
+
+
+        messages.success(request, f"You sold {quantity_to_sell} units of {product.title} for ${total_revenue:.2f}.")
 
         from django.urls import reverse
         return redirect(f"{reverse('buy_view', args=[product.id])}?user_id={user_id}&mode=sell")
@@ -442,3 +446,47 @@ def get_user_wealth(request):
         'username': user.username,
         'products_value': round(products_value, 2)
     })
+
+
+@csrf_exempt
+def buy_business(request):
+    if request.method == "POST":
+        user_id = request.POST.get("user_id")
+        business_id = request.POST.get("business_id")
+
+        try:
+            user = User.objects.get(id=user_id)
+            business = Business.objects.get(id=business_id)
+        except (User.DoesNotExist, Business.DoesNotExist):
+            return JsonResponse({"error": "User or business not found"}, status=404)
+
+        if user.balance < business.price:
+            return JsonResponse({"error": "Insufficient balance"}, status=400)
+
+        # Списываем баланс
+        user.balance -= business.price
+        user.save()
+
+        # Создаем UserBusiness, если уже есть — увеличиваем quantity
+        user_business, created = UserBusiness.objects.get_or_create(user=user, business=business)
+        if not created:
+            user_business.quantity += 1
+            user_business.save()
+
+        return JsonResponse({"success": True, "new_balance": str(user.balance)})
+
+    return JsonResponse({"error": "Invalid method"}, status=405)
+
+
+def list_businesses(request):
+    businesses = Business.objects.all()
+    data = [
+        {
+            "id": b.id,
+            "title": b.title,
+            "price": str(b.price),
+            "daily_profit": str(b.daily_profit),
+        }
+        for b in businesses
+    ]
+    return JsonResponse(data, safe=False)
