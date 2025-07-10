@@ -5,8 +5,8 @@ const generateUserId = () => {
   return Math.floor(100000000 + Math.random() * 900000000).toString();
 };
 
-const MAX_CLICKS = 30;
-const COOLDOWN_MS = 1 * 60 * 1000; 
+const MAX_CLICKS = 500;
+const COOLDOWN_MS = 30 * 60 * 1000; 
 
 const HomePage = ({ initialBalance = 0 }) => {
   const [userId, setUserId] = useState(() => {
