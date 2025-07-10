@@ -114,7 +114,6 @@ def product_list(request):
         {
             'id': product.id,
             'title': product.title,
-            'description': product.description,
             'price': float(product.price),
             'category': product.category,       # add category to the response
             'image': product.image_url,
@@ -276,7 +275,6 @@ def my_products_api(request):
         {
             'id': up.product.id,
             'title': up.product.title,
-            'description': up.product.description,
             'price': float(up.product.price),
             'quantity': up.quantity,
             'image': up.product.image_url,
@@ -498,7 +496,7 @@ def list_businesses(request):
 def get_referral_code(request):
     user_id = request.GET.get("user_id")
     try:
-        user = User.objects.get(id=user_id)
+        user = CustomUser.objects.get(telegram_id=user_id)
         referral = Referral.objects.get(user=user)
         return JsonResponse({"code": referral.code})
     except (User.DoesNotExist, Referral.DoesNotExist):

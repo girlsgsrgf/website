@@ -6,6 +6,7 @@ from django.db import models
 from django.conf import settings 
 from django.db.models import Sum
 import random
+import string
 
 def generate_unique_code():
     while True:
@@ -63,7 +64,6 @@ class Referral(models.Model):
 
 class Product(models.Model):
     title = models.CharField(max_length=255)
-    description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     category = models.CharField(max_length=100, default="Uncategorized") 
     base_price = models.DecimalField(max_digits=10, decimal_places=2, default=10.00)  # fixed base

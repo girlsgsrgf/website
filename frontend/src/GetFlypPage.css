@@ -32,7 +32,7 @@
 .label {
   font-family: "Inter";
   color: white;
-  font-size: 22px;
+  font-size: 20px;
   font-weight: bold;
   margin-bottom: -20px;
 }
@@ -40,7 +40,7 @@
 .balance {
   font-family: "Inter";
   color: white;
-  font-size: 32px;
+  font-size: 26px;
   font-weight: bold;
 }
 
@@ -188,11 +188,20 @@ label:last-child span {
   text-align: center;
 }
 
-.my-product-price,
-.my-product-quantity {
+.my-product-price {
   font-family: "Inter";
   font-size: 25px;
   color: red;
+  margin: 4px 0;
+  font-weight: bold;
+}
+
+
+.my-product-quantity {
+  font-family: "Inter";
+  font-size: 20px;
+  font-weight: 500;
+  color: black;
   margin: 4px 0;
 }
 
@@ -202,13 +211,13 @@ label:last-child span {
   background-color: red;
   color: white;
   border: none;
-  padding: 8px;
-  border-radius: 5px;
+  padding: 13px;
+  border-radius: 8px;
   cursor: pointer;
   width: 100%;
   margin-top: 8px;
   font-weight: bold;
-  font-size: 14px;
+  font-size: 20px;
   transition: background-color 0.2s;
 }
 
@@ -364,8 +373,10 @@ label:last-child span {
 
 
 .referral-code {
-  margin-top: 5px;
   font-size: 14px;
-  color: #444;
-  text-align: center;
+  color: #666;
+}
+
+.referral-code strong {
+  color: white;
 }

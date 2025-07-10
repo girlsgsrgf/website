@@ -12,7 +12,10 @@ export default function GetFlypPage() {
   const [viewMode, setViewMode] = useState("myProducts"); // 'myProducts' or 'listings'
   const [ownedBusinesses, setOwnedBusinesses] = useState([]); // to track purchased businesses
   const [showWithdrawWarning, setShowWithdrawWarning] = useState(false)
-  const [referralCode, setReferralCode] = useState(null);
+  const [referralCode, setReferralCode] = useState(() => {
+  return localStorage.getItem("referral_code") || null;});
+
+
 
 
   const userId = localStorage.getItem("user_id");
@@ -37,9 +40,15 @@ export default function GetFlypPage() {
       .catch(console.error);
 
     fetch(`/api/referral-code/?user_id=${userId}`)
-        .then(res => res.json())
-        .then(data => setReferralCode(data.code))
-        .catch(console.error);
+      .then(res => res.json())
+      .then(data => {
+        if (data.code) {
+          localStorage.setItem("referral_code", data.code);
+          setReferralCode(data.code);
+        }
+      })
+      .catch(console.error);
+
 
   }, [userId]);
 
@@ -138,7 +147,6 @@ export default function GetFlypPage() {
             <div key={product.id} className="my-product-card">
               <img src={product.image} alt={product.title} className="my-product-image" />
               <h4 className="my-product-title">{product.title}</h4>
-              <p className="my-product-description">{product.description.slice(0, 40)}...</p>
               <p className="my-product-price"><strong>$ {product.price}</strong></p>
               <p className="my-product-quantity"><strong>Quantity: {product.quantity}</strong></p>
               <p className="my-product-quantity"><strong>Comission: 10%</strong></p>
@@ -177,9 +185,9 @@ export default function GetFlypPage() {
         <div className="getflyp-container">
           <div className="balance-section-getflyp">
             <p className="label">Crypto Wallet</p>
-            <h2 className="balance">{balance.toFixed(2)} USDT</h2>
+            <h2 className="balance">0 USDT</h2>
             {referralCode && (
-              <p className="referral-code" style={{ fontSize: '14px', color: '#666' }}>
+              <p className="referral-code">
                 Your referral code: <strong>{referralCode}</strong>
               </p>
             )}
